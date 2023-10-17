@@ -1,0 +1,3 @@
+[submodule "lora-module/lora-module-hw"]
+	path = lora-module/lora-module-hw
+	url = git@github.com:manakjiri/lora-module-hw.git
