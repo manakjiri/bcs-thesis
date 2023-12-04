@@ -4,3 +4,6 @@
 [submodule "poc/embassy"]
 	path = poc/embassy
 	url = git@github.com:manakjiri/embassy.git
+[submodule "lora-module/lora-module-fw"]
+	path = lora-module/lora-module-fw
+	url = git@github.com:manakjiri/lora-module-fw.git
