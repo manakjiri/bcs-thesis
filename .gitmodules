@@ -7,3 +7,6 @@
 [submodule "lora-module/lora-module-fw"]
 	path = lora-module/lora-module-fw
 	url = git@github.com:manakjiri/lora-module-fw.git
+[submodule "lora-module-updater"]
+	path = lora-module-updater
+	url = git@github.com:manakjiri/lora-module-updater.git
