@@ -10,3 +10,6 @@
 [submodule "lora-module-updater"]
 	path = lora-module-updater
 	url = git@github.com:manakjiri/lora-module-updater.git
+[submodule "soil-sensor-hw"]
+	path = soil-sensor-hw
+	url = git@github.com:manakjiri/soil-sensor-hw.git
