@@ -12,4 +12,11 @@
 *.toc
 *.bbl
 *.bcf
+*.run.xml
+*.synctex(busy)
+*.synctex.gz(busy)
+*.fls
+*.fdb_latexmk
+*.ind
 
+main.pdf
