@@ -4,7 +4,7 @@
 
 % The class takes all the key=value arguments that \ctusetup does,
 % and a couple more: draft and oneside
-\documentclass[twoside]{ctuthesis}
+\documentclass[oneside]{ctuthesis}
 \usepackage{graphicx}
 \usepackage{svg}
 
@@ -77,7 +77,7 @@
 \newtheorem*{remark*}{Remark}
 \newtheorem{remark}[theorem]{Remark}
 
-\setlength{\parskip}{5ex plus 0.2ex minus 0.2ex}
+\setlength{\parskip}{1.5ex plus 0.2ex minus 0.1ex}
 
 % Abstract in Czech
 \begin{abstract-czech}
@@ -107,7 +107,7 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 \maketitle
 
 
-\chapter{Introduction}
+\chapter{\label{chapter:introduction} Introduction}
 \input{sub/1_intro.tex}
 
 \chapter{Prior art}

@@ -4,19 +4,25 @@ This chapter will walk the reader through the various options that were consider
 
 \section{Separation of concerns}
 
-As was discussed in the Introduction, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application. 
+As was discussed in the Introduction \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application.
 
-With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see figure \ref{fig:device-split}) a practice commonly seen in the industry (cite).
+With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}) a practice commonly seen in the industry (cite).
 
 \begin{figure}
     \includesvg[width=\textwidth]{fig/3_device-split.drawio.svg}
     \caption{\label{fig:device-split} Logical high level building blocks of most modern sensors}
 \end{figure}
 
+Separating these two concerns not only logically, but also on the hardware level, will bring many advantages - future sensor implementations can be made with only effort being put into the sensor itself; the wireless part and most of the testing and regulation overhead can be solved once, not repeated for every sensor type; once a sensor compatible with the interface exists, it can be made compatible with future versions of the interface - to list a few.
 
+While this work is mainly concerned with the soil moisture sensing application, having a LoRa compatible unit, which is capable of OTA updates and has enough processing power to handle most sensing and simple control task, while being power-efficient enough to be battery powered, is an interesting sub-goal of this work.
 
-\section{Module hardware requirements}
+The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
+
+\section{Module requirements}
 \subsection{Application case-studies}
+In order to find the optimal boundary between the sensor implementation part and the Interface and Processing part, it is useful to look at the possible applications of the proposed module.
+
 \subsubsection{Indoor environment sensor array}
 Let us consider this basic, typical, use-case for such a communication module. This application can implement the following sensors
 \begin{itemize}
@@ -26,13 +32,13 @@ Let us consider this basic, typical, use-case for such a communication module. T
     \item air quality sensor (CO$^2$e, smoke, ...)
     \item light sensor
 \end{itemize}
-we can omit some of the listed sensors in the actual application, but the module should be able to support the full configuration without any kind of co-processor.
+we can omit some of the listed sensors in the actual application, but the module should be able to support the full configuration without any kind of co-processor. Main limiting factor will probably be the number of communication peripherals a General Purpose Input Output pins.
 
-Thermometer is always an integral part of any hygrometer suitable for this application. They are also frequently found in fully integrated solutions with a digital interface of some sort, usually I2C. The same is true for any modern light sensor, which will also be able to measure intensities of different wavelengths of light. Thus more than half of the sensors listed only require a single I2C port to control them comfortably.
+Thermometer is usually an integral part of any hygrometer measuring relative humidity \cite{webster_humidity_1998}, that is also suitable for this application. These sensors are frequently found in fully integrated solutions with a digital interface of some sort, usually I2C \cite{bosch_sensortec_gmbh_bst-bme280-ds002pdf_2024}. The same is true for any modern light sensor, which will also be able to measure intensities of different wavelengths of light \cite{stmicroelectronics_ambient_2024}, \cite{texas_instruments_inc_light_2024}. Thus more than half of the sensors listed only require a single I2C port to control them comfortably.
 
-Traditionally, PIR sensors are used to detect motion, thus presence of humans in the vicinity of the sensor, but this might not work reliably for indoor applications. Thus, nowadays, the use of radar-based systems is a lot more prevalent for human presence detectors. Such a sensor might expose a digital interface, such as I2C or SPI, or might simply output an analog signal, which can be sampled using an ADC.
+Traditionally, PIR sensors are used to detect motion, thus presence of humans in the vicinity of the sensor, but this might not work reliably for indoor applications. Thus, nowadays, the use of radar-based systems \cite{ag_presence_2024} or IR ranging sensors \cite{stmicroelectronics_human_2024} are a lot more prevalent for human presence detectors. Such a sensor might expose a digital interface, such as I2C or SPI, or simply output an analog signal, which can be sampled using an ADC.
 
-Other environmental sensors, such as air quality sensors, also implement similar interfaces - I2C or SPI or more commonly an analog output. Notably these sensors usually exhibit relatively high power draw (1-10 mA) and slowest startup times of all the other sensors of this application (orders of 10s of seconds to minutes), so they are not suitable for battery-powered applications.
+Other environmental sensors, such as air quality sensors, also implement similar interfaces - I2C or SPI or an analog output. Notably these sensors usually exhibit relatively high power draw ($>100~mW$) and slowest startup times of all the other sensors of this application (orders of 10s of seconds to minutes) \cite{amphenol_inc_mics-vz-89te_2024}, so they are not suitable for battery-powered applications.
 
 On the note of power draw, this application may wish to be battery powered or remain mains powered, this will affect the capabilities and the end use-case. 
 
@@ -46,7 +52,9 @@ The defining features of this application are outdoor use, battery power with th
 solární článek a nabíjecí obvod by se integroval spolu s obvody pro měření vlhkosti na PCB samotného senzoru. pro bateriové aplikace jsou tudíž ideální LiFePO4, které mají pracovní rozsah 2.5-3.6V, což je v pracovním rozsahu STM32 a většiny dalších 3V3 komponent
 
 \subsubsection{Gateway}
-The module should be versatile enough to be also able to act as a communication interface for a host computer to connect to and manage the network of sensors.
+The module should be versatile enough to be also able to act as a communication interface for a host computer to connect to and manage the network of sensors, though other more specialized hardware could also be used for this use-case.
+
+\subsection{Over-the-air update support}
 
 \subsection{Final requirements}
 \begin{itemize}
@@ -61,6 +69,8 @@ The module should be versatile enough to be also able to act as a communication 
     \item host communication interface
     \item low cost
 \end{itemize}
+
+shrnout to, ze neexistuje takovy senzor.
 
 \section{Module design}
 externí konektivita přes plošky na obvodu modulu: I2C, UART, SPI, několik ADC kanálů, SWD (otázka jestli jen nevyvést na plošky na modulu), vypínaný VCC výstup pro snížení odběru
