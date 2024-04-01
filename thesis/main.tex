@@ -12,7 +12,7 @@
 	preprint = \ctuverlog,
 	mainlanguage = english,
 	titlelanguage = english,
-	otherlanguages = {slovak,english},
+	otherlanguages = {czech},
 	title-czech = {Senzorová síť pro Smart Agriculture},
 	title-english = {Sensor network for Smart Agriculture},
 	subtitle-czech = {},
@@ -102,29 +102,26 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 \end{declaration}
 
 
-
 \begin{document}
 
 \maketitle
 
 
 \chapter{Introduction}
+\input{sub/1_intro.tex}
 
-\part{}
+\chapter{Prior art}
+\input{sub/2_prior.tex}
 
-%\input{ctutest-1}
+\chapter{System architecture}
+\input{sub/3_architecture.tex}
 
-%\input{ctutest-2}
+\chapter{Results}
+\input{sub/4_results.tex}
 
-
+%\part{}
 
 \chapter{Conclusions}
-
-
-
-
-
-
 
 %\appendix
 
@@ -133,7 +130,7 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 %\appendix
 
 \bibliographystyle{amsalpha}
-\bibliography{main}
+\bibliography{main.bib}
 
 \ctutemplate{specification.as.chapter}
 

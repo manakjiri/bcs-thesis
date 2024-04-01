@@ -1,0 +1,73 @@
+%!TEX ROOT=main.tex
+
+This chapter will walk the reader through the various options that were considered and final choices that were made during the concept and initial design stages of this project.
+
+\section{Separation of concerns}
+
+As was discussed in the Introduction, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application. 
+
+With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself, a practice commonly seen in the industry (cite).
+
+
+\section{Module hardware requirements}
+\subsection{Application case-studies}
+\subsubsection{Indoor environment sensor array}
+Let us consider this basic, typical, use-case for such a communication module. This application can implement the following sensors
+\begin{itemize}
+    \item thermometer
+    \item hygrometer (relative humidity sensor)
+    \item human presence detector
+    \item air quality sensor (CO$^2$e, smoke, ...)
+    \item light sensor
+\end{itemize}
+we can omit some of the listed sensors in the actual application, but the module should be able to support the full configuration without any kind of co-processor.
+
+Thermometer is always an integral part of any hygrometer suitable for this application. They are also frequently found in fully integrated solutions with a digital interface of some sort, usually I2C. The same is true for any modern light sensor, which will also be able to measure intensities of different wavelengths of light. Thus more than half of the sensors listed only require a single I2C port to control them comfortably.
+
+Traditionally, PIR sensors are used to detect motion, thus presence of humans in the vicinity of the sensor, but this might not work reliably for indoor applications. Thus, nowadays, the use of radar-based systems is a lot more prevalent for human presence detectors. Such a sensor might expose a digital interface, such as I2C or SPI, or might simply output an analog signal, which can be sampled using an ADC.
+
+Other environmental sensors, such as air quality sensors, also implement similar interfaces - I2C or SPI or more commonly an analog output. Notably these sensors usually exhibit relatively high power draw (1-10 mA) and slowest startup times of all the other sensors of this application (orders of 10s of seconds to minutes), so they are not suitable for battery-powered applications.
+
+On the note of power draw, this application may wish to be battery powered or remain mains powered, this will affect the capabilities and the end use-case. 
+
+When running on battery, the active on-time is limited to periodic sampling of the environment a handful times per hour. Being able to power down all sensors can prove useful in this application to greatly improve the battery life. On the other hand, if the application aims at fast reaction times, switching on the lights when presence detected for example, and the inclusion of all the sensors listed, it will need to be mains powered to be practical.
+
+\subsubsection{Light dimmer}
+
+\subsubsection{Soil moisture sensor}
+The defining features of this application are outdoor use, battery power with the possibility of including a solar panel for zero-maintenance operation, long range and low dynamic duty-cycle.
+
+solární článek a nabíjecí obvod by se integroval spolu s obvody pro měření vlhkosti na PCB samotného senzoru. pro bateriové aplikace jsou tudíž ideální LiFePO4, které mají pracovní rozsah 2.5-3.6V, což je v pracovním rozsahu STM32 a většiny dalších 3V3 komponent
+
+\subsubsection{Gateway}
+The module should be versatile enough to be also able to act as a communication interface for a host computer to connect to and manage the network of sensors.
+
+\subsection{Final requirements}
+\begin{itemize}
+    \item 2V8-3V3 nominal voltage range - the lower the minimum threshold, the better (for being able to harvest as much energy as possible from ie. a coin-cell battery)
+    \item low power design - support for switchable power rails for standby modes, low duty cycle operation, low power standby of the module itself
+    \item target the 865-923 MHz (EU868, US915, IN865, ...) frequency range
+    \item wide temperature range for outdoor applications
+    \item support for wide range of use-cases - minimize the amount of specialized hardware on the module, leave that up the implementation
+    \item minimal footprint
+    \item support for OTA updates - large enough internal storage
+    \item integrated RF - ideally a built-in antenna or some means to connect one
+    \item host communication interface
+    \item low cost
+\end{itemize}
+
+\section{Module design}
+externí konektivita přes plošky na obvodu modulu: I2C, UART, SPI, několik ADC kanálů, SWD (otázka jestli jen nevyvést na plošky na modulu), vypínaný VCC výstup pro snížení odběru
+
+existuje referenční design [STDES-WL5U4ILH](https://st.com/en/evaluation-tools/stdes-wl5u4ilh.html), který odpovídá požadavkům
+	- 15dB (low power, umí i 22dB) - tuším, že pro Evropu je LP žádoucí, potřeba ověřit
+	- nejmenší board space requirement v porovnání s ostatními (existují i varianty bez RF přepínače, ale jsou roztahanější, protože nepoužívají IPD)
+	- přepínač je [BGS12SN6](https://eu.mouser.com/ProductDetail/Infineon-Technologies/BGS12SN6E6327XTSA1?qs=3%2FhYFTG7CVeGtqdjCCQooA%3D%3D), stojí 0.40€
+
+\subsection{Parts selection}
+\subsubsection{MCU}
+Given the requirements for minimal footprint a fully integrated SOC solution is preferred to a configuration of separate MCU and an RF solution. STM32WL series offers such an SOC, which also satisfies the requirement of low power consumption by being based on the STM32L4, a well known ultra low power family of micro-controllers. 
+
+\subsubsection{Antenna}
+Po dvou dnech hledání správné embedded antény jsem usoudil, že je to riskantní pokus a raději to nechám na příští revizi, protože je tam potřeba zvážit mnoho parametrů, což se teď dělá těžko - dám tam U.FL konektor pro externí anténu. Slibné varianty byly
+
