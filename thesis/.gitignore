@@ -18,5 +18,7 @@
 *.fls
 *.fdb_latexmk
 *.ind
+*.dvi
+svg-inkscape
 
 main.pdf
