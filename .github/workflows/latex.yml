@@ -23,8 +23,9 @@ jobs:
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
 
-      - name: Upload PDF
-        uses: actions/upload-artifact@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: thesis-manak-${{ steps.build.outputs.date }}
-          path: thesis/main.pdf
+          name: ${{ steps.build.outputs.date }}
+          files: thesis/main.pdf
+          fail_on_unmatched_files: true
