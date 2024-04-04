@@ -56,6 +56,8 @@ The module should be versatile enough to be also able to act as a communication 
 
 \subsection{Over-the-air update support}
 
+doplnit jakmile to bude v uvodu
+
 \subsection{Final requirements}
 \begin{itemize}
     \item 2V8-3V3 nominal voltage range - the lower the minimum threshold, the better (for being able to harvest as much energy as possible from ie. a coin-cell battery)
@@ -70,7 +72,22 @@ The module should be versatile enough to be also able to act as a communication 
     \item low cost
 \end{itemize}
 
-shrnout to, ze neexistuje takovy senzor.
+\subsubsection{Existing hardware satisfying these requirements}
+
+SeedStudio Wio-E5-LE \cite{stmicroelectronics_lora_2024, seeedstudio_wio-e5-wireless_2024} is a cost effective LoRa module integrating the STM32WLE5JC SOC.
+
+%\begin{table}[!h]
+%\begin{center}
+%\caption{\label{table:existing-modules} Existing modules satisfying project requirements}
+%    \begin{tabular}{|l|c|c|c|} 
+%    \hline
+%    Name & Col2 & Col2 & Col3 \\
+%    \hline
+%     & 6 & 87837 & 787 \\ 
+%    \hline
+%    \end{tabular}
+%\end{center}
+%\end{table}
 
 \section{Module design}
 externí konektivita přes plošky na obvodu modulu: I2C, UART, SPI, několik ADC kanálů, SWD (otázka jestli jen nevyvést na plošky na modulu), vypínaný VCC výstup pro snížení odběru
