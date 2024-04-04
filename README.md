@@ -1,3 +1,3 @@
 # Sensor network for Smart Agriculture
 
-Download the latest build here [![LaTeX](https://github.com/manakjiri/bcs-thesis/actions/workflows/latex.yml/badge.svg?branch=main)](https://github.com/manakjiri/bcs-thesis/actions/workflows/latex.yml) by opening the latest run and downloading the artifact `thesis-manak.pdf`.
+View the latest version at [manakjiri.cz/assets/content/documents/bcs-thesis.pdf](https://manakjiri.cz/assets/content/documents/bcs-thesis.pdf).
