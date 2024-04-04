@@ -22,6 +22,8 @@ jobs:
             bibtex main
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
+            mkdir -p ../output
+            mv main.pdf ../output/bcs-thesis.pdf
 
       - name: Upload
         uses: airvzxf/ftp-deployment-action@latest
@@ -29,5 +31,5 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: "./thesis/main.pdf"
+          local_dir: "output"
           remote_dir: "assets/content/documents"
