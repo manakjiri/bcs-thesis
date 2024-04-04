@@ -14,7 +14,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build
+        id: build
         run: |
+            echo "date=`date +'%Y-%m-%d'`" >> "$GITHUB_OUTPUT"
             cd thesis
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
             bibtex main
@@ -24,5 +26,5 @@ jobs:
       - name: Upload PDF
         uses: actions/upload-artifact@v4
         with:
-          name: thesis-manak-$(date +'%Y-%m-%d')
+          name: thesis-manak-${{ steps.build.outputs.date }}
           path: thesis/main.pdf
