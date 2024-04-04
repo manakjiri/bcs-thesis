@@ -38,7 +38,7 @@ Thermometer is usually an integral part of any hygrometer measuring relative hum
 
 Traditionally, PIR sensors are used to detect motion, thus presence of humans in the vicinity of the sensor, but this might not work reliably for indoor applications. Thus, nowadays, the use of radar-based systems \cite{ag_presence_2024} or IR ranging sensors \cite{stmicroelectronics_human_2024} are a lot more prevalent for human presence detectors. Such a sensor might expose a digital interface, such as I2C or SPI, or simply output an analog signal, which can be sampled using an ADC.
 
-Other environmental sensors, such as air quality sensors, also implement similar interfaces - I2C or SPI or an analog output. Notably these sensors usually exhibit relatively high power draw ($>100~mW$) and slowest startup times of all the other sensors of this application (orders of 10s of seconds to minutes) \cite{amphenol_inc_mics-vz-89te_2024}, so they are not suitable for battery-powered applications.
+Other environmental sensors, such as air quality sensors, also implement similar interfaces - I2C or SPI or an analog output. Notably these sensors usually exhibit relatively high power draw ($>100~\mathrm{mW}$) and slowest startup times of all the other sensors of this application (orders of 10s of seconds to minutes) \cite{amphenol_inc_mics-vz-89te_2024}, so they are not suitable for battery-powered applications.
 
 On the note of power draw, this application may wish to be battery powered or remain mains powered, this will affect the capabilities and the end use-case. 
 

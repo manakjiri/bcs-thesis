@@ -23,9 +23,11 @@ jobs:
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
             pdflatex -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error main.tex
 
-      - name: Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload
+        uses: airvzxf/ftp-deployment-action@latest
         with:
-          name: ${{ steps.build.outputs.date }}
-          files: thesis/main.pdf
-          fail_on_unmatched_files: true
+          server: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_dir: "./thesis/main.pdf"
+          remote_dir: "assets/content/documents"
