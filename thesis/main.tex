@@ -5,6 +5,7 @@
 % The class takes all the key=value arguments that \ctusetup does,
 % and a couple more: draft and oneside
 \documentclass[oneside]{ctuthesis}
+\usepackage[toc]{appendix}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{svg}
@@ -127,6 +128,10 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 %\appendix
 
 \printindex
+
+\begin{appendices}
+\chapter{Using the Rust programming language for embedded applications}
+\end{appendices}
 
 %\appendix
 
