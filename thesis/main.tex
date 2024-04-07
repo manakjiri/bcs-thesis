@@ -114,37 +114,30 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 
 \maketitle
 
+\ctutemplate{specification.as.chapter}
 
 \chapter{\label{chapter:introduction} Introduction}
 \input{sub/1_intro.tex}
-
 \chapter{\label{chapter:prior} Prior art}
 \input{sub/2_prior.tex}
-
 \chapter{\label{chapter:architecture} System architecture}
 \input{sub/3_architecture.tex}
-
 \chapter{\label{chapter:results} Results}
 \input{sub/4_results.tex}
-
-%\part{}
-
 \chapter{Conclusions}
-
-%\appendix
 
 \printindex
 
 \begin{appendices}
 \chapter{Using the Rust programming language for embedded applications}
 \input{sub/a_rust.tex}
+\chapter{Module v0.1 design files}
+\input{sub/b_module01.tex}
 \end{appendices}
 
 %\appendix
 
 \bibliographystyle{plain}
 \bibliography{main.bib}
-
-\ctutemplate{specification.as.chapter}
 
 \end{document}
