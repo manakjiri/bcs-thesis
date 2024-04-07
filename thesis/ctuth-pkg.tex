@@ -936,26 +936,26 @@
 
 %%% HYPERREF
 
-\ctuifswitch { pkg-hyperref } {
-	\usepackage[
-		pdfpagelayout=TwoPageRight, % Correct twopage layout with recto on the right
-	]{hyperref}
-	% Links with orange borders, in ToC only the page is linked
-	\hypersetup{
-		colorlinks=false,
-		linktocpage=true,
-		allbordercolors=ctuorange,
-	}
-	% Prepare PDFinfo
-	\tl_new:N \g_ctuthesis_hyperref_pdfinfo_tl
-	\tl_set:Nx \g_ctuthesis_hyperref_pdfinfo_tl {
-		pdfinfo = {
-			Title = \ctuthesis_field_use:nn { title } { title },
-			Author = \ctuthesis_field_use:n { author },
-		}
-	} 
-	\exp_args:NV \hypersetup \g_ctuthesis_hyperref_pdfinfo_tl
-}{}
+%\ctuifswitch { pkg-hyperref } {
+%	\usepackage[
+%		pdfpagelayout=TwoPageRight, % Correct twopage layout with recto on the right
+%	]{hyperref}
+%	% Links with orange borders, in ToC only the page is linked
+%	\hypersetup{
+%		colorlinks=false,
+%		linktocpage=true,
+%		allbordercolors=ctuorange,
+%	}
+%	% Prepare PDFinfo
+%	\tl_new:N \g_ctuthesis_hyperref_pdfinfo_tl
+%	\tl_set:Nx \g_ctuthesis_hyperref_pdfinfo_tl {
+%		pdfinfo = {
+%			Title = \ctuthesis_field_use:nn { title } { title },
+%			Author = \ctuthesis_field_use:n { author },
+%		}
+%	} 
+%	\exp_args:NV \hypersetup \g_ctuthesis_hyperref_pdfinfo_tl
+%}{}
 
 %\ctuifswitch { pkg-hyperref } {
 %	\hypersetup{colorlinks=false,linktocpage=true,linkbordercolor=0 122 195}

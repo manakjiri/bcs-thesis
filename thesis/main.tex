@@ -10,6 +10,11 @@
 \usepackage{subfig}
 \usepackage{svg}
 
+\usepackage[pdftex,
+            pdfauthor={Jiří Maňák},
+            pdftitle={Sensor network for Smart Agriculture}
+			]{hyperref}
+
 \ctusetup{
 	preprint = \ctuverlog,
 	mainlanguage = english,
@@ -17,8 +22,8 @@
 	otherlanguages = {czech},
 	title-czech = {Senzorová síť pro Smart Agriculture},
 	title-english = {Sensor network for Smart Agriculture},
-	subtitle-czech = {},
-	subtitle-english = {},
+	%	subtitle-czech = {},
+	%	subtitle-english = {},
 	doctype = B,
 	faculty = F3,
 	department-czech = {Katedra meření},
@@ -26,29 +31,30 @@
 	author = {Jiří Maňák},
 	supervisor = {prof. Ing. Radislav Šmíd, Ph.D.},
 	supervisor-address = {Praha, Technická 1902/2, místnost: A3-324},
-	supervisor-specialist = {},
-	fieldofstudy-english = {},
-	subfieldofstudy-english = {},
-	fieldofstudy-czech = {},
-	subfieldofstudy-czech = {},
+%	supervisor-specialist = {},
+%	fieldofstudy-english = {},
+%	subfieldofstudy-english = {},
+%	fieldofstudy-czech = {},
+%	subfieldofstudy-czech = {},
 	keywords-czech = {slovo, klíč},
 	keywords-english = {word, key},
 	day = 1,
 	month = 5,
 	year = 2024,
 	specification-file = {thesis-specification.pdf},
-%	front-specification = true,
-%	front-list-of-figures = false,
-%	front-list-of-tables = false,
+	%	front-specification = true,
+	%	front-list-of-figures = false,
+	%	front-list-of-tables = false,
 %	monochrome = true,
 %	layout-short = true,
 }
 
+
 \ctuprocess
 
 \addto\ctucaptionsczech{%
-	\def\supervisorname{Vedoucí}%
-	\def\subfieldofstudyname{Studijní program}%
+\def\supervisorname{Vedoucí}%
+\def\subfieldofstudyname{Studijní program}%
 }
 
 \ctutemplateset{maketitle twocolumn default}{
