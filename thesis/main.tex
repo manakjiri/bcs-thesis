@@ -10,6 +10,7 @@
 \usepackage{subfig}
 \usepackage{svg}
 
+\PassOptionsToPackage{hyphens}{url}
 \usepackage[pdftex,
             pdfauthor={Jiří Maňák},
             pdftitle={Sensor network for Smart Agriculture}
@@ -53,8 +54,8 @@
 \ctuprocess
 
 \addto\ctucaptionsczech{%
-\def\supervisorname{Vedoucí}%
-\def\subfieldofstudyname{Studijní program}%
+\def\supervisorname{prof. Ing. Radislav Šmíd, Ph.D.}%
+\def\subfieldofstudyname{Kybernetika a Robotika}%
 }
 
 \ctutemplateset{maketitle twocolumn default}{
@@ -67,23 +68,6 @@
 		\ctutemplate{twocolumn.listoffigures}
 	\end{twocolumnfrontmatterpage}
 }
-
-% Theorem declarations, this is the reasonable default, anybody can do what they wish.
-% If you prefer theorems in italics rather than slanted, use \theoremstyle{plainit}
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{conjecture}[theorem]{Conjecture}
-
-\theoremstyle{note}
-\newtheorem*{remark*}{Remark}
-\newtheorem{remark}[theorem]{Remark}
 
 \setlength{\parskip}{1.5ex plus 0.2ex minus 0.1ex}
 
@@ -134,8 +118,6 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 \chapter{Module v0.1 design files}
 \input{sub/b_module01.tex}
 \end{appendices}
-
-%\appendix
 
 \bibliographystyle{plainurl}
 \bibliography{main.bib}
