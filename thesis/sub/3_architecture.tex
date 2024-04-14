@@ -9,7 +9,7 @@ With that being said, one can easily discern separate sub-tasks within this broa
 
 \begin{figure}
     \includesvg[width=\textwidth]{fig/device-split.drawio.svg}
-    \caption{\label{fig:device-split} Logical high level building blocks of most modern sensors}
+    \caption{\label{fig:device-split}Logical high level building blocks of most modern sensors}
 \end{figure}
 
 Separating these two concerns not only logically, but also on the hardware level, will bring many advantages - future sensor implementations can be made with only effort being put into the sensor itself; the wireless part and most of the testing and regulation overhead can be solved once, not repeated for every sensor type; once a sensor compatible with the interface exists, it can be made compatible with future versions of the interface - to list a few.
@@ -19,7 +19,7 @@ While this work is mainly concerned with the soil moisture sensing application, 
 The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
 
 \section{Module requirements}
-\subsection{\label{section:application-case-studies} Application case-studies}
+\subsection{\label{section:application-case-studies}Application case-studies}
 In order to find the optimal boundary between the sensor implementation part and the Interface and Processing part, as defined in Figure \ref{fig:device-split}, it is useful to look at the possible applications of the proposed module.
 
 \subsubsection{Indoor environment sensor array}
@@ -51,16 +51,13 @@ If local control is also required, a rotary encoder for example, which can be sa
 \subsubsection{Soil moisture sensor}
 The defining features of this application are outdoor use, battery power with the possibility of including a solar panel for zero-maintenance operation, long range and low dynamic duty-cycle.
 
-solární článek a nabíjecí obvod by se integroval spolu s obvody pro měření vlhkosti na PCB samotného senzoru. pro bateriové aplikace jsou tudíž ideální LiFePO4, které mají pracovní rozsah 2.5-3.6V, což je v pracovním rozsahu STM32 a většiny dalších 3V3 komponent
-
 \subsubsection{Gateway}
 The module should be versatile enough to be also able to act as a communication interface for a host computer to connect to and manage the network of sensors, though other more specialized hardware could also be used for this use-case.
 
 \subsection{Over-the-air update support}
-
 doplnit jakmile to bude v uvodu
 
-\subsection{\label{section:final-requirements} Final requirements}
+\subsection{\label{section:final-requirements}Final requirements}
 \begin{itemize}
     \item 2V8-3V3 nominal voltage range - the lower the minimum threshold, the better (for being able to harvest as much energy as possible from ie. a coin-cell battery)
     \item low power design - support for switchable power rails for standby modes, low duty cycle operation, low power standby of the module itself
@@ -247,7 +244,7 @@ Omnidirectional, size, groundplane, cost
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:antenna-chip} Comparison of the three selected chip antennae}
+\caption{\label{table:antenna-chip}Comparison of the three selected chip antennae}
     \begin{tabular}{|l|l|l|l|} \hline
     \textbf{Parameter} & \textbf{Linx ANT-868} & \textbf{Kyocera M620720} & \textbf{Taoglas ILA.08} \\ \hline
     Construction & Wire wound & Ceramic chip & Ceramic chip \\ \hline
