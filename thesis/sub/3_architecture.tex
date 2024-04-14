@@ -177,7 +177,7 @@ In general, there are two approaches for integrated antennae - a trace antenna c
 
 The following sections elaborate on each antenna type in more detail in the context of this particular application. 
 
-At this point in the design process, the module proportions, derived from the individual component footprints, are not expected to surpass $500~\mathrm{mm^2}$. It is also expected the design will need to conform to the PCB parameters specified in Table \ref{table:pcb-parameters}.
+At this point in the design process, the module proportions, derived from the individual component footprints, are not expected to surpass $500~\mathrm{mm^2}$. It is also expected the design will need to conform to the PCB parameters specified in Table \ref{table:pcb-parameters}. Since the first prototypes will only operate in Europe, the aim is mainly the EU868 band.
 
 \begin{table}[H]
 \begin{center}
@@ -233,16 +233,17 @@ These preliminary calculations led to the conclusion, that a PCB antenna at this
 This could be made possible with significant design effort and expertise, or by licensing an existing design, but the overall goal of creating this hardware would need to shift as a result.
 
 \subsubsection{Chip antenna}
-As outlined in \ref{table:antenna-solutions}, the chip antenna is another logical step in the search of the right solution. It is a common choice seen on commercially available hardware, especially where the space is at a premium - as can be seen on the RN4871 \ref{fig:RN4871} Bluetooth module.
+As outlined in \ref{table:antenna-solutions}, the chip antenna is another logical step in the search of the right solution. It is a common choice seen in commercially available hardware, especially in cases, where the space is at a premium - as can be seen on the RN4871 \ref{fig:RN4871} Bluetooth module.
 
-There is a large selection of these antennae on the market, mainly targeted at the very common bands, such as $2.4~\mathrm{GHz}$ and $5~\mathrm{GHz}$, but solutions for the $868-915~\mathrm{MHz}$ are also not hard to come by. Since the first prototypes will only operate in Europe, the aim is mainly the EU868 
+There is a large selection of these antennae on the market, mainly targeted at the very common bands, such as $2.4~\mathrm{GHz}$ and $5~\mathrm{GHz}$, but solutions for the $868~\mathrm{MHz}$ frequency range are also not hard to come by \cite{digikey_rf_2024,mouser_europe_868_2024}.
+
+
 
 \subsection{Conclusion}
 We managed to meet all requirements set in \ref{section:final-requirements} except
 
 \FloatBarrier
 \section{Sensor architecture}
-
 Given the aim of this project
 
 \subsection{Expected capacitance range}
