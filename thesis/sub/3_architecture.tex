@@ -19,6 +19,21 @@ While this work is mainly concerned with the soil moisture sensing application, 
 The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
 
 \section{Module requirements}
+\subsection{Over The Air update support}
+There are two general approaches to implementing OTA updates. First is to split the firmware into a so-called Bootloader, a binary which runs before the main application and implements a way to communicate with the master node, such that it is able to overwrite the application. The application usually also needs to communicate with the master node in order to transmit sensor data and accept commands, which leads to duplication of all the driver and protocol logic required to use the communication interface.
+
+The first option provides some level of separation between the application and the Bootloader, which could be useful in cases where the application is in some ways ``untrusted'', either due to security measures limiting the potential impact of bugs, or because it is actually provided by a different vendor and so on. This could be especially valid for cases, where the processor provides privileged execution modes etc.
+
+But it also cuts the other way, since this approach hinders the upgradeability of the device itself, because now this relatively large Bootloader with all the error prone interface handling is locked in and unable to be updated remotely, unless, of course, the application also implements a way to update the Bootloader, but this defeats any potential security benefits, unless a sophisticated authentication method is employed in both the Bootloader and the Application, which leads to even more duplication.
+
+This brings us to the second option, which also consists of a Bootloader and the Application, but here the Bootloader is much simpler, it only implements the bare minimum that is required to take a newer version of the application and overwrite the currently active one. However, if the Bootloader is unable to communicate with the master node, this means that the Application needs to download the new binary and store it somewhere locally on the end-node. 
+
+This is usually a challenge for embedded devices, where the built-in FLASH memory, in which the application is stored and from which it is executed, is generally just about able to fit the Bootloader and the Application and rarely would be able to accommodate two copies of the binary.
+
+Integrating additional memory increases the cost, but it can be used for other proposes besides OTA updates, such as storing configuration, calibration data and logs, or if the application integrates some sort of graphical display, may be required to store the assets, such as images and fonts.
+
+Perhaps the most important benefit is that, with proper Bootloader the support, the application binaries can be swapped instead of the old one being deleted, which opens up the possibility of rolling back unsucsefull updates, which could be considered a crucial feature in some applications and is not practical to do in the first OTA approach that was presented.
+
 \subsection{\label{section:application-case-studies}Application case-studies}
 In order to find the optimal boundary between the sensor implementation part and the Interface and Processing part, as defined in Figure \ref{fig:device-split}, it is useful to look at the possible applications of the proposed module.
 
@@ -53,9 +68,6 @@ The defining features of this application are outdoor use, battery power with th
 
 \subsubsection{Gateway}
 The module should be versatile enough to be also able to act as a communication interface for a host computer to connect to and manage the network of sensors, though other more specialized hardware could also be used for this use-case.
-
-\subsection{Over-the-air update support}
-doplnit jakmile to bude v uvodu
 
 \subsection{\label{section:final-requirements}Final requirements}
 \begin{itemize}
