@@ -1,2 +1,31 @@
 
+Rust is increasingly recognized in the field of embedded systems for its promise of memory safety and concurrent programming without the overhead of a runtime or garbage collector. Originally designed for systems programming, Rust offers deterministic performance and fine-grained control over hardware, akin to C, but with a stronger emphasis on safety and modern programming features.
+
+As of recent years, the Rust language has seen growing adoption in embedded development, supported by a robust toolchain and a vibrant ecosystem. Rust's compiler, Cargo package manager, and integration with LLVM provide a seamless development experience, from writing high-level application logic to low-level hardware interfacing. The availability of crates, Rust's libraries, for various hardware abstractions and middleware, further contributes to Rust's suitability for embedded applications.
+
+The traditional language of choice in this field has been C, thus it is customary to compare these two languages. Rust is a much younger language and as a result, it provides native support for many of the now ubiquitous features, such as error handling, package management, and generics, that programmers expect from any language, but the fundamentals are the most important aspects for embedded
+\begin{itemize}
+    \item \textbf{Memory Safety:} Rust's ownership model ensures memory safety at compile time, virtually eliminating common bugs such as buffer overflows and null pointer dereferences.
+    \item \textbf{Concurrency:} Rust's approach to concurrency, based on the ownership and borrowing principles, allows developers to write inherently safe concurrent code without the typical risks of data races. While primarily developed for multi-threaded applications, this checking is also applicable to interrupts.
+\end{itemize}
+
+Additionally, it provides tools for code and library management, which traditionally needed to provided separately. The use of Cargo for dependency management and builds, along with Rust's built-in testing and documentation tools, modernizes the embedded development process.
+
+However, being a new language is the source of its main objective drawbacks as well, including
+\begin{itemize}
+    \item \textbf{Steep Learning Curve:} Rust's strict compiler and its concepts of ownership and borrowing can be challenging for new users, particularly those familiar with the more forgiving nature of C.
+    \item \textbf{Ecosystem Maturity:} While growing rapidly, the ecosystem for embedded development in Rust is less mature than C's, which has decades of accumulated libraries and tools.
+\end{itemize}
+
+\section{Frameworks in Rust for Embedded Systems}
+Rust's ecosystem includes several frameworks designed to leverage its safety features and performance in embedded contexts. Notable among these are RTIC, which offers a real-time concurrency model, and Tock, an operating system for microcontrollers. These frameworks demonstrate Rust's capability to support both bare-metal applications and more complex operating system environments on embedded devices.
+
+Embassy stands out as an advanced async/await executor tailored for embedded systems, facilitating the writing of asynchronous, non-blocking applications. It supports a variety of hardware platforms, among others including STM32 and NRF families, and peripherals, making it a versatile choice for developers looking to leverage modern Rust features in their embedded projects.
+
+\begin{itemize}
+    \item \textbf{Asynchronous Programming:} Embassy utilizes Rust's async/await syntax, simplifying the management of complex asynchronous operations and improving code clarity and maintainability.
+    \item \textbf{Efficiency:} By enabling non-blocking programming models, Embassy helps optimize resource usage and power efficiency, which is crucial for battery-powered or energy-sensitive applications. All this is possible without the overhead of threads, since async/await is cooperative, much like many applications written in C for embedded.
+    \item \textbf{Scalability:} The design of Embassy allows it to scale from small, single-core microcontrollers to more complex multi-core processors, supporting a wide range of application requirements.
+\end{itemize}
+
 

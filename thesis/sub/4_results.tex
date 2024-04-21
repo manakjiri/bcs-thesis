@@ -36,7 +36,7 @@ The board is only populated on the front side \ref{board:v0.1-components}, to al
 
 To stay compatible with low-cost manufacturing options, conservative parameters were picked when it comes to minimal clearance, trace width and drill size. No density-increasing technologies, such as blind or buried vias, via-in-pad, micro-via, etc. were not employed either. 
 
-These parameters are summarized in the following Table \ref{table:board-limits} and were enforced by the Design Rule Checker throughout the project.
+These parameters are summarized in the following Table \ref{table:board-limits} and were enforced by the Design Rule Checker (DRC) throughout the project.
 
 \begin{table}[H]
 \begin{center}
@@ -53,7 +53,7 @@ These parameters are summarized in the following Table \ref{table:board-limits} 
 \end{center}
 \end{table}
 
-Being only 4 layers, the traces needed to be routed in densely and well-throughout manner, attempting to minimize the number of relatively large vias required. For this reason, the module's external connection signal assignments were decided only near the end of the design stage conforming mostly to the existing pin locations on the MCU itself.
+Being only 4 layers, the traces needed to be routed in densely and well thought-out manner, attempting to minimize the number of relatively large vias required. For this reason, the module's external connection signal assignments were decided only near the end of the design stage conforming mostly to the existing pin locations on the MCU itself.
 
 The final pad assignments
 
