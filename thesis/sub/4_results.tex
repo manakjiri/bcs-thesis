@@ -15,9 +15,9 @@ Of note is the selection of the main clock source for the MCU \ref{section:mcu}.
     removes layout constraints.
 \end{itemize}
 
-This aspect was not considered carefully enough during the parts selection, the recommended NX2016SA series crystal oscillator was selected for the power savings and reduced cost. The selected programming framework embassy, and lora-rs in particular (expanded upon in Appendix \ref{chapter:rust}), only correctly supported the use of an TCXO, at the time of the prototype bring-up. This led to an ad-hoc modification of the module and the addition of the Abracon ATX-11-F series TCXO to fix this issue.
+This aspect was not considered carefully enough during the parts selection, the recommended NX2016SA series crystal oscillator was selected for the power savings and reduced cost. However, the selected programming framework embassy, and the library lora-rs in particular (expanded upon in Appendix \ref{chapter:rust}), only correctly supported the use of an TCXO, at the time of the prototype bring-up. This led to an ad-hoc modification of the module and the addition of the Abracon ATX-11-F series TCXO to fix this issue.
 
-All other aspects of the MCU integration were executed according to the application notes (cite), the datasheet and closely followed the implementations of the reference design and the nucleo development kit. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
+All other aspects of the MCU integration were executed according to the application notes (cite) and the datasheet, while closely following the implementations of the reference design and the nucleo development kit. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
 
 Another consideration was the implementation of the switchable power rail VDD\_SW. This rail taps off the main power rail of the rest of the module, any disruption could cause a glitch or trigger the BOR protection circuitry. It is thus necessary to limit the inrush current caused by this rail's switch-on and subsequent charging of any local capacitances.
 
@@ -50,12 +50,12 @@ These parameters are summarized in the following Table \ref{table:board-limits} 
 \caption{\label{table:board-limits}Board layout physical limits}
     \begin{tabular}{|l|l|} \hline
     \textbf{Parameter}          & \textbf{Dimension} \\ \hline
-    Minimum trace clearance & $0.150~\mathrm{mm}$ \\ \hline
-    Minimum trace width & $0.150~\mathrm{mm}$ \\ \hline
-    Minimum via width & $0.300~\mathrm{mm}$ \\ \hline
-    Hole to trace clearance & $0.254~\mathrm{mm}$ \\ \hline
-    Hole to hole clearance & $0.500~\mathrm{mm}$ \\ \hline
-    Board edge to trace clearance & $0.150~\mathrm{mm}$ \\ \hline
+    Minimum trace clearance & $0.15~\mathrm{mm}$ \\ \hline
+    Minimum trace width & $0.15~\mathrm{mm}$ \\ \hline
+    Minimum via width & $0.3~\mathrm{mm}$ \\ \hline
+    Hole to trace clearance & $0.3~\mathrm{mm}$ \\ \hline
+    Hole to hole clearance & $0.5~\mathrm{mm}$ \\ \hline
+    Board edge to trace clearance & $0.15~\mathrm{mm}$ \\ \hline
     \end{tabular}
 \end{center}
 \end{table}
@@ -64,8 +64,8 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 
 \subsection{Final module specification}
 \begin{figure}
-    \includegraphics[width=.45\textwidth]{img/module-v0.1.jpg}
-    \caption{\label{fig:module-v0.1}Image of the manufactured and fully assembled module}
+    \includesvg[width=.75\textwidth]{img/module-v0.1.drawio.svg}
+    \caption{\label{fig:module-v0.1}Image of the manufactured and fully assembled module with overlay highlighting its functional parts}
 \end{figure}
 
 \begin{table}[H]
@@ -110,3 +110,8 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
     \end{tabular}
 \end{center}
 \end{table}
+
+\section{Soil moisture sensor design}
+
+\section{Over The Air update implementation}
+

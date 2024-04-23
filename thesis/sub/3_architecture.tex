@@ -138,12 +138,12 @@ A 4 layer reference design was selected because it is anticipated it will allow 
 
 In conclusion, the MCU choice is a culmination of tradeoffs, where the prevention of mistakes, efficiency and familiarity were more important than the absolute performance and cost. This should not in any way hamper further improvements in succeeding versions of this hardware, while allowing the completion of Proof-of-Concept stages of this project. 
 
-\subsection{Power}
+\subsection{Power regulation and standby mode solution}
 The selected MCU supports wide input voltage of $2\text{--}3.6~\mathrm{V}$ thanks to its internal voltage regulation. It supports two modes - LDO, which does not require any additional external component at the cost of lower efficiency and the SMPS mode, utilizing a synchronous buck regulator, which is more efficient - this application will therefor attempt to implement the latter.
 
 A separate, switchable power-rail is a feature deemed necessary by some considered applications in \ref{section:application-case-studies}. This can be achieved using a built-in MOSFET - such power rail could be used to save power even by powering off some parts of the module itself.
 
-\subsection{Non-volatile memory}
+\subsection{Integrated non-volatile memory}
 As outlined in the OTA update support section \ref{section:ota-update-support}, an external memory is needed to store the application binary during the download process. This memory does not need to be non-volatile, but since it is comparatively cheaper than RAM and provides a backup in case of a power loss, the choice is apparent.
 
 LoRa data rates are in the realm of 100--1000 bytes per second, even less in real-world applications, thus basically any available interface can be used. The capacity needs to be at-least equal to the built-in FLASH memory of the MCU \ref{section:mcu}, which is $256~\mathrm{kB}$.
@@ -153,11 +153,11 @@ The SST26VF080A $8~\mathrm{Mb}$ FLASH memory was selected. It is available in th
 \subsection{\label{section:antenna}Antenna}
 In the initial module requirements \ref{section:final-requirements} it was deemed preferable to integrate the antenna onto the module itself. This should not, however, compromise on the usability and performance of the module. 
 
-In general, there are two approaches for integrated antennae - a trace antenna constructed using the PCB directly, or an antenna in the form of a solderable component, such as an ceramic chip antenna. If the board space is limited, the performance is insufficient or the use of an integrated antenna is prohibited by any other limitation, the application must resort to an external antenna connected to the RF circuitry through a coaxial cable. The table \ref{table:antenna-solutions} provides a good summary.
+In general, there are two approaches for integrated antennae - a trace antenna constructed using the PCB directly, or an antenna in the form of a solderable component, such as an ceramic chip antenna. If the board space is limited, the performance is insufficient or the use of an integrated antenna is prohibited by any other limitation, the application must resort to an external antenna connected to the RF circuitry through a coaxial cable. The table \ref{table:antenna-solutions} provides a summary.
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:antenna-solutions}Advantages and Disadvantages of different antenna solutions \cite{andersen_selecting_2008}}
+\caption{\label{table:antenna-solutions}Summary of advantages and disadvantages of different antenna solutions according to \cite{andersen_selecting_2008}}
     \begin{tabular}{|l|l|l|}
     \hline
     \textbf{Antenna types} & \textbf{Advantages} & \textbf{Disadvantages} \\
@@ -169,8 +169,8 @@ In general, there are two approaches for integrated antennae - a trace antenna c
     Chip antenna & Small size,                   & Medium performance, \\
                  & Off-the-shelf solution        & Medium cost \\
     \hline
-    Whip antenna & Good performance,             & High cost, \\
-                 & Off-the-shelf solution        & Large size \\
+    Whip (external)& Good performance,           & High cost, \\
+    antenna        & Off-the-shelf solution      & Large size \\
     \hline
     \end{tabular}
 \end{center}
@@ -182,7 +182,7 @@ At this point in the design process, the module proportions, derived from the in
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:pcb-parameters}Approximate PCBWay manufacturer stackup parameters \cite{pcbway_stackup_2024}}
+\caption{\label{table:pcb-parameters}PCBWay manufacturer stackup parameters \cite{pcbway_stackup_2024}}
     \begin{tabular}{|l|l|} \hline
     \textbf{Parameter}            & \textbf{Value} \\ \hline
     Stackup thickness             & $1.6~\mathrm{mm}$ \\ \hline
@@ -238,9 +238,9 @@ As outlined in \ref{table:antenna-solutions}, the chip antenna is another logica
 
 There is a large selection of these antennae on the market, mainly targeted at the very common bands, such as $2.4~\mathrm{GHz}$ and $5~\mathrm{GHz}$, but solutions for the $868~\mathrm{MHz}$ frequency range are also not hard to come by \cite{digikey_rf_2024,mouser_europe_868_2024}.
 
-Omnidirectional, size, groundplane, cost
+The search was narrowed by focusing on omnidirectional and linearly polarized antennae of small size and straightforward implementation guidelines. Cost also played a factor, since many solutions, although good, would make the design unfeasible.
 
-50 ohm, linear
+The following Table \ref{table:antenna-chip} features the main candidates that were picked. All have $50~\mathrm{\Omega}$ impedance and satisfy the above criteria.
 
 %https://cz.mouser.com/datasheet/2/418/9/ENG_DS_ant_868_hexx_A-3237873.pdf
 %https://datasheets.kyocera-avx.com/ethertronics/AVX-E_M620720.pdf
@@ -261,6 +261,9 @@ Omnidirectional, size, groundplane, cost
     \end{tabular}
 \end{center}
 \end{table}
+
+\subsubsection{External antenna}
+
 
 \subsection{Conclusion}
 During the component selection phase, the requirements set in \ref{section:final-requirements} were continually assessed and successfully met. One major compromise was made with the antenna selection, where the design needed to resort to an externally connected antenna dut to the size and application constraints. This choice however should ensure that the potential for problems arising during prototype stages should be limited.
