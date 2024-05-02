@@ -1,2 +1,5 @@
 cartopy
 scipy
+numpy
+matplotlib
+pandas

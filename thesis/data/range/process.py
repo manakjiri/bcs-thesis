@@ -31,6 +31,7 @@ def get_elevation(lat, lon):
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('command', type=str, help='Command to execute', choices=['elevation', 'coordinates'])
 parser.add_argument('data', type=str, help='Path to data directory')
 parser.add_argument('--key', type=str, help='mapy.cz API key')
 parser.add_argument('--relief', action='store_true', help='Plot relief instead of elevation')
@@ -40,7 +41,7 @@ DATA_BASE = Path(args.data)
 CACHE = Path('cache.pkl')
 RESOLUTION = 5 # meters
 STATION_HEIGHTS = [0.1, 0.5, 1.0]
-CAR_HEIGHT = 1.5
+CAR_HEIGHT = 1.65
 
 def main():
     # Load data
@@ -51,10 +52,17 @@ def main():
     lats = data['lat']
     lons = data['lon']
 
+    # plot coordinates
+    if args.command == 'coordinates':
+        plt.figure(figsize=(10, 10))
+        for i, (lat, lon) in zip(ins, zip(lats, lons)):
+            plt.scatter(lon, lat, label=f'{i}')
+            plt.text(lon, lat, f'{i}')
+        plt.show()
+        return
+
     globe = cgeo.Geodesic()
-
     paths = {}
-
     gen = zip(ins, zip(lats, lons))
     base_i, (base_lat, base_lon) = next(gen)
     for i, (lat, lon) in gen:
@@ -70,42 +78,37 @@ def main():
         dists = interp1d([base_i, i], [0, dist])(ins_smooth)
         paths[i] = (elvs, dists, lat, lon)
 
-    ## plot coordinates
-    #plt.figure(figsize=(10, 10))
-    #plt.plot(lons, lats, 'o', label='Original data')
-    #plt.plot(lon_smooth, lat_smooth, label='Interpolated data')
-    #plt.legend()
-    #plt.show()
-
-    if args.relief:
-        last_path = paths[max(paths.keys(), key=lambda p: len(paths[p][0]))][0]
-        corr = np.linspace(last_path[0], last_path[-1], num=len(last_path))
-
     # plot elevation
-    plt.figure(figsize=(10, 5))
-    colors = np.concatenate([
-        plt.colormaps["Dark2"](np.linspace(0, 1, 8)), 
-        plt.colormaps["Set1"](np.linspace(0, 1, 9))
-    ])
-    
-    for i, (elvs, dists, lat, lon) in paths.items():
+    if args.command == 'elevation':
+        plt.figure(figsize=(10, 5))
+        colors = np.concatenate([
+            plt.colormaps["Dark2"](np.linspace(0, 1, 8)),
+            plt.colormaps["Set1"](np.linspace(0, 1, 9))
+        ])
+
         if args.relief:
-            elvs -= corr[:len(elvs)]
-        plt.plot(dists, elvs, label=f'{i}', color=colors[i])
-        plt.axvline(dists[-1], color='grey', linestyle='--', alpha=0.5)
-        plt.text(dists[-1] + 5, elvs[-1], f'{i}')
-        plt.scatter(dists[-1], elvs[-1], color='black', marker='2', s=150)
+            last_path = paths[max(paths.keys(), key=lambda p: len(paths[p][0]))][0]
+            corr = np.linspace(last_path[0], last_path[-1], num=len(last_path))
+        
+        for i, (elvs, dists, lat, lon) in paths.items():
+            if args.relief:
+                elvs -= corr[:len(elvs)]
+            
+            plt.plot(dists, elvs, label=f'{i}', color=colors[i])
+            plt.axvline(dists[-1], color='grey', linestyle='--', alpha=0.5)
+            plt.text(dists[-1] + 5, elvs[-1], f'{i}')
+            plt.scatter(dists[-1], elvs[-1], color='black', marker='2', s=150)
 
-        for h in STATION_HEIGHTS:
-            plt.plot([dists[0], dists[-1]], [elvs[0] + h, elvs[-1] + CAR_HEIGHT], color=colors[i], linestyle='--', alpha=0.5)
+            for h in STATION_HEIGHTS:
+                plt.plot([dists[0], dists[-1]], [elvs[0] + h, elvs[-1] + CAR_HEIGHT], color=colors[i], linestyle='--', alpha=0.5)
 
-    
-    #plt.legend()
-    plt.xlabel('Transmitting distance [m]')
-    plt.ylabel('Relief' if args.relief else 'Elevation [m]')
-    plt.tight_layout()
-    plt.savefig(f'elevation-{DATA_BASE.stem}.svg')
-    plt.show()
+        #plt.legend()
+        plt.xlabel('Transmitting distance [m]')
+        plt.ylabel('Relief' if args.relief else 'Elevation [m]')
+        plt.tight_layout()
+        plt.savefig(f'elevation-{DATA_BASE.stem}.svg')
+        plt.show()
+        return
 
 
 if __name__ == '__main__':
