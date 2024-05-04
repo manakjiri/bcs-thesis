@@ -8,6 +8,21 @@ import pickle
 import requests
 import cartopy.geodesic as cgeo
 
+parser = argparse.ArgumentParser()
+parser.add_argument('command', type=str, help='Command to execute', choices=['elevation', 'coordinates'])
+parser.add_argument('data', type=str, help='Path to data directory')
+parser.add_argument('--key', type=str, help='mapy.cz API key')
+parser.add_argument('--relief', action='store_true', help='Plot relief instead of elevation')
+parser.add_argument('--lines', action='store_true', help='Plot line of sight lines')
+parser.add_argument('--only', type=str, help='Only process these stations, format "1,2,3"')
+args = parser.parse_args()
+
+DATA_BASE = Path(args.data)
+CACHE = Path('cache.pkl')
+RESOLUTION = 5 # meters
+STATION_HEIGHTS = [0.1, 0.5, 1.0]
+CAR_HEIGHT = 1.65
+
 def get_elevation(lat, lon):
     lat, lon = round(lat, 6), round(lon, 6)
     if CACHE.exists():
@@ -29,20 +44,6 @@ def get_elevation(lat, lon):
 
     return e
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument('command', type=str, help='Command to execute', choices=['elevation', 'coordinates'])
-parser.add_argument('data', type=str, help='Path to data directory')
-parser.add_argument('--key', type=str, help='mapy.cz API key')
-parser.add_argument('--relief', action='store_true', help='Plot relief instead of elevation')
-args = parser.parse_args()
-
-DATA_BASE = Path(args.data)
-CACHE = Path('cache.pkl')
-RESOLUTION = 5 # meters
-STATION_HEIGHTS = [0.1, 0.5, 1.0]
-CAR_HEIGHT = 1.65
-
 def main():
     # Load data
     data = pd.read_csv(DATA_BASE / 'locations.csv')
@@ -51,6 +52,11 @@ def main():
     ins = data['i']
     lats = data['lat']
     lons = data['lon']
+
+    if args.only:
+        ins = [int(i) for i in args.only.split(',')]
+        lats = [l for i, l in zip(data['i'], data['lat']) if i in ins]
+        lons = [l for i, l in zip(data['i'], data['lon']) if i in ins]
 
     # plot coordinates
     if args.command == 'coordinates':
@@ -90,19 +96,29 @@ def main():
             last_path = paths[max(paths.keys(), key=lambda p: len(paths[p][0]))][0]
             corr = np.linspace(last_path[0], last_path[-1], num=len(last_path))
         
+        for h in STATION_HEIGHTS:
+            plt.scatter(0, (0 if args.relief else list(paths.values())[0][0][0]) + h, color='black', marker='+', s=150)
+        
         for i, (elvs, dists, lat, lon) in paths.items():
             if args.relief:
                 elvs -= corr[:len(elvs)]
             
             plt.plot(dists, elvs, label=f'{i}', color=colors[i])
             plt.axvline(dists[-1], color='grey', linestyle='--', alpha=0.5)
-            plt.text(dists[-1] + 5, elvs[-1], f'{i}')
-            plt.scatter(dists[-1], elvs[-1], color='black', marker='2', s=150)
 
-            for h in STATION_HEIGHTS:
-                plt.plot([dists[0], dists[-1]], [elvs[0] + h, elvs[-1] + CAR_HEIGHT], color=colors[i], linestyle='--', alpha=0.5)
+            if args.lines:
+                for h in STATION_HEIGHTS:
+                    plt.plot([dists[0], dists[-1]], [elvs[0] + h, elvs[-1] + CAR_HEIGHT], color=colors[i], linestyle='--', alpha=0.5)
+        
+        for i, (elvs, dists, lat, lon) in paths.items():
+            if args.relief:
+                elvs -= corr[:len(elvs)]
 
-        #plt.legend()
+            plt.text(dists[-1] + 5, elvs[-1] + 0.1 + CAR_HEIGHT, f'{i}')
+            plt.scatter(dists[-1], elvs[-1] + CAR_HEIGHT, color='black', marker='+', s=150)
+            plt.scatter(dists[-1], elvs[-1], color='black', marker='o', s=50)
+
+        plt.legend()
         plt.xlabel('Transmitting distance [m]')
         plt.ylabel('Relief' if args.relief else 'Elevation [m]')
         plt.tight_layout()
