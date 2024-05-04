@@ -115,4 +115,45 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 \section{Soil moisture sensor design}
 
 \section{Over The Air update implementation}
+It is the responsibility of the update process to securely and reliably transfer the binary image of the firmware from the host computer through the Gateway to the designated Node (sensor) of the network. This task is complicated by the limited resources available on embedded devices and the slow and sometimes unreliable nature of the wireless connection in general.
+
+\subsection{Data fragmentation}
+The binary needs to be fragmented in order to be transmitted piece by piece. To guarantee the assembly of these fragments on the Node, an acknowledge mechanism must be present along with a way to detect errors in the transferred data. While the LoRa physical layer provides forward error correction and also up to a 16 bit CRC checksum, the error rate is from experience still too high to be practical. To tackle this, a custom 32 bit CRC was used to protect each fragment together with a SHA256 hash of the whole assembled binary, which is calculated as the last step in the update process.
+
+\begin{figure}
+    \includesvg[width=0.9\textwidth]{fig/ota-algo.drawio.svg}
+    \caption{\label{fig:ota-algo}Simplified flowchart depicting the Over The Air update communication process between the Gateway and the Node}
+\end{figure}
+
+Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \href{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \lstinline|enum OtaPacket|. Packets are serialized and deserialized using the postcard Rust package.
+
+\subsection{ACK mechanism}
+The Automatic Repeat Request (ARQ) mechanism is inspired by Selective Repeat ARQ. The receiver is able to accept frames that are out of order and selectively requests missing or corrupted blocks, but the acknowledge (ACK) packet contains up to 32 indexes of blocks that were successfully received. 
+
+Likewise, the transmitter does not expect to receive ACK packets consistently and continues to transmit in order for up to 16 unACKed frames. The receiver is thus able to relax the rate of ACK packets to reduce the air time usage. Since the transmitter is not attempting to use the maximum available channel capacity, it transmits about one packet per second, it does not need the immediate response to measure latency.
+
+\section{Range test}
+In order to determine the real-world performance, a range test was conducted. Primary points of interest are
+\begin{itemize}
+    \item maximum practically usable range of the solution and connection quality deterioration as the distance and occlusion increases,
+    \item performance of the designed module compared with the Nucleo development board as reference,
+    \item the effect of proximity of the antenna to the ground and
+    \item the effect of the spreading factor (SF) modulation parameter.
+\end{itemize}
+
+All testing so far was done in home environment with nodes in close proximity and no major packet loss could be observed. Given the relatively low experience in RF design however, it is expected the module will perform worse than the Nucleo board.
+
+With increasing spreading factor, the symbol time increases and the link budget goes with it, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
+
+Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{fig/semtech-sf-table.png}
+    \caption{\label{table:semtech-sf}Range of Spreading Factors (SF)}
+\end{figure}
+
+\subsection{Hypothesis}
+It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. It is not expected to surpass $1~\mathrm{km}$ range.
+
+\subsection{Methodology}
 

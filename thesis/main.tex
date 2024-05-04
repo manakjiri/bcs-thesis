@@ -11,6 +11,7 @@
 \usepackage{svg}
 \usepackage{placeins}
 \usepackage[capposition=bottom]{floatrow}
+\usepackage{listings}
 
 \PassOptionsToPackage{hyphens}{url}
 \usepackage[pdftex,
@@ -70,6 +71,8 @@
 		\ctutemplate{twocolumn.listoffigures}
 	\end{twocolumnfrontmatterpage}
 }
+
+\newcommand{\code}[1]{\verb|#1|}
 
 \setlength{\parskip}{1.5ex plus 0.2ex minus 0.1ex}
 
