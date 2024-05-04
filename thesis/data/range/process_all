@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for dir in sf*; do
+    python process.py elevation $dir --relief --no-show
+    python process.py elevation $dir --no-show
+    python process.py success $dir --no-show
+done
