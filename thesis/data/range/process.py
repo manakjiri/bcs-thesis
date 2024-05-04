@@ -134,8 +134,14 @@ def main():
         #m.shadedrelief()
         #m.bluemarble()
         for i, (lat, lon) in zip(ins, zip(lats, lons)):
+            lat, lon = round(lat, 6), round(lon, 6)
             ax1.scatter(lon, lat, label=f'{i}', color=colors[i])
             ax1.text(lon, lat, f'{i}')
+
+        ax1.set_xlabel('Longitude [°]')
+        ax1.set_ylabel('Latitude [°]')
+        ax1.ticklabel_format(useOffset=False)
+        ax1.grid()
 
         if args.relief:
             last_path = paths[max(paths.keys(), key=lambda p: len(paths[p][0]))][0]
@@ -163,9 +169,10 @@ def main():
             ax2.scatter(dists[-1], elvs[-1] + CAR_HEIGHT, color='black', marker='+', s=150)
             ax2.scatter(dists[-1], elvs[-1], color='black', marker='o', s=50)
 
-        plt.legend()
-        plt.xlabel('Transmitting distance [m]')
-        plt.ylabel('Relief' if args.relief else 'Elevation [m]')
+        ax2.legend(loc='upper left', ncols=3)
+        ax2.set_xlabel('Transmitting distance [m]')
+        ax2.set_ylabel('Relief' if args.relief else 'Elevation [m]')
+        ax2.grid()
         plt.tight_layout()
         plt.savefig(OUT_BASE / f'{"relief" if args.relief else "elevation"}-{name}.svg')
         if not args.no_show:

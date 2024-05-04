@@ -15,7 +15,14 @@ Of note is the selection of the main clock source for the MCU \ref{section:mcu}.
     removes layout constraints.
 \end{itemize}
 
-This aspect was not considered carefully enough during the parts selection, the recommended NX2016SA series crystal oscillator was selected for the power savings and reduced cost. However, the selected programming framework embassy, and the library lora-rs in particular (expanded upon in Appendix \ref{chapter:rust}), only correctly supported the use of an TCXO, at the time of the prototype bring-up. This led to an ad-hoc modification of the module and the addition of the Abracon ATX-11-F series TCXO to fix this issue.
+This aspect was not considered carefully enough during the parts selection, the recommended NX2016SA series crystal oscillator was selected for the power savings and reduced cost. However, the selected programming framework embassy, and the library lora-rs in particular (expanded upon in Appendix \ref{chapter:rust}), only correctly supported the use of an TCXO, at the time of the prototype bring-up. This led to an ad-hoc modification \ref{fig:tcxo-bodge} of the module and the addition of the Abracon ATX-11-F series TCXO to fix this issue.
+
+\begin{figure}
+    \centering
+    \subfloat[top view]{\includegraphics[width=.30\textwidth]{img/tcxo-bodge1.jpg}} \hfil
+    \subfloat[side view]{\includegraphics[width=.30\textwidth]{img/tcxo-bodge2.jpg}}
+    \caption{\label{fig:tcxo-bodge}The ad-hoc TCXO modification on the LoRa module}
+\end{figure}
 
 All other aspects of the MCU integration were executed according to the application notes (cite) and the datasheet, while closely following the implementations of the reference design and the nucleo development kit. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
 
@@ -120,7 +127,7 @@ It is the responsibility of the update process to securely and reliably transfer
 \subsection{Data fragmentation}
 The binary needs to be fragmented in order to be transmitted piece by piece. To guarantee the assembly of these fragments on the Node, an acknowledge mechanism must be present along with a way to detect errors in the transferred data. While the LoRa physical layer provides forward error correction and also up to a 16 bit CRC checksum, the error rate is from experience still too high to be practical. To tackle this, a custom 32 bit CRC was used to protect each fragment together with a SHA256 hash of the whole assembled binary, which is calculated as the last step in the update process.
 
-\begin{figure}
+\begin{figure}[p]
     \includesvg[width=0.9\textwidth]{fig/ota-algo.drawio.svg}
     \caption{\label{fig:ota-algo}Simplified flowchart depicting the Over The Air update communication process between the Gateway and the Node}
 \end{figure}
@@ -145,15 +152,58 @@ All testing so far was done in home environment with nodes in close proximity an
 
 With increasing spreading factor, the symbol time increases and the link budget goes with it, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
 
-Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
-
-\begin{figure}
+\begin{figure}[H]
     \includegraphics[width=\textwidth]{fig/semtech-sf-table.png}
     \caption{\label{table:semtech-sf}Range of Spreading Factors (SF)}
 \end{figure}
 
+Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
+
 \subsection{Hypothesis}
-It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. It is not expected to surpass $1~\mathrm{km}$ range.
+It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
+
+\subsection{Prerequisite}
+The maximum achievable SF needed to be determined. This was done experimentally, starting with SF5 and incrementing util it was no longer possible to transfer data. This test was conducted using Nucleo acting as the initiator of connection with the LoRa module. Devices were situated on a desk about 1.5 meters apart with their antennae positioned orthogonally in respect to each other to avoid overwhelming the receiver. All other parameters are identical to those used in the latter experiment.
+
+The connection was stable at SF11, but at SF12 the LoRa module stopped responding, thus the experiment was done at SF5 and SF11, which corresponds to a theoretical delta of $15~\mathrm{dB}$.
 
 \subsection{Methodology}
+All LoRa modulation and packet parameters were set in firmware (commit \href{https://github.com/manakjiri/lora-module-fw/tree/76acdcd7b31f259c88f1808ed79886dc26295b4e}{76acdcd}) identically for all devices used, a summary is provided in Table \ref{table:range-test-parameters}. 
+
+\begin{table}[H]
+\begin{center}
+\caption{\label{table:range-test-parameters}LoRa parameters for range testing}
+    \begin{tabular}{|l|l|} \hline
+    Frequency             & $869.525~\mathrm{MHz}$\\ \hline
+    RF power output       & $15~\mathrm{dB}$\\ \hline
+    Bandwidth             & $250~\mathrm{kHz}$\\ \hline
+    Coding rate           & $4:8$ (2x overhead) \\ \hline
+    Bandwidth             & $250~\mathrm{kHz}$\\ \hline
+    Preamble length       & $32~\mathrm{b}$\\ \hline
+    Implicit header       & No\\ \hline
+    LoRa CRC              & No\\ \hline
+    Inverted IQ           & No\\ \hline
+    Transmit boost        & No\\ \hline
+    Receive boost         & No\\ \hline
+    \end{tabular}
+\end{center}
+\end{table}
+
+LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their stock antenna, all were close to vertical orientation. A pole with two LoRa modules and one Nucleo was constructed to act as the stationary set of nodes to test against.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=.9\textwidth]{img/lora-pole.jpg}\vspace{1em}
+    \includegraphics[width=.25\textwidth]{img/range-pole-base.jpg}\hfil
+    \includegraphics[width=.25\textwidth]{img/range-pole-bottom.jpg}\hfil
+    \includegraphics[width=.24\textwidth]{img/range-pole-top.jpg}
+    \caption{\label{fig:range-nodes}Close-up of the pole with nodes attached for range testing}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=.35\textwidth]{img/range-gateway1.jpg}\hfil
+    \includegraphics[width=.25\textwidth]{img/range-gateway2.jpg}
+    \caption{\label{fig:range-gateway}Close-up of Nucleo attached to the car acting as the Gateway for range testing}
+\end{figure}
 
