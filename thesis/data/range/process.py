@@ -64,6 +64,11 @@ def main():
     lats = data['lat']
     lons = data['lon']
 
+    colors = np.concatenate([
+        plt.colormaps["Dark2"](np.linspace(0, 1, 8)),
+        plt.colormaps["Set1"](np.linspace(0, 1, 9))
+    ])
+
     globe = cgeo.Geodesic()
     paths = {}
     gen = zip(ins, zip(lats, lons))
@@ -90,7 +95,7 @@ def main():
             spot = int(path.stem.split('-')[0])
             node = int(path.stem.split('-')[1])
             print(f'Processing spot {spot} node {node}')
-            
+            success[spot]['spot'] = spot
             try:
                 data = pd.read_csv(path)
                 success[spot][node] = round(data['acked'].array[-1] / data['txed'].array[-1] * 100)
@@ -101,18 +106,32 @@ def main():
 
         success = pd.DataFrame.from_dict(success, orient='index')
         success.to_csv(OUT_BASE / f'success-{name}.csv', index_label='spot')
+        latex_path = OUT_BASE / f'success-{name}.tex'
+        latex = '\\begin{tabular}{|l|l|l|l|}\n'
+        latex += '\\multicolumn{4}{c}{\\textbf{' + name.upper() + '}} \\\\ \\hline \n'
+        header = ['\\textbf{Spot}'] + ['\\textbf{' + f'Node {i}' + '}' for i in success.columns if str(i).isdigit()]
+        latex += ' & '.join(header) + ' \\\\ \\hline\n'
+        for i, row in success.iterrows():
+            latex += ' & '.join(map(str, row.values)) + ' \\\\ \\hline\n'
+        latex += '\\end{tabular}\n'
+        #success.to_latex(latex_path, header=header, column_format='|l|' + 'l|' * len(success.columns), index=False)
+        #latex = latex_path.read_text().replace('\\\\', '\\\\ \\hline')
+        #latex = latex.replace('\\midrule', '').replace('toprule', 'hline').replace('\\bottomrule', '')
+        latex_path.write_text(latex)
 
-        fig, ax = plt.subplots(figsize=(15, 5))
+        fig, ax = plt.subplots(figsize=(9, 3))
+        plt.grid(axis='y', zorder=0, linestyle='--')
         for i, (node, data) in enumerate(success.items()):
+            if node == 'spot':
+                continue
             dists = [0] + [p[1][-1] for p in paths.values()]
             #ax.plot(dists, data, label=f'Node {node}')
-            ax.bar(np.arange(len(data)) + i * 0.2, data + 0.1, width=0.15, label=f'Node {node}')
+            ax.bar(np.arange(len(data)) + i * 0.2, data + 0.1, width=0.15, label=f'Node {node}', zorder=3, color=colors[i-1])
 
         ax.set_ylim(0, 105)
         ax.set_xticks(np.arange(len(data)) + 0.2)
         ax.set_xticklabels([round(d) for d in dists])
         ax.set_yticks([0, 25, 50, 75, 90, 95, 100])
-        plt.grid(axis='y')
         plt.xlabel('Transmitting distance [m]')
         plt.ylabel('Success rate [%]')
         plt.legend(loc='lower left')
@@ -124,11 +143,7 @@ def main():
 
     # plot elevation
     if args.command == 'elevation':
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5), width_ratios=[1, 2])
-        colors = np.concatenate([
-            plt.colormaps["Dark2"](np.linspace(0, 1, 8)),
-            plt.colormaps["Set1"](np.linspace(0, 1, 9))
-        ])
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 3), width_ratios=[1, 2])
 
         #m = Basemap(ax=ax1, llcrnrlat=min(lats) - 0.01, urcrnrlat=max(lats) + 0.01, llcrnrlon=min(lons) - 0.01, urcrnrlon=max(lons) + 0.01, resolution='f')
         #m.shadedrelief()
@@ -169,7 +184,7 @@ def main():
             ax2.scatter(dists[-1], elvs[-1] + CAR_HEIGHT, color='black', marker='+', s=150)
             ax2.scatter(dists[-1], elvs[-1], color='black', marker='o', s=50)
 
-        ax2.legend(loc='upper left', ncols=3)
+        #ax2.legend(loc='upper left', ncols=3)
         ax2.set_xlabel('Transmitting distance [m]')
         ax2.set_ylabel('Relief' if args.relief else 'Elevation [m]')
         ax2.grid()

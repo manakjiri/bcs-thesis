@@ -3,5 +3,6 @@ scipy
 numpy
 matplotlib
 pandas
+Jinja2
 requests
 rasterio

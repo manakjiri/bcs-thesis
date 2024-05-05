@@ -227,3 +227,32 @@ This means that effectively 16 different measurements of the signal quality were
 
 \subsection{Results}
 
+\begin{figure}[H]
+    \centering
+    \subfloat[SF11]{\includesvg[width=\textwidth]{data/range/out/relief-sf11.svg}} \hfil
+    \subfloat[SF5]{\includesvg[width=\textwidth]{data/range/out/relief-sf5.svg}}
+    \caption{\label{fig:range-relief}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \subfloat[SF11]{\includesvg[width=\textwidth]{data/range/out/success-sf11.svg}} \hfil
+    \subfloat[SF5]{\includesvg[width=\textwidth]{data/range/out/success-sf5.svg}}
+    \caption{\label{fig:range-relief}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal}
+\end{figure}
+
+\begin{figure}[H]
+\begin{minipage}[t]{.45\textwidth}
+    \vspace{0pt}
+    \input{data/range/out/success-sf11.tex}
+\end{minipage}
+\begin{minipage}[t]{.45\textwidth}
+    \vspace{0pt}
+    %\begin{table}
+        \input{data/range/out/success-sf5.tex}    
+    %\end{table}
+\end{minipage}
+\caption{\label{table:range-results}Success rates for each node and location at spreading factors 5 and 11}
+\end{figure} 
+
+
