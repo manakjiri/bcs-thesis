@@ -22,7 +22,7 @@ DATA_BASE = Path(args.data)
 OUT_BASE = Path('out')
 CACHE = Path('cache.pkl')
 RESOLUTION = 5 # meters
-STATION_HEIGHTS = [0.1, 0.5, 1.0]
+STATION_HEIGHTS = [0.19, 0.55, 0.82]
 CAR_HEIGHT = 1.65
 
 class ElevationCache:

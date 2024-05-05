@@ -97,7 +97,7 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 \begin{center}
 \caption{\label{table:module-pin-legend}Module pin legend including feature summary.}
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|} \hline
-    \textbf{Name} & \textbf{Pin} & \textbf{TIM} & \textbf{ADC} & \textbf{I2C} & \textbf{SPI} & \textbf{UART} & \textbf{Other}\\ \hline
+    \textbf{Name} & \textbf{Pin} & \textbf{TIM\footnote{Refer to each column following ``Pin'' (excluding ``Other'') as [Column header][Column-row contents], such as ``SPI1\_MOSI'' and so on. Some features were omitted for clarity, for complete list refer to the MCU manufacturer's documentation}} & \textbf{ADC} & \textbf{I2C} & \textbf{SPI} & \textbf{UART} & \textbf{Other}\\ \hline
     1        & PA7  & 17\_1, 1\_1N    &     & 3\_SCL & 1\_MOSI &             & CMP2\_OUT          \\ \hline
     2        & PA6  & 16\_1          &     &       & 1\_MISO &             &                    \\ \hline
     3        & PA4  & L1,2\_OUT      &     &       &        &             & RTC\_OUT2           \\ \hline
@@ -115,7 +115,6 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
     SWCLK/15 & PA14 & L1\_OUT        & 10  &       &        &             &                    \\ \hline
     BOOT0/16 & PH3  &               &     &       &        &             &                    \\ \hline
     \end{tabular}
-\floatfoot{Refer to each column following ``Pin'' (excluding ``Other'') as [Column header][Column-row contents], such as ``SPI1\_MOSI'' and so on. Some features were omitted for clarity, for complete list refer to the MCU manufacturer's documentation}
 \end{center}
 \end{table}
 
@@ -148,7 +147,7 @@ In order to determine the real-world performance, a range test was conducted. Pr
     \item the effect of the spreading factor (SF) modulation parameter.
 \end{itemize}
 
-All testing so far was done in home environment with nodes in close proximity and no major packet loss could be observed. Given the relatively low experience in RF design however, it is expected the module will perform worse than the Nucleo board.
+All testing so far was done in home environment with Nodes in close proximity and no major packet loss could be observed. Given the relatively low experience in RF design however, it is expected the module will perform worse than the Nucleo board.
 
 With increasing spreading factor, the symbol time increases and the link budget goes with it, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
 
@@ -160,7 +159,7 @@ With increasing spreading factor, the symbol time increases and the link budget 
 Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
 
 \subsection{Hypothesis}
-It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
+It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning Nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
 
 \subsection{Prerequisite}
 The maximum achievable SF needed to be determined. This was done experimentally, starting with SF5 and incrementing util it was no longer possible to transfer data. This test was conducted using Nucleo acting as the initiator of connection with the LoRa module. Devices were situated on a desk about 1.5 meters apart with their antennae positioned orthogonally in respect to each other to avoid overwhelming the receiver. All other parameters are identical to those used in the latter experiment.
@@ -189,7 +188,20 @@ All LoRa modulation and packet parameters were set in firmware (commit \href{htt
 \end{center}
 \end{table}
 
-LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their stock antenna, all were close to vertical orientation. A pole with two LoRa modules and one Nucleo was constructed to act as the stationary set of nodes to test against.
+LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their stock antenna, all were close to vertical orientation. A pole with two LoRa modules and one Nucleo (see Figure \ref{fig:range-nodes}) was constructed to act as the stationary set of Nodes to test against. Another Nucleo board was attached to a car (see Figure \ref{fig:range-gateway}) to act as the Gateway, see Table \ref{table:range-test-devices} for more details.
+
+\begin{table}[H]
+\begin{center}
+\caption{\label{table:range-test-devices}Devices used for range testing}
+    \begin{tabular}{|l|l|l|} \hline
+    \textbf{Device} & \textbf{Height\footnote{Measured distance from the root of the antenna to ground level} [m]} & \textbf{Address}\footnote{Data presented will use these addresses to distinguish between the different Nodes used in the experiment} \\ \hline
+    Nucleo (Gateway) & 1.65 & 1 \\ \hline
+    LoRa module (Node) & 0.19 & 2 \\ \hline
+    Nucleo (Node) & 0.55 & 4 \\ \hline
+    LoRa module (Node) & 0.82 & 3 \\ \hline
+    \end{tabular}
+\end{center}
+\end{table}
 
 \begin{figure}[p]
     \centering
@@ -197,7 +209,7 @@ LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their sto
     \includegraphics[width=.25\textwidth]{img/range-pole-base.jpg}\hfil
     \includegraphics[width=.25\textwidth]{img/range-pole-bottom.jpg}\hfil
     \includegraphics[width=.24\textwidth]{img/range-pole-top.jpg}
-    \caption{\label{fig:range-nodes}Close-up of the pole with nodes attached for range testing}
+    \caption{\label{fig:range-nodes}Close-up of the pole with Nodes attached for range testing}
 \end{figure}
 
 \begin{figure}[p]
@@ -206,4 +218,12 @@ LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their sto
     \includegraphics[width=.25\textwidth]{img/range-gateway2.jpg}
     \caption{\label{fig:range-gateway}Close-up of Nucleo attached to the car acting as the Gateway for range testing}
 \end{figure}
+
+A location was picked to represent the final use-case, a field with sections of direct line-of-sight and sections obstructed by hills. This place is situated near Průhonice municipality in the Czech Republic. The pole with Nodes attached was installed at \href{https://en.mapy.cz/letecka?q=50.0012006N%2C%2014.5308962E&x=14.5381677&y=50.0011824&z=16}{50.0012006N, 14.5308961E} (WGS84).
+
+A set of measurements was taken through the Gateway at different locations progressing further from the stationary pole with the Nodes attached. These measurements consisted of downloading a random binary 1 KB file to each of the Nodes consecutively. This file was fragmented on the fly by the OTA update protocol to 16 blocks of 64 bytes each.
+
+This means that effectively 16 different measurements of the signal quality were taken at each location for each of the three Nodes. Measurements were recorded by the system in a CSV file containing the time since download started, the amount of packets sent and the last block that was acknowledged - thus a success rate can be calculated. In case the download failed to initiate, nothing gets recorded and that is interpreted as 0\% success rate.
+
+\subsection{Results}
 
