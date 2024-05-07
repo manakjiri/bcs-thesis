@@ -112,7 +112,7 @@ def main():
         header = ['\\textbf{Spot}'] + ['\\textbf{' + f'Node {i}' + '}' for i in success.columns if str(i).isdigit()]
         latex += ' & '.join(header) + ' \\\\ \\hline\n'
         for i, row in success.iterrows():
-            latex += ' & '.join(map(str, row.values)) + ' \\\\ \\hline\n'
+            latex += ' & '.join([str(row.values[0])] + [f'{v}\\%' for v in row.values[1:]]) + ' \\\\ \\hline\n'
         latex += '\\end{tabular}\n'
         #success.to_latex(latex_path, header=header, column_format='|l|' + 'l|' * len(success.columns), index=False)
         #latex = latex_path.read_text().replace('\\\\', '\\\\ \\hline')
