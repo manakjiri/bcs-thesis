@@ -24,6 +24,7 @@ CACHE = Path('cache.pkl')
 RESOLUTION = 5 # meters
 STATION_HEIGHTS = [0.19, 0.55, 0.82]
 CAR_HEIGHT = 1.65
+PLOT_MARGIN = 0.08
 
 class ElevationCache:
     def __init__(self) -> None:
@@ -50,7 +51,7 @@ class ElevationCache:
 
 def main():
     OUT_BASE.mkdir(exist_ok=True)
-    name = DATA_BASE.stem + ('-' + args.only if args.only else '')
+    name = DATA_BASE.stem + ('-' + args.only if args.only else '') + ('-lines' if args.lines else '')
     # Load data
     data = pd.read_csv(DATA_BASE / 'locations.csv')
     if args.only:
@@ -128,10 +129,11 @@ def main():
             #ax.plot(dists, data, label=f'Node {node}')
             ax.bar(np.arange(len(data)) + i * 0.2, data + 0.1, width=0.15, label=f'Node {node}', zorder=3, color=colors[i-1])
 
-        ax.set_ylim(0, 105)
+        ax.set_ylim(0, 100 * (1 + PLOT_MARGIN))
         ax.set_xticks(np.arange(len(data)) + 0.2)
         ax.set_xticklabels([round(d) for d in dists])
         ax.set_yticks([0, 25, 50, 75, 90, 95, 100])
+        ax.margins(PLOT_MARGIN, PLOT_MARGIN)
         plt.xlabel('Transmitting distance [m]')
         plt.ylabel('Success rate [%]')
         plt.legend(loc='lower left')
@@ -148,15 +150,19 @@ def main():
         #m = Basemap(ax=ax1, llcrnrlat=min(lats) - 0.01, urcrnrlat=max(lats) + 0.01, llcrnrlon=min(lons) - 0.01, urcrnrlon=max(lons) + 0.01, resolution='f')
         #m.shadedrelief()
         #m.bluemarble()
-        for i, (lat, lon) in zip(ins, zip(lats, lons)):
+        for i, (spot, lat, lon) in enumerate(zip(ins, lats, lons)):
+            color = 'black' if int(spot) == 0 else colors[spot-1]
             lat, lon = round(lat, 6), round(lon, 6)
-            ax1.scatter(lon, lat, label=f'{i}', color=colors[i])
-            ax1.text(lon, lat, f'{i}')
+            ax1.scatter(lon, lat, label=f'{spot}', color=color)
+            ax1.text(lon, lat, f'{spot}')
+            if args.lines:
+                ax1.plot([lons[0], lon], [lats[0], lat], color=color, linestyle='--', alpha=0.5)
 
         ax1.set_xlabel('Longitude [°]')
         ax1.set_ylabel('Latitude [°]')
         ax1.ticklabel_format(useOffset=False)
         ax1.grid()
+        ax1.margins(PLOT_MARGIN, PLOT_MARGIN)
 
         if args.relief:
             last_path = paths[max(paths.keys(), key=lambda p: len(paths[p][0]))][0]
@@ -165,22 +171,23 @@ def main():
         for h in STATION_HEIGHTS:
             ax2.scatter(0, (0 if args.relief else list(paths.values())[0][0][0]) + h, color='black', marker='+', s=150)
         
-        for i, (elvs, dists, lat, lon) in paths.items():
+        for i, (spot, (elvs, dists, lat, lon)) in enumerate(paths.items()):
             if args.relief:
                 elvs -= corr[:len(elvs)]
             
-            ax2.plot(dists, elvs, label=f'{i}', color=colors[i])
+            color = 'black' if int(spot) == 0 else colors[spot-1]
+            ax2.plot(dists, elvs, label=f'{spot}', color=color)
             ax2.axvline(dists[-1], color='grey', linestyle='--', alpha=0.5)
 
             if args.lines:
                 for h in STATION_HEIGHTS:
-                    ax2.plot([dists[0], dists[-1]], [elvs[0] + h, elvs[-1] + CAR_HEIGHT], color=colors[i], linestyle='--', alpha=0.5)
+                    ax2.plot([dists[0], dists[-1]], [elvs[0] + h, elvs[-1] + CAR_HEIGHT], color=color, linestyle='--', alpha=0.5)
         
-        for i, (elvs, dists, lat, lon) in paths.items():
+        for i, (spot, (elvs, dists, lat, lon)) in enumerate(paths.items()):
             if args.relief:
                 elvs -= corr[:len(elvs)]
 
-            ax2.text(dists[-1] + 5, elvs[-1] + 0.1 + CAR_HEIGHT, f'{i}')
+            ax2.text(dists[-1] + 5, elvs[-1] + 0.1 + CAR_HEIGHT, f'{spot}')
             ax2.scatter(dists[-1], elvs[-1] + CAR_HEIGHT, color='black', marker='+', s=150)
             ax2.scatter(dists[-1], elvs[-1], color='black', marker='o', s=50)
 
@@ -188,6 +195,7 @@ def main():
         ax2.set_xlabel('Transmitting distance [m]')
         ax2.set_ylabel('Relief' if args.relief else 'Elevation [m]')
         ax2.grid()
+        ax2.margins(PLOT_MARGIN, PLOT_MARGIN)
         plt.tight_layout()
         plt.savefig(OUT_BASE / f'{"relief" if args.relief else "elevation"}-{name}.svg')
         if not args.no_show:

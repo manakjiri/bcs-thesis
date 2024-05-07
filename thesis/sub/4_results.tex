@@ -227,6 +227,10 @@ This means that effectively 16 different measurements of the signal quality were
 
 \subsection{Results}
 
+Data is interpreted in the context of the line-of-sight conditions. Graphs show the relief, which was derived from altitude data obtained from the \href{https://api.mapy.cz/v1/elevation}{Seznam.cz elevation API} in 5 m resolution of interpolated coordinates of lines connecting the Nodes and Gateway locations.
+
+\subsubsection{Effect of the Spreading Factor}
+
 \begin{figure}[H]
     \centering
     \subfloat[SF11]{\includesvg[width=\textwidth]{data/range/out/relief-sf11.svg}} \hfil
@@ -255,4 +259,39 @@ This means that effectively 16 different measurements of the signal quality were
 \caption{\label{table:range-results}Success rates for each node and location at spreading factors 5 and 11}
 \end{figure} 
 
+\subsubsection{Maximum distance}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \input{data/range/out/success-sf11-far1.tex}
+        \vspace{1em}
+    \end{minipage}
+    \includesvg[width=\textwidth]{data/range/out/relief-sf11-far1-lines.svg}
+    \caption{\label{fig:range-relief-far1}Graph of the range test locations, their distance from the pole with Nodes, the relief in the path of the signal and the direct line-of sight lines to each node}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \input{data/range/out/success-sf11-far2.tex}
+        \vspace{1em}
+    \end{minipage}
+    \includesvg[width=\textwidth]{data/range/out/relief-sf11-far2-lines.svg}
+    \caption{\label{fig:range-relief-far2}Graph of the range test locations, their distance from the pole with Nodes, the relief in the path of the signal and the direct line-of sight lines to each node}
+\end{figure}
+
+%\begin{figure}[H]
+%\begin{minipage}[t]{.45\textwidth}
+%    \vspace{0pt}
+%    \input{data/range/out/success-sf11-far1.tex}
+%\end{minipage}
+%\begin{minipage}[t]{.45\textwidth}
+%    \vspace{0pt}
+%    \input{data/range/out/success-sf11-far2.tex}
+%\end{minipage}
+%\caption{\label{table:range-results-far}Success rates for each node}
+%\end{figure} 
 

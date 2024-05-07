@@ -5,3 +5,7 @@ for dir in sf*; do
     python process.py elevation $dir --no-show
     python process.py success $dir --no-show
 done
+
+for dir in sf11-far*; do
+    python process.py elevation $dir --relief --no-show --lines
+done

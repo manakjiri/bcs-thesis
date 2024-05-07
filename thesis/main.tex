@@ -4,7 +4,7 @@
 
 % The class takes all the key=value arguments that \ctusetup does,
 % and a couple more: draft and oneside
-\documentclass[oneside]{ctuthesis}
+\documentclass[twoside]{ctuthesis}
 \usepackage[toc]{appendix}
 \usepackage{graphicx}
 \usepackage{subfig}
@@ -122,6 +122,8 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 \input{sub/a_rust.tex}
 \chapter{\label{chapter:module01-files}Module v0.1 design files}
 \input{sub/b_module01.tex}
+\chapter{\label{chapter:more-range-test}Additional data from the range test}
+\input{sub/e_range_test.tex}
 \end{appendices}
 
 \bibliographystyle{plainurl}
