@@ -3,7 +3,7 @@
 \section{Module design}
 As discussed in section \ref{section:module-architecture}, where the LoRa module was architected and its main parts were selected, the schematic and board layout were created. These outputs are included in image form as Appendix \ref{chapter:module01-files} along with more details and available at (https://github.com/manakjiri/lora-module-hw/releases/tag/v0.1)?.
 
-The Open source KiCad Electronic Design Automation software was used throughout the project to create these designs. 
+The Open source KiCad Electronic Design Automation (EDA) software was used throughout the project to create these designs. 
 
 \subsection{Schematic}
 While the \ref{section:module-architecture} focused on the fundamental parts of the design, many details were left up to the later development stages, once the overall system implementation is more clear. This section will focus and expand on these parts of the design.
@@ -97,23 +97,23 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 \begin{center}
 \caption{\label{table:module-pin-legend}Module pin legend including feature summary.}
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|} \hline
-    \textbf{Name} & \textbf{Pin} & \textbf{TIM\footnote{Refer to each column following ``Pin'' (excluding ``Other'') as [Column header][Column-row contents], such as ``SPI1\_MOSI'' and so on. Some features were omitted for clarity, for complete list refer to the MCU manufacturer's documentation}} & \textbf{ADC} & \textbf{I2C} & \textbf{SPI} & \textbf{UART} & \textbf{Other}\\ \hline
-    1        & PA7  & 17\_1, 1\_1N    &     & 3\_SCL & 1\_MOSI &             & CMP2\_OUT          \\ \hline
-    2        & PA6  & 16\_1          &     &       & 1\_MISO &             &                    \\ \hline
-    3        & PA4  & L1,2\_OUT      &     &       &        &             & RTC\_OUT2           \\ \hline
-    4        & PA2  & 2\_3           &     &       &        & 2\_TX & CMP2\_OUT           \\ \hline
-    5        & PA1  & L3\_OUT, 2\_2   &     &       & 1\_SCK  &             &                    \\ \hline
-    6        & PA0  & 2\_1           &     &       &        &             & WKUP1   \\ \hline
-    7        & PB8  & 16\_1, 1\_2N    &     & 1\_SCL &        &             &                    \\ \hline
-    8        & PB7  & L1\_IN2, 17\_1N &     & 1\_SDA &        & 1\_RX        &                    \\ \hline
-    9        & PB6  &               &     & 1\_SCL &        & 1\_TX        &                    \\ \hline
-    10       & PB5  & L1\_IN1        &     &       & 1\_MOSI &             & CMP2\_OUT          \\ \hline
-    11       & PB4  &               & 3   & 3\_SDA & 1\_MISO &             & CMP1,2\_INP        \\ \hline
-    12       & PA11 & 1\_4           & 7   & 2\_SDA & 1\_MISO &             & CMP1,2\_INM        \\ \hline
-    SWO/13   & PB3  & 2\_CH2         & 2   &       & 1\_SCK  &             & WKUP3 \\ \hline
-    SWDIO/14 & PA13 &               & 9   &       &        &             & IR\_OUT             \\ \hline
-    SWCLK/15 & PA14 & L1\_OUT        & 10  &       &        &             &                    \\ \hline
-    BOOT0/16 & PH3  &               &     &       &        &             &                    \\ \hline
+    \textbf{IO} & \textbf{Pin} & \textbf{TIM\footnote{Refer to each column following ``Pin'' (excluding ``Other'') as [Column header][Column-row contents], such as ``SPI1\_MOSI'' and so on. Some features were omitted for clarity, for complete list refer to the MCU manufacturer's documentation}} & \textbf{ADC} & \textbf{I2C} & \textbf{SPI} & \textbf{UART} & \textbf{Other}\\ \hline
+    1  & PA7  & 17\_1, 1\_1N    &     & 3\_SCL & 1\_MOSI &             & CMP2\_OUT          \\ \hline
+    2  & PA6  & 16\_1          &     &       & 1\_MISO &             &                    \\ \hline
+    3  & PA4  & L1,2\_OUT      &     &       &        &             & RTC\_OUT2           \\ \hline
+    4  & PA2  & 2\_3           &     &       &        & 2\_TX      & CMP2\_OUT           \\ \hline
+    5  & PA1  & L3\_OUT, 2\_2   &     &       & 1\_SCK  &             &                    \\ \hline
+    6  & PA0  & 2\_1           &     &       &        &             & WKUP1   \\ \hline
+    7  & PB8  & 16\_1, 1\_2N    &     & 1\_SCL &        &             &                    \\ \hline
+    8  & PB7  & L1\_IN2, 17\_1N &     & 1\_SDA &        & 1\_RX        &                    \\ \hline
+    9  & PB6  &               &     & 1\_SCL &        & 1\_TX        &                    \\ \hline
+    10 & PB5  & L1\_IN1        &     &       & 1\_MOSI &             & CMP2\_OUT          \\ \hline
+    11 & PB4  &               & 3   & 3\_SDA & 1\_MISO &             & CMP1,2\_INP        \\ \hline
+    12 & PA11 & 1\_4           & 7   & 2\_SDA & 1\_MISO &             & CMP1,2\_INM        \\ \hline
+    13 & PB3  & 2\_CH2         & 2   &       & 1\_SCK  &             & SWO, WKUP3 \\ \hline
+    14 & PA13 &               & 9   &       &        &             & SWDIO            \\ \hline
+    15 & PA14 & L1\_OUT        & 10  &       &        &             & SWCLK                   \\ \hline
+    16 & PH3  &               &     &       &        &             & BOOT0                   \\ \hline
     \end{tabular}
 \end{center}
 \end{table}
@@ -242,7 +242,7 @@ Data is interpreted in the context of the line-of-sight conditions. Graphs show 
     \centering
     \subfloat[SF11]{\includesvg[width=\textwidth]{data/range/out/success-sf11.svg}} \hfil
     \subfloat[SF5]{\includesvg[width=\textwidth]{data/range/out/success-sf5.svg}}
-    \caption{\label{fig:range-relief}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal}
+    \caption{\label{fig:range-results}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal}
 \end{figure}
 
 \begin{figure}[H]
