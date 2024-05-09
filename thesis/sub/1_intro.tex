@@ -13,7 +13,9 @@ Many options exist when it comes to transferring sensor data over long distances
 
 Furthermore, an Over The Air (OTA) firmware update capability will be explored, a feature not commonly found in LoRa nodes. In the case of soil moisture sensors, an update can bring support for additional soil types, improve the accuracy or prolong the battery life. It also, crucially, allows this to happen without any operator intervention and transforms a one-shot solution, which once obsolete is replaced completely, into one that is, over time, able to support more sensors and features with minimal downtime \cite{mobility_connected_what_2024,noauthor_android_2024,bucklin_brown_over--air_2024}.
 
-A custom hardware solution will need to be developed in order to support OTA updates. Chapter \ref{chapter:architecture} in particular will make a point as to why this is necessary by compiling the hardware requirements and assessing the existing solutions currently available on the market.
+A custom hardware solution will need to be developed in order to support OTA updates. Chapter \ref{chapter:architecture} in particular will make a point as to why this is necessary by compiling the hardware requirements and assessing the existing solutions currently available on the market. 
+
+This hardware solution will consist of two pieces - a general purpose LoRa module (the ``LoRa module'' from now on) capable of OTA updates and a soil moisture sensor, which integrates the LoRa module into the specialized application.
 
 To implement the sensing, its configuration, status reporting and the update capability, a custom protocol will be developed atop the LoRa physical layer. This will make the system self-sufficient, but may limit the deployment options. However, the system could also be made compatible with majority of commercial LoRaWAN networks in the future, if needed.
 
