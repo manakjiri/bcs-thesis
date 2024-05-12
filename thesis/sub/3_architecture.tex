@@ -16,7 +16,7 @@ While this work is mainly concerned with the soil moisture sensing application, 
 
 The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
 
-\section{Generic LoRa Module requirements}
+\section{Generic LoRa module requirements}
 \subsection{\label{section:ota-update-support}Over The Air update support}
 There are two general approaches to implementing OTA updates \cite{bucklin_brown_over--air_2024,noauthor_android_2024}. First is to split the firmware into a so-called Bootloader, a binary which runs before the main application and implements a way to communicate with the master node, such that it is able to overwrite the application. The application usually also needs to communicate with the master node in order to transmit sensor data and accept commands, which leads to duplication of all the driver and protocol logic required to use the communication interface.
 
@@ -266,9 +266,9 @@ During the component selection phase, the requirements set in \ref{section:final
 
 \FloatBarrier
 \section{Sensor architecture}
-Given that the primary point of this work is to create a proof-of-concept sensing solution, which utilizes the module envisioned in \ref{section:module-architecture}, the sensor should be suitable for small-scale testing and prototype work, it should also be simple to manufacture and maximize the potential for success in the first iteration, due to the limited time allocated for the whole project.
+Given that the primary point of this work is to create a proof-of-concept sensing solution, which utilizes the LoRa module envisioned in \ref{section:module-architecture}, the sensor should be suitable for small-scale testing and prototype work, it should also be simple to manufacture and maximize the potential for success in the first iteration, due to the limited time allocated for the whole project.
 
-A single board construction makes sense here, as it is simple, self-contained and can be made through standard PCB manufacturers. It is also commonly seen in hobby grade and some commercial soil moisture sensors.
+A single board construction is suitable, as it is simple, self-contained and can be made through standard PCB manufacturers. It is also commonly seen in hobby grade and some commercial soil moisture sensors.
 
 \subsection{Expected capacitance range}
 
