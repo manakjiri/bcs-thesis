@@ -13,6 +13,7 @@
 \usepackage[capposition=bottom]{floatrow}
 \usepackage{listings}
 \usepackage{multirow}
+\usepackage{adjustbox}
 
 \PassOptionsToPackage{hyphens}{url}
 \usepackage[pdftex,
@@ -73,7 +74,9 @@
 	\end{twocolumnfrontmatterpage}
 }
 
-\newcommand{\code}[1]{\verb|#1|}
+\lstset{basicstyle=\ttfamily}
+
+\newcommand{\code}[1]{\lstinline[language=C]{#1}}
 \newcommand{\link}[2]{\href{#1}{#2}\footnote{#1}}
 
 \setlength{\parskip}{1.5ex plus 0.2ex minus 0.1ex}
@@ -123,6 +126,8 @@ V Praze, \ctufield{day}.~\monthinlanguage{title}~\ctufield{year}
 \input{sub/a_rust.tex}
 \chapter{\label{chapter:module01-files}Module v0.1 design files}
 \input{sub/b_module01.tex}
+\chapter{\label{chapter:sensor-files}Soil moisture sensor board design files}
+\input{sub/d_sensor01.tex}
 \chapter{\label{chapter:more-range-test}Additional data from the range test}
 \input{sub/e_range_test.tex}
 \end{appendices}

@@ -67,13 +67,15 @@ These parameters are summarized in the following Table \ref{table:board-limits} 
 
 Being only 4 layers, the traces needed to be routed in densely and well thought-out manner, attempting to minimize the number of relatively large vias required. For this reason, the module's external connection signal assignments were decided only near the end of the design stage conforming mostly to the existing pin locations on the MCU itself. The final pad assignments are included in Table \ref{table:module-pin-legend}.
 
-\subsection{Final module specification}
 \begin{figure}
     \includesvg[width=.75\textwidth]{img/module-v0.1.drawio.svg}
     \caption{\label{fig:module-v0.1}Image of the manufactured and fully assembled module with overlay highlighting its functional parts}
 \end{figure}
 
-\begin{table}[H]
+\subsection{Final LoRa module specification}
+Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module with overlay highlighting its functional parts, its technical specifications are captured by Table \ref{table:module-specification}.
+
+\begin{table}[p]
 \begin{center}
 \caption{\label{table:module-specification}Final module specification}
     \begin{tabular}{|l|l|} \hline
@@ -86,12 +88,12 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
     RF connector                            & U.FL \\ \hline
     Module connection type                  & Castellated hole (0.1 inch pitch) \\ \hline
     Supported interfaces                    & UART, SPI, I2C \\ \hline
-    Programming interface                   & ARM Serial Wire Debug \\ \hline
+    Programming interface                   & ARM Serial Wire Debug (SWD) \\ \hline
     \end{tabular}
 \end{center}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[p]
 \begin{center}
 \caption{\label{table:module-pin-legend}Module pin legend including feature summary.}
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|} \hline
@@ -117,6 +119,16 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 \end{table}
 
 \section{Soil moisture sensor design}
+The self-contained moisture sensor board contains 
+\begin{itemize}
+    \item the capacitance measuring circuit (as described in Section \ref{section:measuring-method}) with two ranges,
+    \item a dual single pole quadruple throw (Dual SP4T) mux chip for switching between the 4 sensing zones contained in the active area of the sensor,
+    \item 8 channel TVS diode array to clamp the voltage on the capacitor electrodes and means of isolating the sensor elements from the measuring circuits,
+    \item a 2.8 V linear low-dropout (LDO) regulator,
+    \item footprint for the LoRa module,
+    \item two analog temperature sensor ICs and
+    \item single cell rechargeable lithium battery protection circuitry.
+\end{itemize}
 
 
 
@@ -131,7 +143,7 @@ The binary needs to be fragmented in order to be transmitted piece by piece. To 
     \caption{\label{fig:ota-algo}Simplified flowchart depicting the Over The Air update communication process between the Gateway and the Node}
 \end{figure}
 
-Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \link{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \lstinline|enum OtaPacket|. Packets are serialized and deserialized using the postcard Rust package.
+Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \link{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \code{enum OtaPacket}. Packets are serialized and deserialized using the \link{https://docs.rs/postcard/latest/postcard/}{postcard} Rust package.
 
 \subsection{ACK mechanism}
 The Automatic Repeat Request (ARQ) mechanism is inspired by Selective Repeat ARQ. The receiver is able to accept frames that are out of order and selectively requests missing or corrupted blocks, but the acknowledge (ACK) packet contains up to 32 indexes of blocks that were successfully received. 
