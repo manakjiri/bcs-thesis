@@ -52,10 +52,21 @@ Since direct methods of measurement of soil moisture content are impractical for
 Geophysical methods exploit other properties of water contained in the soil to approximate the VWC, such as its conductivity, dielectric constant or interaction with neutrons. These methods are thus indirect and subject to inaccuracy if wrong assumptions are used \cite{webster_humidity_1998}. However, if applied correctly, these methods allow the continuous monitoring of the water content without human intervention.
 
 \subsubsection{Satellite remote sensing method}
-Thanks to recent and ongoing large-scale deployments of Synthetic Aperture Radar satellites, it is possible, that for global-scale soil water content estimation this method will become much more wide-spread. It also relies on the large contrast in dielectric properties of wet and dry soil.
+Thanks to recent and ongoing large-scale deployments of Synthetic Aperture Radar satellites, it is possible, that for global-scale soil water content estimation this method will become much more wide-spread. It also relies on the large contrast in dielectric properties of wet and dry soil and generally exhibits too low resolution (>3 km \cite{podest_applications_nodate,eos_data_analytics_remote_2022}) for most applications outside of large farming fields.
+
+\begin{figure}
+    \subfloat[SMAP Artist's Concept of the satellite]{\includegraphics[width=.35\textwidth]{img/satellite.png}}\hfil
+    \subfloat[Global root zone soil moisture]{\includegraphics[width=.6\textwidth]{img/roots-global-map.png}}
+    \caption{\label{fig:satellite}Examples of commercially available soil moisture sensors \cite{meter_group_teros_nodate, baseline_soil_2021, czechproject_spol_sro_pudni_2024}}
+\end{figure}
 
 \section{Capacitive soil moisture sensors}
-The working principle of capacitive soil moisture sensors is based on the dielectric permittivity of the soil. Water has a high dielectric constant compared to other soil components such as air, minerals, and organic matter. This property makes the presence of water in the soil significantly alter its dielectric permittivity.
+The working principle of capacitive soil moisture sensors is based on the dielectric permittivity of the soil. Water has a high dielectric constant compared to other soil components such as air, minerals, and organic matter, as illustrated by Figure \ref{fig:dielectric-constant}. This property makes the presence of water in the soil significantly alter its dielectric permittivity.
+
+\begin{figure}
+    \includegraphics[width=.7\textwidth]{img/dielectric-constant.jpg}
+    \caption{\label{fig:dielectric-constant}Dielectric constant $\epsilon$ of various materials. Source \cite{meter_group_soil_2023}.}
+\end{figure}
 
 A typical capacitive soil moisture sensor consists of two conductive plates, which function as electrodes. These plates are separated by a non-conductive material or are directly exposed to the soil, depending on the sensor design. The plates and the soil form a capacitor. When an alternating current is applied to the electrodes, an electric field is created between them.
 
@@ -63,7 +74,9 @@ As the volumetric water content in the soil increases, the dielectric permittivi
 \begin{equation}
     C = \dfrac{\epsilon S}{d}
 \end{equation}
-where the surface area $S$ and distance between the electrodes $d$ are constant, the capacitance is proportional to the dielectric permittivity $\epsilon$. The sensor measures this capacitance, and through calibration, it is possible to relate the capacitance values to specific soil moisture levels.
+where the surface area $S$ and distance between the electrodes $d$ are constant, the capacitance is proportional to the dielectric permittivity $\epsilon$.
+
+In practice, the dielectric constant is also largely dependant on temperature, measuring frequency and saturation with dissolved ions \cite{meter_group_soil_2023,podest_applications_nodate}. This makes precise absolute measurements almost impossible without prior calibration against know reference for particular soil type.
 
 \section{LoRa}
 LoRa (Long Range) is a low-power wireless communication technology designed specifically for long-range communications with low power consumption. It is one of the leading technologies used in the rapidly expanding field of the Internet of Things (IoT), particularly in applications requiring devices to send small amounts of data over long distances while conserving battery life.

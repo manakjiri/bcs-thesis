@@ -1,20 +1,16 @@
 %!TEX ROOT=main.tex
 
 \section{Analysis of the System}
-As was discussed in the Introduction \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application.
-
-With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}) a practice commonly seen in the industry.
+As was discussed in the Introduction \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application. With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}) a practice commonly seen in the industry. While this design does not follow IEEE 1451 \cite{mark_ieee_nodate} specifically, the common pattern is present.
 
 \begin{figure}
-    \includesvg[width=\textwidth]{fig/device-split.drawio.svg}
-    \caption{\label{fig:device-split}Logical high level building blocks of most modern sensors}
+    \includegraphics[width=\textwidth]{fig/ieee-1451.png}
+    \caption{\label{fig:device-split}Logical high level building blocks of smart sensors, as defined by IEEE 1451}
 \end{figure}
 
-Separating these two concerns not only logically, but also on the hardware level, will bring many advantages - future sensor implementations can be made with only effort being put into the sensor itself; the wireless part and most of the testing and regulation overhead can be solved once, not repeated for every sensor type; once a sensor compatible with the interface exists, it can be made compatible with future versions of the interface - to list a few.
+This design will go a step further and also separate the communication interface and the sensor on the hardware level, which will bring many advantages - future sensor implementations can be made with only effort being put into the sensor itself; the wireless part and most of the development and testing overhead can be solved once, not repeated for every sensor type; once a sensor compatible with the interface exists, it can be made compatible with future versions of the interface.
 
-While this work is mainly concerned with the soil moisture sensing application, having a LoRa compatible unit, which is capable of OTA updates and has enough processing power to handle most sensing and simple control task, while being power-efficient enough to be battery powered, is an interesting sub-goal of this work.
-
-The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
+While this work is mainly concerned with the soil moisture sensing application, having a LoRa compatible unit, which is capable of OTA updates and has enough processing power to handle most sensing and simple control task, while being power-efficient enough to be battery powered, is an interesting sub-goal of this work. The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
 
 \section{Generic LoRa module requirements}
 \subsection{\label{section:ota-update-support}Over The Air update support}
