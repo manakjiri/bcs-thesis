@@ -193,7 +193,7 @@ def main():
 
         #ax2.legend(loc='upper left', ncols=3)
         ax2.set_xlabel('Transmitting distance [m]')
-        ax2.set_ylabel('Relief' if args.relief else 'Elevation [m]')
+        ax2.set_ylabel('EDSL [m]' if args.relief else 'Elevation [m]')
         ax2.grid()
         ax2.margins(PLOT_MARGIN, PLOT_MARGIN)
         plt.tight_layout()

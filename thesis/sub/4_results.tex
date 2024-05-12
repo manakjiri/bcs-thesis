@@ -131,7 +131,7 @@ The binary needs to be fragmented in order to be transmitted piece by piece. To 
     \caption{\label{fig:ota-algo}Simplified flowchart depicting the Over The Air update communication process between the Gateway and the Node}
 \end{figure}
 
-Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \href{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \lstinline|enum OtaPacket|. Packets are serialized and deserialized using the postcard Rust package.
+Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \link{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \lstinline|enum OtaPacket|. Packets are serialized and deserialized using the postcard Rust package.
 
 \subsection{ACK mechanism}
 The Automatic Repeat Request (ARQ) mechanism is inspired by Selective Repeat ARQ. The receiver is able to accept frames that are out of order and selectively requests missing or corrupted blocks, but the acknowledge (ACK) packet contains up to 32 indexes of blocks that were successfully received. 
@@ -161,13 +161,13 @@ Bandwidth variation exhibits similar traits, but to stay within the legal limits
 \subsection{Hypothesis}
 It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning Nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
 
-\subsection{Prerequisite}
+\subsection{\label{section:range-prerequisite}Prerequisite}
 The maximum achievable SF needed to be determined. This was done experimentally, starting with SF5 and incrementing util it was no longer possible to transfer data. This test was conducted using Nucleo acting as the initiator of connection with the LoRa module. Devices were situated on a desk about 1.5 meters apart with their antennae positioned orthogonally in respect to each other to avoid overwhelming the receiver. All other parameters are identical to those used in the latter experiment.
 
 The connection was stable at SF11, but at SF12 the LoRa module stopped responding, thus the experiment was done at SF5 and SF11, which corresponds to a theoretical delta of $15~\mathrm{dB}$.
 
 \subsection{Methodology}
-All LoRa modulation and packet parameters were set in firmware (commit \href{https://github.com/manakjiri/lora-module-fw/tree/76acdcd7b31f259c88f1808ed79886dc26295b4e}{76acdcd}) identically for all devices used, a summary is provided in Table \ref{table:range-test-parameters}. 
+All LoRa modulation and packet parameters were set in firmware (commit \link{https://github.com/manakjiri/lora-module-fw/tree/76acdcd7b31f259c88f1808ed79886dc26295b4e}{76acdcd}) identically for all devices used, a summary is provided in Table \ref{table:range-test-parameters}. 
 
 \begin{table}[H]
 \begin{center}
@@ -190,19 +190,6 @@ All LoRa modulation and packet parameters were set in firmware (commit \href{htt
 
 LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their stock antenna, all were close to vertical orientation. A pole with two LoRa modules and one Nucleo (see Figure \ref{fig:range-nodes}) was constructed to act as the stationary set of Nodes to test against. Another Nucleo board was attached to a car (see Figure \ref{fig:range-gateway}) to act as the Gateway, see Table \ref{table:range-test-devices} for more details.
 
-\begin{table}[H]
-\begin{center}
-\caption{\label{table:range-test-devices}Devices used for range testing}
-    \begin{tabular}{|l|l|l|} \hline
-    \textbf{Device} & \textbf{Height\footnote{Measured distance from the root of the antenna to ground level} [m]} & \textbf{Address}\footnote{Data presented will use these addresses to distinguish between the different Nodes used in the experiment} \\ \hline
-    Nucleo (Gateway) & 1.65 & 1 \\ \hline
-    LoRa module (Node) & 0.19 & 2 \\ \hline
-    Nucleo (Node) & 0.55 & 4 \\ \hline
-    LoRa module (Node) & 0.82 & 3 \\ \hline
-    \end{tabular}
-\end{center}
-\end{table}
-
 \begin{figure}[p]
     \centering
     \includegraphics[width=.9\textwidth]{img/lora-pole.jpg}\vspace{1em}
@@ -219,33 +206,64 @@ LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their sto
     \caption{\label{fig:range-gateway}Close-up of Nucleo attached to the car acting as the Gateway for range testing}
 \end{figure}
 
-A location was picked to represent the final use-case, a field with sections of direct line-of-sight and sections obstructed by hills. This place is situated near Průhonice municipality in the Czech Republic. The pole with Nodes attached was installed at \href{https://en.mapy.cz/letecka?q=50.0012006N%2C%2014.5308962E&x=14.5381677&y=50.0011824&z=16}{50.0012006N, 14.5308961E} (WGS84).
+\begin{table}[H]
+\begin{center}
+\caption{\label{table:range-test-devices}Devices used for range testing}
+    \begin{tabular}{|l|l|l|} \hline
+    \textbf{Device} & \textbf{Height\footnote{Measured distance from the root of the antenna to ground level} [m]} & \textbf{Address}\footnote{Data presented will use these addresses to distinguish between the different Nodes used in the experiment} \\ \hline
+    Nucleo (Gateway) & 1.65 & 1 \\ \hline
+    LoRa module (Node) & 0.19 & 2 \\ \hline
+    Nucleo (Node) & 0.55 & 4 \\ \hline
+    LoRa module (Node) & 0.82 & 3 \\ \hline
+    \end{tabular}
+\end{center}
+\end{table}
+
+A location was picked to represent the final use-case, a field with sections of direct line-of-sight and sections obstructed by hills. This place is situated near Průhonice municipality in the Czech Republic. The pole with Nodes attached was installed at \href{https://en.mapy.cz/letecka?q=50.0012006N%2C%2014.5308962E&x=14.5381677&y=50.0011824&z=16}{50.0012006N, 14.5308961E}\footnote{https://en.mapy.cz/letecka?q=50.0012006N\%2C\%2014.5308962E\&x=14.5381677\&y=50.0011824\&z=16} (WGS84).
 
 A set of measurements was taken through the Gateway at different locations progressing further from the stationary pole with the Nodes attached. These measurements consisted of downloading a random binary 1 KB file to each of the Nodes consecutively. This file was fragmented on the fly by the OTA update protocol to 16 blocks of 64 bytes each.
 
 This means that effectively 16 different measurements of the signal quality were taken at each location for each of the three Nodes. Measurements were recorded by the system in a CSV file containing the time since download started, the amount of packets sent and the last block that was acknowledged - thus a success rate can be calculated. In case the download failed to initiate, nothing gets recorded and that is interpreted as 0\% success rate.
 
 \subsection{Results}
+As this is an experiment, where direct line-of-sight cannot be relied upon to interpret the results, it was deemed necessary to somehow capture the environment, the terrain, and present it along with the obtained data.
 
-Data is interpreted in the context of the line-of-sight conditions. Graphs show the relief, which was derived from altitude data obtained from the \href{https://api.mapy.cz/v1/elevation}{Seznam.cz elevation API} in 5 m resolution of interpolated coordinates of lines connecting the Nodes and Gateway locations.
+Altitude data was obtained from the \link{https://api.mapy.cz/v1/elevation}{Seznam.cz elevation API} in 5 m resolution of interpolated coordinates of lines connecting the Nodes and Gateway locations. This location data is also available in raw form as part of the Appendix \ref{chapter:more-range-test}.
 
-\subsubsection{Effect of the Spreading Factor}
+\subsubsection{\label{section:edsl-definition}Elevation Deviation from the Straight Line}
+Following graphs describe the terrain in terms of Elevation Deviation from the Straight Line (EDSL) connecting the Nodes location (spot 0) with the furthest point at which the last measurement was taken. Units of EDSL proportionally translate to meters, since the effect is similar to subtracting the offset signal in data.
 
-\begin{figure}[H]
-    \centering
-    \subfloat[SF11]{\includesvg[width=\textwidth]{data/range/out/relief-sf11.svg}} \hfil
-    \subfloat[SF5]{\includesvg[width=\textwidth]{data/range/out/relief-sf5.svg}}
-    \caption{\label{fig:range-relief}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal}
+The same data without the EDSL interpretation is included as Appendix \ref{chapter:more-range-test} for completeness. It also demonstrates the need for such data manipulation, because the features of the terrain are a lot less apparent in the original data.
+
+\begin{figure}[p]
+    \includegraphics[width=.9\textwidth]{img/range-test-map.png}
+    \caption{\label{fig:range-test-map}Map of the range test site. Correlation with Figures \ref{fig:range-relief} and Table \ref{table:range-results} follows: point 1 corresponds to the Nodes location (spot 0), point 2 is the spot 5 in both SF5 and SF11 measurements, point 3 is the spot 9 and spot 11 for SF11 and SF5 respectively. Source: \href{https://ags.cuzk.cz/geoprohlizec}{Geoprohlížeč ČÚZK}.}
 \end{figure}
 
-\begin{figure}[H]
+\subsubsection{Effect of the Spreading Factor}
+Lower SF decreases the packet air time at the expanse of lower range reached. SF5 averaged $0.125~\mathrm{s}$, while SF11 averaged $1.125~\mathrm{s}$ round-trip time (excluding packet-loss) with these payloads.
+
+Using SF5, it was possible to maintain stable connection with Nodes (3 and 4) positioned higher above the ground level even when occluded by the terrain. Connection with Node 2 was lost as soon as any occlusion was introduced. It can be expected that this setup would be feasible in very flat environments, but could be susceptible to dropouts with slight changes, such as growing crops.
+
+The SF11 configuration exceeded expectations in terms of distance reached, a stable connection was maintained with all Nodes without difference in packet loss, which is perhaps most surprising, since some degradation was expected at least for the Node 2 position closest to the ground level. 
+
+While the range was higher than with SF5, the connection quality is somewhat worse in the stable regions (less than 500 m distance, direct line-of-sight) for SF11. This suggests that a stability limit was indeed reached, as alloted to in the Prerequisite Section \ref{section:range-prerequisite}.
+
+\begin{figure}[p]
+    \centering
+    \subfloat[SF11]{\includesvg[width=0.95\textwidth]{data/range/out/relief-sf11.svg}} \hfil
+    \subfloat[SF5]{\includesvg[width=0.95\textwidth]{data/range/out/relief-sf5.svg}}
+    \caption{\label{fig:range-relief}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number.}
+\end{figure}
+
+\begin{figure}[p]
     \centering
     \subfloat[SF11]{\includesvg[width=\textwidth]{data/range/out/success-sf11.svg}} \hfil
     \subfloat[SF5]{\includesvg[width=\textwidth]{data/range/out/success-sf5.svg}}
-    \caption{\label{fig:range-results}Graph of the range test locations, their distance from the pole with Nodes, and the relief in the path of the signal}
+    \caption{\label{fig:range-results}Graph of the packet transfer success rate for each Node with respect to the transmission distance.}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[p]
 \begin{minipage}[t]{.45\textwidth}
     \vspace{0pt}
     \input{data/range/out/success-sf11.tex}
@@ -256,12 +274,21 @@ Data is interpreted in the context of the line-of-sight conditions. Graphs show 
         \input{data/range/out/success-sf5.tex}    
     %\end{table}
 \end{minipage}
-\caption{\label{table:range-results}Success rates for each node and location at spreading factors 5 and 11}
+\caption{\label{table:range-results}Success rates for each node and location at spreading factors 5 and 11.}
 \end{figure} 
 
 \subsubsection{Maximum distance}
+Finding the limit at FS11 proved to be more difficult than anticipated. The surrounding environment either contained too favorable, or absolutely unfavorable conditions at further distances. Two additional data points displayed in Figures \ref{fig:range-relief-far1} and \ref{fig:range-relief-far2} were gathered at locations outside of the planed path.
 
-\begin{figure}[H]
+The first Figure \ref{fig:range-relief-far1} shows the only flawless connection with the Nucleo Node 4, which must have been facilitated thanks to a signal reflection from some other feature in the environment. While the connection with Node 3 was initiated and it acknowledged 2 packets, the connection later timed out after the Node failed to respond in 30 more attempts.
+
+The second location, captured by Figure \ref{fig:range-relief-far2}, exhibited flawless transmission of the payload for all 3 Nodes at a distance of 1.2 km with occlusion.
+
+The nature of LoRa is that it performs well within its large link budget, but once that is exhausted, the performance drops off rapidly. The attenuation of the medium through which the electromagnetic wave travels changes with temperature and saturation with humidity and particulate, the position of the antennae may change slightly due to wind and the onboard oscillators can drift with temperature and power supply.
+
+Most of these factors remained constant throughout this experiment, since it was done within a 1.5 hour window, but must be considered for long-term deployments.
+
+\begin{figure}[p]
     \centering
     \begin{minipage}[t]{\textwidth}
         \centering
@@ -269,10 +296,10 @@ Data is interpreted in the context of the line-of-sight conditions. Graphs show 
         \vspace{1em}
     \end{minipage}
     \includesvg[width=\textwidth]{data/range/out/relief-sf11-far1-lines.svg}
-    \caption{\label{fig:range-relief-far1}Graph of the range test locations, their distance from the pole with Nodes, the relief in the path of the signal and the direct line-of sight lines to each node}
+    \caption{\label{fig:range-relief-far1}Table of the success rates and graph of the first long range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[p]
     \centering
     \begin{minipage}[t]{\textwidth}
         \centering
@@ -280,18 +307,6 @@ Data is interpreted in the context of the line-of-sight conditions. Graphs show 
         \vspace{1em}
     \end{minipage}
     \includesvg[width=\textwidth]{data/range/out/relief-sf11-far2-lines.svg}
-    \caption{\label{fig:range-relief-far2}Graph of the range test locations, their distance from the pole with Nodes, the relief in the path of the signal and the direct line-of sight lines to each node}
+    \caption{\label{fig:range-relief-far2}Table of the success rates and graph of the second long range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
 \end{figure}
-
-%\begin{figure}[H]
-%\begin{minipage}[t]{.45\textwidth}
-%    \vspace{0pt}
-%    \input{data/range/out/success-sf11-far1.tex}
-%\end{minipage}
-%\begin{minipage}[t]{.45\textwidth}
-%    \vspace{0pt}
-%    \input{data/range/out/success-sf11-far2.tex}
-%\end{minipage}
-%\caption{\label{table:range-results-far}Success rates for each node}
-%\end{figure} 
 
