@@ -1,14 +1,14 @@
 %!TEX ROOT=main.tex
 
 \section{LoRa Module design}
-As discussed in section \ref{section:module-architecture}, where the LoRa module was architected and its main parts were selected, the schematic and board layout were created. These outputs are included in image form as Appendix \ref{chapter:module01-files} along with more details and available at (https://github.com/manakjiri/lora-module-hw/releases/tag/v0.1)?.
+As discussed in section \ref{section:module-architecture}, where the LoRa module was architected and its main parts were selected, the schematic and board layout were created. These outputs are included in image form as Appendix \ref{chapter:module01-files} along with more details and available at \link{https://github.com/manakjiri/lora-module-hw/releases/tag/v0.1}{github.com/manakjiri/lora-module-hw}.
 
-The Open source KiCad Electronic Design Automation (EDA) software was used throughout the project to create these designs. 
+The Open source KiCad Electronic Design Automation (EDA) software was used throughout the project to create these designs.
 
 \subsection{Schematic}
 While the \ref{section:module-architecture} focused on the fundamental parts of the design, many details were left up to the later development stages, once the overall system implementation is more clear. This section will focus and expand on these parts of the design.
 
-Of note is the selection of the main clock source for the MCU \ref{section:mcu}. In this case the only two options are to use a Crystal oscillator (XO) or an Temperature Compensated XO (TCXO). Application note AN5646 (STMicroelectronics) summarizes the main differences as
+Of note is the selection of the main clock source for the MCU \ref{section:mcu}. In this case the only two options are to use a Crystal oscillator (XO) or an Temperature Compensated XO (TCXO). Application note AN5646 (STMicroelectronics \cite{stmicroelectronics_how_nodate-1}) summarizes the main differences as
 \begin{itemize}
     \item An XO is more efficient on power consumption, startup time, and BOM cost.
     \item A TCXO is more efficient on frequency accuracy and frequency variation over temperature changes. It also
@@ -24,11 +24,9 @@ This aspect was not considered carefully enough during the parts selection, the 
     \caption{\label{fig:tcxo-bodge}The ad-hoc TCXO modification on the LoRa module}
 \end{figure}
 
-All other aspects of the MCU integration were executed according to the application notes (cite) and the datasheet, while closely following the implementations of the reference design and the nucleo development kit. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
+All other aspects of the MCU integration were executed according to the application notes and the datasheet  \cite{stmicroelectronics_stm32wle5xx_nodate,stmicroelectronics_how_nodate-1}, while closely following the implementations of the reference design and the nucleo development kit \cite{stmicroelectronics_stdes-wl5u4ilh_2024,stmicroelectronics_nucleo-wl55jc_2024}. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
 
-Another consideration was the implementation of the switchable power rail VDD\_SW. This rail taps off the main power rail of the rest of the module, any disruption could cause a glitch or trigger the BOR protection circuitry. It is thus necessary to limit the inrush current caused by this rail's switch-on and subsequent charging of any local capacitances.
-
-dopsat vypocty casu
+Another consideration was the implementation of the switchable power rail VDD\_SW. This rail taps off the main power rail of the rest of the module, any disruption could cause a glitch or trigger the BOR protection circuitry. It is thus necessary to limit the inrush current caused by this rail's switch-on and subsequent charging of any local capacitances. An RC circuit was designed to slow-down the gate voltage rise-time to about 10 ms.
 
 \subsection{Board layout}
 A 4 layer board stackup was proposed in Section \ref{section:mcu}, which indeed ended up being used in this design. Purpose of each layer is described in table \ref{table:board-layers} and clearly observable in the final renders \ref{board:v0.1}.
@@ -119,6 +117,8 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 \end{table}
 
 \section{Soil moisture sensor design}
+
+
 
 \section{Over The Air update implementation}
 It is the responsibility of the update process to securely and reliably transfer the binary image of the firmware from the host computer through the Gateway to the designated Node (sensor) of the network. This task is complicated by the limited resources available on embedded devices and the slow and sometimes unreliable nature of the wireless connection in general.

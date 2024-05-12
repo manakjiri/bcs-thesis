@@ -60,21 +60,21 @@ Thanks to recent and ongoing large-scale deployments of Synthetic Aperture Radar
     \caption{\label{fig:satellite}Examples of commercially available soil moisture sensors \cite{meter_group_teros_nodate, baseline_soil_2021, czechproject_spol_sro_pudni_2024}}
 \end{figure}
 
-\section{Capacitive soil moisture sensors}
+\section{\label{section:soil-moisure-sensors-theory}Capacitive soil moisture sensors}
 The working principle of capacitive soil moisture sensors is based on the dielectric permittivity of the soil. Water has a high dielectric constant compared to other soil components such as air, minerals, and organic matter, as illustrated by Figure \ref{fig:dielectric-constant}. This property makes the presence of water in the soil significantly alter its dielectric permittivity.
 
 \begin{figure}
     \includegraphics[width=.7\textwidth]{img/dielectric-constant.jpg}
-    \caption{\label{fig:dielectric-constant}Dielectric constant $\epsilon$ of various materials. Source \cite{meter_group_soil_2023}.}
+    \caption{\label{fig:dielectric-constant}Dielectric constant $\epsilon_r$ of various materials. Source \cite{meter_group_soil_2023}.}
 \end{figure}
 
 A typical capacitive soil moisture sensor consists of two conductive plates, which function as electrodes. These plates are separated by a non-conductive material or are directly exposed to the soil, depending on the sensor design. The plates and the soil form a capacitor. When an alternating current is applied to the electrodes, an electric field is created between them.
 
-As the volumetric water content in the soil increases, the dielectric permittivity of the soil also increases due to the high dielectric constant of water. This change in permittivity affects the capacitance between the plates. Specifically, the capacitance increases as the water content rises according to the equation
+As the volumetric water content in the soil increases, the relative dielectric permittivity of the soil also increases due to the high dielectric constant of water. This change in permittivity affects the capacitance between the plates. Specifically, the capacitance increases as the water content rises according to the equation
 \begin{equation}
-    C = \dfrac{\epsilon S}{d}
+    \label{equation:capacitance} C = \dfrac{\epsilon_r \epsilon_0 S}{d}
 \end{equation}
-where the surface area $S$ and distance between the electrodes $d$ are constant, the capacitance is proportional to the dielectric permittivity $\epsilon$.
+where $\epsilon_0 = 8.85 \cdot 10^{-12} \frac{F}{m}$ permittivity of the vacuum, the surface area $S$ and distance between the electrodes $d$ are constant, the capacitance is proportional to the relative permittivity $\epsilon_r$.
 
 In practice, the dielectric constant is also largely dependant on temperature, measuring frequency and saturation with dissolved ions \cite{meter_group_soil_2023,podest_applications_nodate}. This makes precise absolute measurements almost impossible without prior calibration against know reference for particular soil type.
 

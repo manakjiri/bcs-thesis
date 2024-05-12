@@ -228,11 +228,9 @@ As outlined in \ref{table:antenna-solutions}, the chip antenna is another logica
 
 There is a large selection of these antennae on the market, mainly targeted at the very common bands, such as $2.4~\mathrm{GHz}$ and $5~\mathrm{GHz}$, but solutions for the $868~\mathrm{MHz}$ frequency range are also not hard to come by \cite{digikey_rf_2024,mouser_europe_868_2024}.
 
-The search was narrowed by focusing on omnidirectional and linearly polarized antennae of small size and straightforward implementation guidelines. Cost also played a factor, since many solutions, although good, would make the design unfeasible.
+The search was narrowed by focusing on omnidirectional and linearly polarized antennae of small size and straightforward implementation guidelines. Cost also played a factor, since many solutions, although good, would make the design unfeasible. The following Table \ref{table:antenna-chip} features the main candidates that were picked. All have $50~\mathrm{\Omega}$ impedance and satisfy the above criteria.
 
-The following Table \ref{table:antenna-chip} features the main candidates that were picked. All have $50~\mathrm{\Omega}$ impedance and satisfy the above criteria.
-
-\begin{table}[H]
+\begin{table}
 \begin{center}
 \caption{\label{table:antenna-chip}Comparison of the three selected chip antennae}
     \begin{tabular}{|l|l|l|l|} \hline
@@ -267,7 +265,15 @@ Given that the primary point of this work is to create a proof-of-concept sensin
 A single board construction is suitable, as it is simple, self-contained and can be made through standard PCB manufacturers. It is also commonly seen in hobby grade and some commercial soil moisture sensors.
 
 \subsection{Expected capacitance range}
+The FR4 material itself has an non-negligible dielectric constant of around 4.5, which means that the measurement of the PCB should be minimized to avoid it being the majority of the measured capacitance. For this reason the capacitor plates should be placed only on one side of the board with all other layers devoid of copper.
+
+To get a \emph{very} rough estimate of the capacitance using equation \ref{equation:capacitance} the dimensions are needed. The sensor is expected to have an active area of about $150~\mathrm{mm}$ by $30~\mathrm{mm}$ divided into 4 zones. Each zone thus has $1125~\mathrm{mm^2}$, assuming an interleaved structure of the one-sided capacitor with 5 tabs for each electrode, the average distance could be $2~\mathrm{mm}$, which translates to some $10\text{--}500~\mathrm{pF}$. %(0.15*0.03/4*4.5*8.85*10^-12)/0.002*10^12
 
 \subsection{Measuring method}
+After much consideration and research, it was decided to use the simplest method possible - measuring the time constant of an RC circuit. As discussed in Section \ref{section:soil-moisure-sensors-theory}, in order to meaningfully measure soil moisture, it is necessary to employ advanced methods of capacitance measurement and integrate them into a small and power efficient circuit.
 
-\subsection{Battery and charging}
+Not only that, but it needs to be stable across a very large temperature range, measure at high frequencies (>50 MHz \cite{meter_group_soil_2023}) and be able to do so at multiple depths. Because of these reasons, methods based on capacitor value comparison were rejected and any kind of method that relies on generating a reference sine wave were also dropped.
+
+The proposed solution is to use the GPIO of the MCU to control a simple charge-discharge circuit muxed into the active zones of the sensor, combined with a comparator to trigger the stop of a time measurement.
+
+%\subsection{Battery and charging}
