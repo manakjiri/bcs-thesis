@@ -119,7 +119,7 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
 \end{table}
 
 \section{Soil moisture sensor design}
-The self-contained moisture sensor board contains 
+The moisture sensor board contains 
 \begin{itemize}
     \item the capacitance measuring circuit (as described in Section \ref{section:measuring-method}) with two ranges,
     \item a dual single pole quadruple throw (Dual SP4T) mux chip for switching between the 4 sensing zones contained in the active area of the sensor,
@@ -129,7 +129,6 @@ The self-contained moisture sensor board contains
     \item two analog temperature sensor ICs and
     \item single cell rechargeable lithium battery protection circuitry.
 \end{itemize}
-
 
 
 \section{Over The Air update implementation}
@@ -321,4 +320,12 @@ Most of these factors remained constant throughout this experiment, since it was
     \includesvg[width=\textwidth]{data/range/out/relief-sf11-far2-lines.svg}
     \caption{\label{fig:range-relief-far2}Table of the success rates and graph of the second long range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
 \end{figure}
+
+\section{Soil moisture sensor validation}
+
+\begin{figure}[H]
+    \includesvg[width=.9\textwidth]{data/deployment/out/moisture.svg}
+    \caption{\label{fig:sensor-log}}
+\end{figure}
+
 
