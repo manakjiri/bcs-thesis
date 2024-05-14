@@ -1,0 +1,14 @@
+%!TEX ROOT=main.tex
+
+This work explored the requirements of wireless sensors for the use in soil moisture sensing applications, useful for managing water resources in agriculture, horticulture and home environments.
+
+A communications module based on the STM32WLE5JC System on a Chip supporting the LoRa wireless interface operating in the EU868 band was designed, manufactured and validated. Its biggest differentiator against other similar hardware is the integrated 1 Mbyte non-volatile memory, which can be used for data logging and configuration, but its main purpose is to facilitate safe and efficient Over The Air updates of the firmware running on the module. This module is versatile enough to be useful in other applications outside of this work with its small footprint of $20.32 \times 22.48~\mathrm{mm}$, low power consumption (9 mA receiving) and 16 Input/Output pins supporting interfaces such as UART, I2C and featuring 3 ADC channels.
+
+For the firmware and host-side software implementation the Rust programming language was used. STM32 support and the async-await executor were provided by the Embassy project, together with the Bootloader, while the lora-rs library was used to integrate LoRa. The firmware was split into the 
+\begin{itemize}
+    \item generic module-runtime library code, which includes hardware initialization, the OTA implementation and other utilities,
+    \item the module-gateway and module-node applications, which implement the gateway (communication with the host computer) and the node (moisture sensing application) respectively.
+\end{itemize}
+
+The soil moisture sensor is a piece of hardware containing the LoRa module, 4 capacitive sensing zones, 2 temperature sensors, measuring and charging circuitry, and is designed to be stuck into the soil to measure its moisture content. The active sensor area can measure the volumetric moisture level in 20, 50, 90 and 120 millimeters below surface, the temperature is measured near the surface and at 150 millimeters below surface. The sensor is able to charge its 330 mAh lithium cell from an integrated 300 mWp solar panel and stay operational throughout the day in the current, poorly optimized setup, however with more work it could function for weeks a single charge.
+

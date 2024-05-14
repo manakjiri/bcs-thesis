@@ -2,25 +2,27 @@
 
 Following pages include the outputs from the design stage of the LoRa module.
 
+\section{A word about the v0.2}
+
 Due to the use of incompatible crystal oscillator in this version of the LoRa module a v0.2 was also designed. It includes the TCXO modification, as discussed in \ref{section:module-schematic}, an optimized pinout and some other minor edits. The v0.2 was not manufactured because the tuning of the front-end was not realized within the deadline of the project. 
 
 The modifications needed for the v0.1 to function had little impact on the results and the additional resources that would need to be invested in manufacturing a second version with other possible defects, that could be resolved and tested on the v0.1, was not justified.
 
 \begin{figure}
     \includegraphics[page=1,angle=-90,width=\textwidth]{boards/v0.1/lora-module.pdf}
-    \caption{\label{schematic:v0.1-1}Top level schematic sheet}
+    \caption{\label{schematic:v0.1-1}Top level schematic sheet.}
 \end{figure}
 \begin{figure}
     \includegraphics[page=2,angle=-90,width=\textwidth]{boards/v0.1/lora-module.pdf}
-    \caption{\label{schematic:v0.1-2}STM32WLE5JC schematic sheet}
+    \caption{\label{schematic:v0.1-2}STM32WLE5JC schematic sheet.}
 \end{figure}
 \begin{figure}
     \includegraphics[page=3,angle=-90,width=\textwidth]{boards/v0.1/lora-module.pdf}
-    \caption{\label{schematic:v0.1-3}RF frontend schematic sheet}
+    \caption{\label{schematic:v0.1-3}RF frontend schematic sheet.}
 \end{figure}
 \begin{figure}
     \includegraphics[page=4,angle=-90,width=\textwidth]{boards/v0.1/lora-module.pdf}
-    \caption{\label{schematic:v0.1-4}Non-volatile memory schematic sheet}
+    \caption{\label{schematic:v0.1-4}Non-volatile memory schematic sheet.}
 \end{figure}
 
 \begin{figure}
@@ -28,17 +30,17 @@ The modifications needed for the v0.1 to function had little impact on the resul
     \subfloat[Back layer]{\includesvg[width=.48\textwidth]{boards/v0.1/lora-module-B_Cu.svg}}\hfill
     \subfloat[Inner GND layer]{\includesvg[width=.48\textwidth]{boards/v0.1/lora-module-In1_Cu.svg}}\hfill
     \subfloat[Inner VCC layer]{\includesvg[width=.48\textwidth]{boards/v0.1/lora-module-In2_Cu.svg}}
-    \caption{\label{board:v0.1}Module v0.1 PCB layer design}
+    \caption{\label{board:v0.1}Module v0.1 PCB layer design.}
 \end{figure}
 
 \begin{figure}
     \includesvg[width=\textwidth]{boards/v0.1/lora-module-F_Fab.svg}
-    \caption{\label{board:v0.1-components}Module v0.1 component position reference}
+    \caption{\label{board:v0.1-components}Module v0.1 component position reference.}
 \end{figure}
 
 \begin{table}
 \begin{center}
-\caption{\label{table:module-bom}LoRa module Bill Of Materials (BOM)}
+\caption{\label{table:module-bom}LoRa module Bill Of Materials (BOM).}
 \begin{tabular}{|l|l|l|} \hline
     \textbf{Qty} &	\textbf{Reference(s)} &	\textbf{Value} \\ \hline
     4   & C101, C203, C208, C214 & 4.7u \\ \hline

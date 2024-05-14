@@ -21,7 +21,7 @@ This aspect was not considered carefully enough during the parts selection, the 
     \centering
     \subfloat[top view]{\includegraphics[width=.30\textwidth]{img/tcxo-bodge1.jpg}} \hfil
     \subfloat[side view]{\includegraphics[width=.30\textwidth]{img/tcxo-bodge2.jpg}}
-    \caption{\label{fig:tcxo-bodge}The ad-hoc TCXO modification on the LoRa module}
+    \caption{\label{fig:tcxo-bodge}The ad-hoc TCXO modification on the LoRa module.}
 \end{figure}
 
 All other aspects of the MCU integration were executed according to the application notes and the datasheet  \cite{stmicroelectronics_stm32wle5xx_nodate,stmicroelectronics_how_nodate-1}, while closely following the implementations of the reference design and the nucleo development kit \cite{stmicroelectronics_stdes-wl5u4ilh_2024,stmicroelectronics_nucleo-wl55jc_2024}. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
@@ -33,7 +33,7 @@ A 4 layer board stackup was proposed in Section \ref{section:mcu}, which indeed 
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:board-layers}Module board layer signal and power assignments}
+\caption{\label{table:board-layers}Module board layer signal and power assignments.}
     \begin{tabular}{|l|l|} \hline
     \textbf{Layer name}     & \textbf{Primary purpose} \\ \hline
     F. Front layer          & Components and local connections \\ \hline
@@ -52,7 +52,7 @@ These parameters are summarized in the following Table \ref{table:board-limits} 
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:board-limits}Board layout physical limits}
+\caption{\label{table:board-limits}Board layout physical limits.}
     \begin{tabular}{|l|l|} \hline
     \textbf{Parameter}          & \textbf{Dimension} \\ \hline
     Minimum trace clearance & $0.15~\mathrm{mm}$ \\ \hline
@@ -69,7 +69,7 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 
 \begin{figure}
     \includesvg[width=.75\textwidth]{img/module-v0.1.drawio.svg}
-    \caption{\label{fig:module-v0.1}Image of the manufactured and fully assembled module with overlay highlighting its functional parts}
+    \caption{\label{fig:module-v0.1}Image of the manufactured and fully assembled module with overlay highlighting its functional parts.}
 \end{figure}
 
 \subsection{Final LoRa module specification}
@@ -77,11 +77,11 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
 
 \begin{table}[p]
 \begin{center}
-\caption{\label{table:module-specification}Final module specification}
+\caption{\label{table:module-specification}Final module specification.}
     \begin{tabular}{|l|l|} \hline
     Supply voltage range                    & $2.3\text{--}3.5~\mathrm{V}$\\ \hline
     Maximum supply current (excluding EXT)  & $65~\mathrm{mA}$\\ \hline
-    Standby supply current                  & $?~\mathrm{uA}$\\ \hline
+    %Standby supply current                  & $10--500~\mathrm{uA}$\\ \hline
     Operating temperature range             & $-40\text{--}85~\mathrm{^\circ C}$\\ \hline
     Output RF power                         & $15~\mathrm{dB}$\\ \hline
     Operating band                          & $868~\mathrm{MHz}$\\ \hline
@@ -117,6 +117,18 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
     \end{tabular}
 \end{center}
 \end{table}
+
+\subsection{Power consumption}
+Because of the improvised replacement of the crystal oscillator with a TCXO, which exhibits much higher power consumption (2--3 mA) and an inability to connect its power supply to the pin PB0, which is designed to power this oscillator and gate its power supply whenever it is not needed, the module exhibits higher than expected power draw of around 9 mA while receiving and 6 mA while idle.
+
+\begin{figure}
+    \centering
+    \subfloat[Continuous receive with transmit in the middle]{\includegraphics[width=.49\textwidth]{fig/module-current-rx-inv.png}} \hfil
+    \subfloat[Idle, transmit, receive acknowledge]{\includegraphics[width=.49\textwidth]{fig/module-current-tx-inv.png}}
+    \caption{\label{fig:module-current}Current waveform of the module measured through a 5.6 $\Omega$ resistor in different operational scenarios.}
+\end{figure}
+
+The idle power draw could be optimized to reach 10--100s of $\mu$A with the TCXO properly connected and significant time investment into the firmware development. The current waveform can be examined in Figure \ref{fig:module-current}.
 
 \section{Soil moisture sensor design}
 The moisture sensor board contains 
@@ -201,12 +213,12 @@ pub async fn sample_current_channel(
 }
 \end{lstlisting}
 
+This setup provides repeatable and stable measurements in free air and when the capacitor is completely submerged in water. It is sensitive enough to reliably detect close proximity (1 cm) or touch of a human hand.
+
 \begin{figure}
     \includegraphics[width=\textwidth]{fig/cap-measure-inv.png}
-    \caption{\label{fig:cap-measure}Sensor capacitor (in air) voltage rise time measurement when charged through a 47 k resistor, which was later replaced by a different value to increase the measuring time.}
+    \caption{\label{fig:cap-measure}Sensor capacitor (in air) voltage rise time measurement when charged through a 47k$\Omega$ resistor, which was later replaced by a different value to increase the measuring time.}
 \end{figure}
-
-This setup provides repeatable and stable measurements in free air and when the capacitor is completely submerged in water. It is sensitive enough to reliably detect close proximity (1 cm) or touch of a human hand.
 
 The capacitance can be calculated from Figure \ref{fig:cap-measure}. Given the charging voltage $U = 3.3~\mathrm{V}$ (it may not seem so from Figure \ref{fig:cap-measure}, due to the charging resistor being disconnected as soon as the threshold voltage is reached). The capacitance RC time constant is defined as
 \begin{equation} %(7.6*10^-6)/(47*10^3)
@@ -214,6 +226,9 @@ The capacitance can be calculated from Figure \ref{fig:cap-measure}. Given the c
 \end{equation}
 This result goes in line with the estimate given in Section \ref{section:expected-cap}. The reading would triple when submerged fully in water.
 
+The original 47 k$\Omega$ and 4.7 M$\Omega$ resistors were replaced by 100 k$\Omega$ and 1 M$\Omega$ resistors to improve the measuring performance. These resistors were designed with this possibility in mind and a larger footprint was used to make this process easier. the 4.7 M$\Omega$ resistor was not able to charge the circuit up to the detecting threshold of the comparator, because the rest of the components incurred parasitic resistance to ground of about 15 M$\Omega$, forming a voltage divider.
+
+\FloatBarrier
 \section{Over The Air update implementation}
 It is the responsibility of the update process to securely and reliably transfer the binary image of the firmware from the host computer through the Gateway to the designated Node (sensor) of the network. This task is complicated by the limited resources available on embedded devices and the slow and sometimes unreliable nature of the wireless connection in general.
 
@@ -222,7 +237,7 @@ The binary needs to be fragmented in order to be transmitted piece by piece. To 
 
 \begin{figure}[p]
     \includesvg[width=0.9\textwidth]{fig/ota-algo.drawio.svg}
-    \caption{\label{fig:ota-algo}Simplified flowchart depicting the Over The Air update communication process between the Gateway and the Node}
+    \caption{\label{fig:ota-algo}Simplified flowchart depicting the Over The Air update communication process between the Gateway and the Node.}
 \end{figure}
 
 Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \link{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \code{enum OtaPacket}. Packets are serialized and deserialized using the \link{https://docs.rs/postcard/latest/postcard/}{postcard} Rust package.
@@ -247,7 +262,7 @@ With increasing spreading factor, the symbol time increases and the link budget 
 
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{fig/semtech-sf-table.png}
-    \caption{\label{table:semtech-sf}Range of Spreading Factors (SF)}
+    \caption{\label{table:semtech-sf}Range of Spreading Factors (SF).}
 \end{figure}
 
 Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
@@ -265,7 +280,7 @@ All LoRa modulation and packet parameters were set in firmware (commit \link{htt
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:range-test-parameters}LoRa parameters for range testing}
+\caption{\label{table:range-test-parameters}LoRa parameters for range testing.}
     \begin{tabular}{|l|l|} \hline
     Frequency             & $869.525~\mathrm{MHz}$\\ \hline
     RF power output       & $15~\mathrm{dB}$\\ \hline
@@ -290,19 +305,19 @@ LoRa modules used the MOLEX 105262-0003 antenna and Nucleo boards used their sto
     \includegraphics[width=.25\textwidth]{img/range-pole-base.jpg}\hfil
     \includegraphics[width=.25\textwidth]{img/range-pole-bottom.jpg}\hfil
     \includegraphics[width=.24\textwidth]{img/range-pole-top.jpg}
-    \caption{\label{fig:range-nodes}Close-up of the pole with Nodes attached for range testing}
+    \caption{\label{fig:range-nodes}Close-up of the pole with Nodes attached for range testing.}
 \end{figure}
 
 \begin{figure}[p]
     \centering
     \includegraphics[width=.35\textwidth]{img/range-gateway1.jpg}\hfil
     \includegraphics[width=.25\textwidth]{img/range-gateway2.jpg}
-    \caption{\label{fig:range-gateway}Close-up of Nucleo attached to the car acting as the Gateway for range testing}
+    \caption{\label{fig:range-gateway}Close-up of Nucleo attached to the car acting as the Gateway for range testing.}
 \end{figure}
 
 \begin{table}[H]
 \begin{center}
-\caption{\label{table:range-test-devices}Devices used for range testing}
+\caption{\label{table:range-test-devices}Devices used for range testing.}
     \begin{tabular}{|l|l|l|} \hline
     \textbf{Device} & \textbf{Height\footnote{Measured distance from the root of the antenna to ground level} [m]} & \textbf{Address}\footnote{Data presented will use these addresses to distinguish between the different Nodes used in the experiment} \\ \hline
     Nucleo (Gateway) & 1.65 & 1 \\ \hline
@@ -369,18 +384,7 @@ While the range was higher than with SF5, the connection quality is somewhat wor
     %\end{table}
 \end{minipage}
 \caption{\label{table:range-results}Success rates for each node and location at spreading factors 5 and 11.}
-\end{figure} 
-
-\subsubsection{Maximum distance}
-Finding the limit at FS11 proved to be more difficult than anticipated. The surrounding environment either contained too favorable, or absolutely unfavorable conditions at further distances. Two additional data points displayed in Figures \ref{fig:range-relief-far1} and \ref{fig:range-relief-far2} were gathered at locations outside of the planed path.
-
-The first Figure \ref{fig:range-relief-far1} shows the only flawless connection with the Nucleo Node 4, which must have been facilitated thanks to a signal reflection from some other feature in the environment. While the connection with Node 3 was initiated and it acknowledged 2 packets, the connection later timed out after the Node failed to respond in 30 more attempts.
-
-The second location, captured by Figure \ref{fig:range-relief-far2}, exhibited flawless transmission of the payload for all 3 Nodes at a distance of 1.2 km with occlusion.
-
-The nature of LoRa is that it performs well within its large link budget, but once that is exhausted, the performance drops off rapidly. The attenuation of the medium through which the electromagnetic wave travels changes with temperature and saturation with humidity and particulate, the position of the antennae may change slightly due to wind and the onboard oscillators can drift with temperature and power supply.
-
-Most of these factors remained constant throughout this experiment, since it was done within a 1.5 hour window, but must be considered for long-term deployments.
+\end{figure}
 
 \begin{figure}[p]
     \centering
@@ -404,8 +408,26 @@ Most of these factors remained constant throughout this experiment, since it was
     \caption{\label{fig:range-relief-far2}Table of the success rates and graph of the second long range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
 \end{figure}
 
+\subsubsection{Maximum distance}
+Finding the limit at FS11 proved to be more difficult than anticipated. The surrounding environment either contained too favorable, or absolutely unfavorable conditions at further distances. Two additional data points displayed in Figures \ref{fig:range-relief-far1} and \ref{fig:range-relief-far2} were gathered at locations outside of the planed path.
+
+The first Figure \ref{fig:range-relief-far1} shows the only flawless connection with the Nucleo Node 4, which must have been facilitated thanks to a signal reflection from some other feature in the environment. While the connection with Node 3 was initiated and it acknowledged 2 packets, the connection later timed out after the Node failed to respond in 30 more attempts.
+
+The second location, captured by Figure \ref{fig:range-relief-far2}, exhibited flawless transmission of the payload for all 3 Nodes at a distance of 1.2 km with occlusion.
+
+The nature of LoRa is that it performs well within its large link budget, but once that is exhausted, the performance drops off rapidly. The attenuation of the medium through which the electromagnetic wave travels changes with temperature and saturation with humidity and particulate, the position of the antennae may change slightly due to wind and the onboard oscillators can drift with temperature and power supply.
+
+Most of these factors remained constant throughout this experiment, since it was done within a 1.5 hour window, but must be considered for long-term deployments.
+
 \section{Soil moisture sensor validation}
 A practical experiment was conducted to validate the functioning of the soil moisture sensor itself.
+
+\subsection{Hypothesis}
+The sensor should detect soil moisture based on the experiments done during sensor validation.
+
+\subsection{Prerequisite}
+\subsection{Methodology}
+\subsection{Results}
 
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/moisture.svg}
@@ -414,7 +436,7 @@ A practical experiment was conducted to validate the functioning of the soil moi
 
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/power.svg}
-    \caption{\label{fig:power-log}Battery voltage and charging power provided by the 300 mWp solar panel. The experiment was started with the battery almost empty, it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following day offered full sun throughout.}
+    \caption{\label{fig:power-log}Battery voltage and charging power (that is, excluding the power consumed by the sensor and the module itself) provided by the 300 mWp solar panel. The experiment was started with the battery almost empty, it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following day offered full sun throughout.}
 \end{figure}
 
 
