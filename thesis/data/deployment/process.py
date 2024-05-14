@@ -11,8 +11,8 @@ TIME_FORMAT = '%y-%m-%d %H:%M.%S'
 DATE_FORMATTER = DateFormatter('%d.%m %Hh')
 SAMPLING_RATE = 15/60 # every 15 seconds
 BATTERY_VOLTAGE_MAX = 4.2 # V
-BATTERY_VOLTAGE_MIN = 3.3 # V
-BATTERY_VOLTAGE_EMPTY = 2.9 # V
+BATTERY_VOLTAGE_MIN = 3.35 # V
+BATTERY_VOLTAGE_EMPTY = 2.8 # V
 BATTERY_CAPACITY = 0.300 # Ah
 BATTERY_CAPACITY_EMPTY = 0.030 # Ah
 
@@ -91,7 +91,8 @@ def main():
         data.set_index('time', inplace=True)
         data.pop('current')
         data = data.iloc[400:]
-        data['voltage'] = data[data['voltage'] > 2.8]['voltage']
+        data['voltage'] = data[data['voltage'] > BATTERY_VOLTAGE_EMPTY]['voltage']
+        data['voltage'] = data['voltage'].apply(average, window=20, by_row=False)
         fig, ax = plt.subplots(figsize=(9, 3))
 
         start = data[data.index == pd.to_datetime('24-05-11 18:30.03', format=TIME_FORMAT)].index[0]
@@ -104,7 +105,7 @@ def main():
             new = data[start:end]['voltage'].mean()
             diff = new - prev
 
-            if diff > 0 and new > BATTERY_VOLTAGE_EMPTY:
+            if diff > 0 and prev > BATTERY_VOLTAGE_EMPTY:
                 if new > BATTERY_VOLTAGE_MIN:
                     charge = diff / (BATTERY_VOLTAGE_MAX - BATTERY_VOLTAGE_MIN) * BATTERY_CAPACITY
                 else:

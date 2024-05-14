@@ -11,7 +11,7 @@
 \usepackage{svg}
 \usepackage{placeins}
 \usepackage[capposition=bottom]{floatrow}
-\usepackage{listings}
+\usepackage{listings, listings-rust}
 \usepackage{multirow}
 \usepackage{adjustbox}
 
@@ -74,9 +74,9 @@
 	\end{twocolumnfrontmatterpage}
 }
 
-\lstset{basicstyle=\ttfamily}
+\lstset{language=Rust, style=boxed}
 
-\newcommand{\code}[1]{\lstinline[language=C]{#1}}
+\newcommand{\code}[1]{\lstinline{#1}}
 \newcommand{\link}[2]{\href{#1}{#2}\footnote{#1}}
 
 \setlength{\parskip}{1.5ex plus 0.2ex minus 0.1ex}

@@ -264,7 +264,7 @@ Given that the primary point of this work is to create a proof-of-concept sensin
 
 A single board construction is suitable, as it is simple, self-contained and can be made through standard PCB manufacturers. It is also commonly seen in hobby grade and some commercial soil moisture sensors.
 
-\subsection{Expected capacitance range}
+\subsection{\label{section:expected-cap}Expected capacitance range}
 The FR4 material itself has an non-negligible dielectric constant of around 4.5, which means that the measurement of the PCB should be minimized to avoid it being the majority of the measured capacitance. For this reason the capacitor plates should be placed only on one side of the board with all other layers devoid of copper.
 
 To get a \emph{very} rough estimate of the capacitance using equation \ref{equation:capacitance} the dimensions are needed. The sensor is expected to have an active area of about $150~\mathrm{mm}$ by $30~\mathrm{mm}$ divided into 4 zones. Each zone thus has $1125~\mathrm{mm^2}$, assuming an interleaved structure of the one-sided capacitor with 5 tabs for each electrode, the average distance could be $2~\mathrm{mm}$, which translates to some $10\text{--}500~\mathrm{pF}$. %(0.15*0.03/4*4.5*8.85*10^-12)/0.002*10^12

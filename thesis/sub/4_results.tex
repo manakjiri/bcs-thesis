@@ -5,7 +5,7 @@ As discussed in section \ref{section:module-architecture}, where the LoRa module
 
 The Open source KiCad Electronic Design Automation (EDA) software was used throughout the project to create these designs.
 
-\subsection{Schematic}
+\subsection{\label{section:module-schematic}Schematic}
 While the \ref{section:module-architecture} focused on the fundamental parts of the design, many details were left up to the later development stages, once the overall system implementation is more clear. This section will focus and expand on these parts of the design.
 
 Of note is the selection of the main clock source for the MCU \ref{section:mcu}. In this case the only two options are to use a Crystal oscillator (XO) or an Temperature Compensated XO (TCXO). Application note AN5646 (STMicroelectronics \cite{stmicroelectronics_how_nodate-1}) summarizes the main differences as
@@ -130,6 +130,89 @@ The moisture sensor board contains
     \item single cell rechargeable lithium battery protection circuitry.
 \end{itemize}
 
+The design files are included in picture form in the Appendix \ref{chapter:sensor-files}. Of note is the performance of the capacitance measuring circuit, which was validated using an oscilloscope connected to the test-points on the sensor board, see Figure \ref{fig:cap-measure}.
+
+The following code is responsible for each sample conversion, refer to the comments for principle explanation.
+\begin{lstlisting}
+pub async fn sample_current_channel(
+        &mut self, range: SoilSensorRange
+    ) -> SoilSensorResult {
+    /* 1. Handle the range selection by setting the required charge 
+    pin as output and the unused pin as high-impedance input. */
+    match range {
+        SoilSensorRange::Low => {
+            self.chg_1m.set_as_input(Pull::None);
+            self.chg_100k.set_as_output(Speed::Low);
+            self.chg_100k.set_low();
+        },
+        SoilSensorRange::High => {
+            self.chg_100k.set_as_input(Pull::None);
+            self.chg_1m.set_as_output(Speed::Low);
+            self.chg_1m.set_low();
+        },
+    }
+    /* 2. Bridge the connection between the selected capacitor 
+    and the rest of the measuring circuit (the channel selection 
+    happens before this function) and discharge the capacitor. */
+    self.dischg.set_low();
+    self.mux_nen.set_low();
+    Timer::after_micros(100).await;
+    /* Note: the DISCH pin is configured as open-drain output. */
+    self.dischg.set_high();
+    /* 3. Start charging the capacitor through the selected resistor. */
+    match range {
+        SoilSensorRange::Low => {
+            self.chg_100k.set_high();
+        },
+        SoilSensorRange::High => {
+            self.chg_1m.set_high();
+        },
+    }
+    let start = Instant::now();
+    /* 4. Await either the interrupt from the COMParator input
+    or a timeout in case a wrong range was selected. */
+    let ret = match select(
+        self.comp.wait_for_high(), 
+        Timer::after_millis(2)
+    ).await {
+        Either::First(_) => {
+            /* 5a. Calculate the measured time to be returned 
+            in case of successful conversion */
+            let mut elapsed = start.elapsed();
+            match range {
+                SoilSensorRange::Low => {
+                    elapsed *= 10;
+                },
+                SoilSensorRange::High => {
+                    elapsed *= 1;
+                },
+            }
+            SoilSensorResult::Ok(elapsed.as_micros() as u16)
+        },
+        /* 5b. Timeout */
+        Either::Second(_) => SoilSensorResult::Timeout,
+    };
+    /* 6. Return all pins to default state */
+    self.chg_100k.set_as_input(Pull::None);
+    self.chg_1m.set_as_input(Pull::None);
+    self.dischg.set_low();
+    self.mux_nen.set_high();
+    ret
+}
+\end{lstlisting}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{fig/cap-measure-inv.png}
+    \caption{\label{fig:cap-measure}Sensor capacitor (in air) voltage rise time measurement when charged through a 47 k resistor, which was later replaced by a different value to increase the measuring time.}
+\end{figure}
+
+This setup provides repeatable and stable measurements in free air and when the capacitor is completely submerged in water. It is sensitive enough to reliably detect close proximity (1 cm) or touch of a human hand.
+
+The capacitance can be calculated from Figure \ref{fig:cap-measure}. Given the charging voltage $U = 3.3~\mathrm{V}$ (it may not seem so from Figure \ref{fig:cap-measure}, due to the charging resistor being disconnected as soon as the threshold voltage is reached). The capacitance RC time constant is defined as
+\begin{equation} %(7.6*10^-6)/(47*10^3)
+    \tau = RC ~~~\rightarrow~~~ C = \dfrac{\tau}{R} = \dfrac{7.6 \cdot 10^{-6}}{47 \cdot 10^3} = 161~\mathrm{pF}.
+\end{equation}
+This result goes in line with the estimate given in Section \ref{section:expected-cap}. The reading would triple when submerged fully in water.
 
 \section{Over The Air update implementation}
 It is the responsibility of the update process to securely and reliably transfer the binary image of the firmware from the host computer through the Gateway to the designated Node (sensor) of the network. This task is complicated by the limited resources available on embedded devices and the slow and sometimes unreliable nature of the wireless connection in general.
@@ -322,6 +405,7 @@ Most of these factors remained constant throughout this experiment, since it was
 \end{figure}
 
 \section{Soil moisture sensor validation}
+A practical experiment was conducted to validate the functioning of the soil moisture sensor itself.
 
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/moisture.svg}
@@ -330,7 +414,7 @@ Most of these factors remained constant throughout this experiment, since it was
 
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/power.svg}
-    \caption{\label{fig:power-log}Battery voltage and charging power provided by the 300mW peak solar panel. The experiment was started with the battery almost empty, it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following day offered full sun throughout.}
+    \caption{\label{fig:power-log}Battery voltage and charging power provided by the 300 mWp solar panel. The experiment was started with the battery almost empty, it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following day offered full sun throughout.}
 \end{figure}
 
 
