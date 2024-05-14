@@ -323,9 +323,14 @@ Most of these factors remained constant throughout this experiment, since it was
 
 \section{Soil moisture sensor validation}
 
-\begin{figure}[H]
-    \includesvg[width=.9\textwidth]{data/deployment/out/moisture.svg}
-    \caption{\label{fig:sensor-log}}
+\begin{figure}[p]
+    \includesvg[width=\textwidth]{data/deployment/out/moisture.svg}
+    \caption{\label{fig:sensor-log}Filtered readings from the individual sensor zones. Zone 1 (green) is in free air acting as control, zones 2 and 3 below it (brown and purple) are completely submerged in the soil. Zone 4 (magenta) is in the boundary layer of soil and Ceramsite at the bottom of the pot. The sample was watered 7 days before the marked point of watering (sharp increase), after which a decline in the measured capacitance can be observed, corresponding to the sample drying out. The sensor run out of power during the night, these areas are highlighted in grey.}
+\end{figure}
+
+\begin{figure}[p]
+    \includesvg[width=\textwidth]{data/deployment/out/power.svg}
+    \caption{\label{fig:power-log}Battery voltage and charging power provided by the 300mW peak solar panel. The experiment was started with the battery almost empty, it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following day offered full sun throughout.}
 \end{figure}
 
 

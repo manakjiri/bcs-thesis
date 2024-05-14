@@ -1,0 +1,5 @@
+#!/bin/bash
+
+python process.py power --no-show
+python process.py moisture --no-show
+
