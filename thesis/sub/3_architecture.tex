@@ -12,7 +12,7 @@ This design will go a step further and also separate the communication interface
 
 While this work is mainly concerned with the soil moisture sensing application, having a LoRa compatible unit, which is capable of OTA updates and has enough processing power to handle most sensing and simple control task, while being power-efficient enough to be battery powered, is an interesting sub-goal of this work. The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
 
-\section{Generic LoRa module requirements}
+\section{LoRa module requirements}
 \subsection{\label{section:ota-update-support}Over The Air update support}
 There are two general approaches to implementing OTA updates \cite{bucklin_brown_over--air_2024,noauthor_android_2024}. First is to split the firmware into a so-called Bootloader, a binary which runs before the main application and implements a way to communicate with the master node, such that it is able to overwrite the application. The application usually also needs to communicate with the master node in order to transmit sensor data and accept commands, which leads to duplication of all the driver and protocol logic required to use the communication interface.
 
@@ -33,7 +33,7 @@ Perhaps the most important benefit is that, with proper Bootloader the support \
     \caption{\label{fig:bootloader-flash}The bootloader divides the storage into 4 main partitions.}
 \end{figure}
 
-\subsection{\label{section:application-case-studies}Generic LoRa module applications}
+\subsection{\label{section:application-case-studies}LoRa module applications}
 In order to find the optimal boundary between the sensor implementation part and the Interface and Processing part, as defined in Figure \ref{fig:device-split}, it is useful to look at the possible applications of the proposed module.
 
 \subsubsection{Indoor environment sensor array}
@@ -105,7 +105,7 @@ The manufacturer also offers a development board, the NUCLEO-WL55JC (\ref{fig:nu
     \caption{\label{fig:nucleo-and-reference}Nucleo development kit and the reference design board.}
 \end{figure}
 
-Each of the designs focuses on optimizing different parameters depending on the application priorities and their codification follows table \ref{fig:reference-design-codification}, from which the defining features are apparent. For this work, application footprint was one of the top priorities, so the lower-power $15~\mathrm{dB}$ version with IPD was selected.
+Each of the designs focuses on optimizing different parameters depending on the application priorities and their codification follows table \ref{fig:reference-design-codification}, from which the defining features are apparent. For this work, application footprint was one of the top priorities, so the lower-power $15~\mathrm{dBm}$ version with IPD was selected.
 
 IPD stands for Integrated Passive Device, it consists of a balun and a harmonic filter. This circuitry is usually realized using passive components, which is cheaper, but takes up more board space (see Figure \ref{fig:frontend-comparison} for comparison), is more prone to design mistakes and tuning mismatch. This particular IPD was specifically designed for STM32WL line of microcontrollers in this configuration \cite{stmicroelectronics_balfhb-wl-05d3_2024}.
 
@@ -133,7 +133,7 @@ The selected MCU supports wide input voltage of $2\text{--}3.6~\mathrm{V}$ thank
 
 A separate, switchable power-rail is a feature deemed necessary by some considered applications in \ref{section:application-case-studies}. This can be achieved using a built-in MOSFET - such power rail could be used to save power even by powering off some parts of the module itself.
 
-\subsection{Integrated non-volatile memory}
+\subsection{Non-volatile memory}
 As outlined in the OTA update support section \ref{section:ota-update-support}, an external memory is needed to store the application binary during the download process. This memory does not need to be non-volatile, but since it is comparatively cheaper than RAM and provides a backup in case of a power loss, the choice is apparent.
 
 LoRa data rates are in the realm of 100--1000 bytes per second, even less in real-world applications, thus basically any available interface can be used. The capacity needs to be at-least equal to the built-in FLASH memory of the MCU \ref{section:mcu}, which is $256~\mathrm{kB}$.

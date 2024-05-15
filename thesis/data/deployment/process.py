@@ -77,7 +77,7 @@ def main():
         ax.xaxis.set_major_formatter(DATE_FORMATTER)
 
         ax_ledend.axis('off')
-        ax_ledend.imshow(plt.imread('../../boards/sensor/zones.png'))
+        ax_ledend.imshow(plt.imread('../../boards/sensor/zones-sharp.png'))
 
         fig.autofmt_xdate()
         plt.tight_layout()

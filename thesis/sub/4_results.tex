@@ -83,7 +83,7 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
     Maximum supply current (excluding EXT)  & $65~\mathrm{mA}$\\ \hline
     %Standby supply current                  & $10--500~\mathrm{uA}$\\ \hline
     Operating temperature range             & $-40\text{--}85~\mathrm{^\circ C}$\\ \hline
-    Output RF power                         & $15~\mathrm{dB}$\\ \hline
+    Output RF power                         & $15~\mathrm{dBm}$\\ \hline
     Operating band                          & $868~\mathrm{MHz}$\\ \hline
     RF connector                            & U.FL \\ \hline
     Module connection type                  & Castellated hole (0.1 inch pitch) \\ \hline
@@ -118,6 +118,27 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
 \end{center}
 \end{table}
 
+\subsection{Radio performance}
+The output RF characteristics were validated using a spectrum analyzer connected directly to the RF output of the module through an U.FL pigtail.
+
+The module was setup in ``continuous wave'' mode at 869.525 MHz with power of 15 dBm, which produced the spectrogram visible in Figure \ref{fig:rf-mask-wave}. Here we can observe, that the peak power was measured at 12.60 dBm and the frequency is off by 150 kHz.
+
+\begin{figure}
+    \includegraphics[width=.9\textwidth]{fig/rf-mask-wave.png}
+    \caption{\label{fig:rf-mask-wave}Measurement of the module RF output in ``continuous wave'' mode at 869.525 MHz with power of 15 dBm}
+\end{figure}
+
+Next two measurements in Figure \ref{fig:rf-power}, are captures of the module transmitting 8 bytes of data at SF5, bandwidth 250 kHz and coding rate 4:5, the rest of the parameters is identical as in Table \ref{table:range-test-parameters}. 
+
+These measurements show that the output power stays stable at 13 dBm once modulating and that there are smooth transitions and power ramp up, suggesting good power supply and power management design. The mask visible in the spectrum is uniform, without any unexpected artifacts.
+
+\begin{figure}[p]
+    \centering
+    \subfloat[Continuous receive with transmit in the middle]{\includegraphics[width=.9\textwidth]{fig/rf-transmit-250khz.png}} \hfil
+    \subfloat[Idle, transmit, receive acknowledge]{\includegraphics[width=.9\textwidth]{fig/rf-power.png}}
+    \caption{\label{fig:rf-power}Capture of the module transmitting 8 bytes of data at SF5, bandwidth 250 kHz and coding rate 4:5, the rest of the parameters is identical as in Table \ref{table:range-test-parameters}}
+\end{figure}
+
 \subsection{Power consumption}
 Because of the improvised replacement of the crystal oscillator with a TCXO, which exhibits much higher power consumption (2--3 mA) and an inability to connect its power supply to the pin PB0, which is designed to power this oscillator and gate its power supply whenever it is not needed, the module exhibits higher than expected power draw of around 9 mA while receiving and 6 mA while idle.
 
@@ -128,8 +149,10 @@ Because of the improvised replacement of the crystal oscillator with a TCXO, whi
     \caption{\label{fig:module-current}Current waveform of the module measured through a 5.6 $\Omega$ resistor in different operational scenarios.}
 \end{figure}
 
-The idle power draw could be optimized to reach 10--100s of $\mu$A with the TCXO properly connected and significant time investment into the firmware development. The current waveform can be examined in Figure \ref{fig:module-current}.
+The idle power draw could be optimized to reach 10--100s of $\mu$A with the TCXO properly connected and significant time investment into the firmware development. The current consumption waveform can be examined in Figure \ref{fig:module-current}.
 
+\FloatBarrier
+\newpage
 \section{Soil moisture sensor design}
 The moisture sensor board contains 
 \begin{itemize}
@@ -215,8 +238,8 @@ pub async fn sample_current_channel(
 
 This setup provides repeatable and stable measurements in free air and when the capacitor is completely submerged in water. It is sensitive enough to reliably detect close proximity (1 cm) or touch of a human hand.
 
-\begin{figure}
-    \includegraphics[width=\textwidth]{fig/cap-measure-inv.png}
+\begin{figure}[H]
+    \includegraphics[width=.8\textwidth]{fig/cap-measure-inv.png}
     \caption{\label{fig:cap-measure}Sensor capacitor (in air) voltage rise time measurement when charged through a 47k$\Omega$ resistor, which was later replaced by a different value to increase the measuring time.}
 \end{figure}
 
@@ -283,7 +306,7 @@ All LoRa modulation and packet parameters were set in firmware (commit \link{htt
 \caption{\label{table:range-test-parameters}LoRa parameters for range testing.}
     \begin{tabular}{|l|l|} \hline
     Frequency             & $869.525~\mathrm{MHz}$\\ \hline
-    RF power output       & $15~\mathrm{dB}$\\ \hline
+    RF power output       & $15~\mathrm{dBm}$\\ \hline
     Bandwidth             & $250~\mathrm{kHz}$\\ \hline
     Coding rate           & $4:8$ (2x overhead) \\ \hline
     Bandwidth             & $250~\mathrm{kHz}$\\ \hline
