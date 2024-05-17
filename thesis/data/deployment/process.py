@@ -49,16 +49,26 @@ def main():
         print(indexes)
         value_max, value_min = 650, 250
         
-        for i in range(len(indexes) - 1):
-            d = data.iloc[indexes[i]:indexes[i+1]]
-            #d.plot(ax=ax, alpha=0.1, color=colors)
-            
-            #filtered = d.apply(average, window=4*45)
-            filtered = d.apply(signal.savgol_filter, window_length=4*60, polyorder=2, mode='nearest')
-            #sos = signal.butter(2, 1/3600, 'low', fs=SAMPLING_RATE, output='sos')
-            #filtered = data.apply(lambda x: signal.sosfilt(sos, x))
-            #filtered = data.apply(average, window=4*15)
-            filtered.plot(ax=ax, color=colors)
+        #for i in range(len(indexes) - 1):
+        #    d = data.iloc[indexes[i]:indexes[i+1]]
+        #    #d.plot(ax=ax, alpha=0.1, color=colors)
+        #    
+        #    #filtered = d.apply(average, window=4*45)
+        #    filtered = d.apply(average, window=4*30)
+        #    #filtered = filtered.apply(signal.savgol_filter, window_length=4*60, polyorder=2, mode='nearest')
+        #    #sos = signal.butter(2, 1/3600, 'low', fs=SAMPLING_RATE, output='sos')
+        #    #filtered = data.apply(lambda x: signal.sosfilt(sos, x))
+        #    #filtered = data.apply(average, window=4*15)
+        #    #filtered = filtered.iloc[200:]
+        #    #filtered.plot(ax=ax, color=colors)
+
+        filtered = data.apply(average, window=int(SAMPLING_RATE*60*5))
+        print(filtered.iloc[:5])
+        filtered = filtered.asfreq(freq='1min').interpolate()
+        sos = signal.butter(2, 1/3600/3, 'low', fs=1/60, output='sos')
+        filtered = filtered.apply(lambda x: signal.sosfilt(sos, x)).iloc[100:]
+        print(filtered.iloc[:5])
+        filtered.plot(ax=ax, color=colors)
 
         for i in range(0, len(indexes) - 2):
             d1 = data.iloc[indexes[i]:indexes[i+1]]
@@ -90,12 +100,11 @@ def main():
         data['time'] = pd.to_datetime(data['time'], format=TIME_FORMAT)
         data.set_index('time', inplace=True)
         data.pop('current')
-        data = data.iloc[400:]
         data['voltage'] = data[data['voltage'] > BATTERY_VOLTAGE_EMPTY]['voltage']
         data['voltage'] = data['voltage'].apply(average, window=20, by_row=False)
         fig, ax = plt.subplots(figsize=(9, 3))
 
-        start = data[data.index == pd.to_datetime('24-05-11 18:30.03', format=TIME_FORMAT)].index[0]
+        start = data.index[0]
         print(start)
         prev = data['voltage'].iloc[0]
         delta = pd.Timedelta(minutes=60)
