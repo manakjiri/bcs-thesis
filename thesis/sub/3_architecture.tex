@@ -1,7 +1,7 @@
 %!TEX ROOT=main.tex
 
 \section{Analysis of the System}
-As was discussed in the Introduction \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application. With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}) a practice commonly seen in the industry. While this design does not follow IEEE 1451 \cite{mark_ieee_nodate} specifically, the common pattern is present.
+As was discussed in Chapter \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof-of-concept application. With that being said, one can easily discern separate sub-tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}) a practice commonly seen in the industry. While this design does not specifically follow IEEE 1451 \cite{mark_ieee_nodate} specifically, the common pattern is present nevertheless.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{fig/ieee-1451.png}
@@ -10,11 +10,13 @@ As was discussed in the Introduction \ref{chapter:introduction}, the main goal o
 
 This design will go a step further and also separate the communication interface and the sensor on the hardware level, which will bring many advantages - future sensor implementations can be made with only effort being put into the sensor itself; the wireless part and most of the development and testing overhead can be solved once, not repeated for every sensor type; once a sensor compatible with the interface exists, it can be made compatible with future versions of the interface.
 
-While this work is mainly concerned with the soil moisture sensing application, having a LoRa compatible unit, which is capable of OTA updates and has enough processing power to handle most sensing and simple control task, while being power-efficient enough to be battery powered, is an interesting sub-goal of this work. The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
+While this thesis is mainly concerned with the soil moisture sensing application, having a LoRa compatible unit, which is capable of OTA updates and has enough processing power to handle most sensing and simple control task, while being power-efficient enough to be battery powered, is an interesting sub-goal of this work. The following sections will go through the process of finding requirements for such hardware and explain the compromises made.
 
-\section{LoRa module requirements}
-\subsection{\label{section:ota-update-support}Over The Air update support}
-There are two general approaches to implementing OTA updates \cite{bucklin_brown_over--air_2024,noauthor_android_2024}. First is to split the firmware into a so-called Bootloader, a binary which runs before the main application and implements a way to communicate with the master node, such that it is able to overwrite the application. The application usually also needs to communicate with the master node in order to transmit sensor data and accept commands, which leads to duplication of all the driver and protocol logic required to use the communication interface.
+\section{LoRa Module Requirements}
+\subsection{\label{section:ota-update-support}Over--the--air update support}
+To re-iterate the Introduction \ref{chapter:introduction}: \emph{An update can bring support for additional soil types, improve the accuracy or prolong the battery life. It also, crucially, allows this to happen without any operator intervention and transforms a one-shot solution, into one that is, over time, able to support more sensors and features with minimal downtime}.
+
+There are two general approaches to implementing OTA updates \cite{bucklin_brown_over--air_2024,noauthor_android_2024}. First approach is to split the firmware into a so-called Bootloader, a binary which runs before the main application and implements a way to communicate with the master node, such that it is able to overwrite the application. The application usually also needs to communicate with the master node in order to transmit sensor data and accept commands, which leads to duplication of all the driver and protocol logic required to use the communication interface.
 
 The first option provides some level of separation between the application and the Bootloader, which could be useful in cases where the application is in some ways ``untrusted'', either due to security measures limiting the potential impact of bugs, or because it is actually provided by a different vendor and so on. This could be especially valid for cases, where the processor provides privileged execution modes etc.
 
@@ -26,17 +28,19 @@ This is usually a challenge for embedded devices, where the built-in FLASH memor
 
 Integrating additional memory increases the cost, but it can be used for other proposes besides OTA updates, such as storing configuration, calibration data and logs, or if the application integrates some sort of graphical display, may be required to store the assets, such as images and fonts.
 
-Perhaps the most important benefit is that, with proper Bootloader the support \cite{drogue_iot_firmware_2024,embassy_project_documentation_bootloader_2024}, the application binaries can be swapped instead of the old one being deleted, which opens up the possibility of rolling back unsuccessful updates, that could be considered a crucial feature in some applications and is not practical to do in the first OTA approach that was presented.
+The most important benefit is that, considering proper Bootloader support \cite{drogue_iot_firmware_2024,embassy_project_documentation_bootloader_2024}, the application binaries can be swapped instead of deleting the old binary, which opens the possibility of rolling back unsuccessful updates. Such a possibility could be considered a crucial feature in some applications and would not be practical to implement using the first OTA approach presented above.
+
+To summarize, the LoRa module should have enough non-volatile memory available to perform updates and stay relevant for future iterations of the firmware. Section \ref{section:ota-implementation} will describe the implementation of the update OTA protocol.
 
 \begin{figure}
     \includegraphics[width=.6\textwidth]{fig/bootloader_flash.png}
     \caption{\label{fig:bootloader-flash}The bootloader divides the storage into 4 main partitions.}
 \end{figure}
 
-\subsection{\label{section:application-case-studies}LoRa module applications}
+\subsection{\label{section:application-case-studies}Potential LoRa Module Applications}
 In order to find the optimal boundary between the sensor implementation part and the Interface and Processing part, as defined in Figure \ref{fig:device-split}, it is useful to look at the possible applications of the proposed module.
 
-\subsubsection{Indoor environment sensor array}
+\subsubsection{Generic usecase of the LoRa module - Indoor environment sensors}
 Let us consider this basic, typical, use-case for such a communication module. This application can implement the following sensors: thermometer, hygrometer (relative humidity sensor), human presence detector, air quality sensor (CO$^2$e, smoke, ...) and a light sensor.
 
 We can omit some of the listed sensors in the actual application, but the generic LoRa module should be able to support the full configuration without any kind of co-processor. Main limiting factor will probably be the number of communication peripherals a general purpose input output (GPIO) pins.
@@ -49,18 +53,18 @@ Other environmental sensors, such as air quality sensors, also implement similar
 
 On the note of power draw, this application may wish to be battery powered or remain mains powered, this will affect the capabilities and the end use-case. When running on battery, the active on-time is limited to periodic sampling of the environment a handful times per hour. Being able to power down all sensors can prove useful in this application to greatly improve the battery life. On the other hand, if the application aims at fast reaction times, switching on the lights when presence detected for example, and the inclusion of all the sensors listed, it will need to be mains powered to be practical.
 
-\subsubsection{Light dimmer}
+\subsubsection{Generic module usecase - Light dimmer}
 For this generic application of the LoRa module only a timer peripheral capable of generating PWM of sufficient frequency and resolution on a handful of channels is needed. Such peripheral exists on most modern microcontrollers.
 
 If local control is also required, a rotary encoder for example, which can be sampled using a digital input interrupt or a dedicated peripheral designed to handle encoders.
 
-\subsubsection{Soil moisture sensor}
+\subsubsection{Generic module usecase - Soil moisture sensor}
 The defining features of this application are outdoor use, battery power with the possibility of including a solar panel for zero-maintenance operation, long range and low dynamic duty-cycle.
 
-\subsubsection{Gateway}
+\subsubsection{Generic module usecase - Gateway}
 The module should be versatile enough to be also able to act as a communication interface for a host computer to connect to and manage the network of sensors, though other more specialized hardware could also be used for this use-case.
 
-\subsection{\label{section:final-requirements}Final requirements}
+\subsection{\label{section:final-requirements}Final Requirements}
 The following list of specs was derived from the above use-cases of the generic LoRa module. These requirements should ensure that the LoRa module will be able to handle a broad range of tasks, including the soil moisture sensor implementation.
 \begin{itemize}
     \item 2.8--3.3 V nominal voltage range - the lower the minimum threshold, the better - for being able to harvest as much energy as possible from ie. a coin-cell battery
@@ -75,10 +79,10 @@ The following list of specs was derived from the above use-cases of the generic 
     \item low cost
 \end{itemize}
 
-\subsubsection{Existing hardware satisfying these requirements}
+\subsubsection{Existing Hardware Satisfying These Requirements}
 SeedStudio Wio-E5-LE \cite{stmicroelectronics_lora_2024, seeedstudio_wio-e5-wireless_2024} is a cost effective LoRa module integrating the STM32WLE5JC SOC, however it lacks the additional FLASH memory and is thus unsuitable.
 
-\section{\label{section:module-architecture}LoRa module architecture and parts selection}
+\section{\label{section:module-architecture}LoRa Module Architecture and Parts Selection}
 Solderable PCB modules are a standard way of integrating existing solutions into custom ones. Modules providing wireless connectivity in particular are very common, see Figure \ref{fig:wireless-modules}.
 
 \begin{figure}
@@ -100,8 +104,8 @@ The manufacturer also offers a development board, the NUCLEO-WL55JC (\ref{fig:nu
 
 \begin{figure}
     \centering
-    \subfloat[\label{fig:nucleo} NUCLEO-WL55JC \cite{stmicroelectronics_nucleo-wl55jc_2024}]{\includegraphics[width=.3\textwidth]{img/nucleo-wl55jc.jpg}}
-    \subfloat[\label{fig:reference-design} STDES-WL5U4ILH \cite{stmicroelectronics_stdes-wl5u4ilh_2024}]{\includegraphics[width=.5\textwidth]{img/STDES-WL5U4ILH.jpg}}
+    \subfloat[\label{fig:nucleo}NUCLEO-WL55JC \cite{stmicroelectronics_nucleo-wl55jc_2024}]{\includegraphics[width=.3\textwidth]{img/nucleo-wl55jc.jpg}}
+    \subfloat[\label{fig:reference-design}STDES-WL5U4ILH \cite{stmicroelectronics_stdes-wl5u4ilh_2024}]{\includegraphics[width=.5\textwidth]{img/STDES-WL5U4ILH.jpg}}
     \caption{\label{fig:nucleo-and-reference}Nucleo development kit and the reference design board.}
 \end{figure}
 
@@ -119,7 +123,7 @@ IPD stands for Integrated Passive Device, it consists of a balun and a harmonic 
     \subfloat[discrete /wo RF switch (variant D)]{\includegraphics[angle=-90,width=.21\textwidth]{img/frontend-dlb.png}}\hfil
     \subfloat[discrete /w RF switch (variant S)]{\includegraphics[angle=-90,width=.19\textwidth]{img/frontend-sbb.png}}\hfil
     \subfloat[IPD (variant I)]{\includegraphics[angle=-90,width=.21\textwidth]{img/frontend-ilh.png}}
-    \caption{\label{fig:frontend-comparison} Frontend layout and part selection comparison, components on the RF path highlighted. Reference designs selected for comparison were picked based on the similarity with the STDES-WL5U4ILH design.}
+    \caption{\label{fig:frontend-comparison}Frontend layout and part selection comparison, components on the RF path highlighted. Reference designs selected for comparison were picked based on the similarity with the STDES-WL5U4ILH design.}
 \end{figure}
 
 One downside of using an IPD in this case is that it requires the use of an RF switch, because ST's IPDs are designed to work with separate receive and transmit paths. Again this is a tradeoff between complexity, cost and board space required. Fortunately only a Single Pole Double Throw switch is required, thus a simple switch such as the BGS12SN6 from Infineon \cite{infineon_technologies_bgs12sn6_2024} is sufficient.
@@ -128,12 +132,12 @@ A 4 layer reference design was selected because it is anticipated it will allow 
 
 In conclusion, the MCU choice is a culmination of tradeoffs, where the prevention of mistakes, efficiency and familiarity were more important than the absolute performance and cost. This should not in any way hamper further improvements in succeeding versions of this hardware, while allowing the completion of Proof-of-Concept stages of this project. 
 
-\subsection{Power regulation and standby mode solution}
+\subsection{Power Regulation and Standby Mode Solution}
 The selected MCU supports wide input voltage of $2\text{--}3.6~\mathrm{V}$ thanks to its internal voltage regulation. It supports two modes - LDO, which does not require any additional external component at the cost of lower efficiency and the SMPS mode, utilizing a synchronous buck regulator, which is more efficient - this application will therefor attempt to implement the latter.
 
 A separate, switchable power-rail is a feature deemed necessary by some considered applications in \ref{section:application-case-studies}. This can be achieved using a built-in MOSFET - such power rail could be used to save power even by powering off some parts of the module itself.
 
-\subsection{Non-volatile memory}
+\subsection{Non-volatile Memory}
 As outlined in the OTA update support section \ref{section:ota-update-support}, an external memory is needed to store the application binary during the download process. This memory does not need to be non-volatile, but since it is comparatively cheaper than RAM and provides a backup in case of a power loss, the choice is apparent.
 
 LoRa data rates are in the realm of 100--1000 bytes per second, even less in real-world applications, thus basically any available interface can be used. The capacity needs to be at-least equal to the built-in FLASH memory of the MCU \ref{section:mcu}, which is $256~\mathrm{kB}$.
@@ -182,7 +186,7 @@ At this point in the design process, the module proportions, derived from the in
 \end{center}
 \end{table}
 
-\subsubsection{Printed Circuit Board antenna}
+\subsubsection{Printed Circuit Board Antenna}
 Due to the limited board space, this option is expected to not be feasible. Nevertheless, some types of PCB antenna solutions were calculated to support this intuition.
 
 A microstrip patch antenna is one of the simplest types of PCB antenna designs \cite{zachariah_peterson_microstrip_2022,wallace_an058_nodate}. This antenna consists of the patch itself and its feed-line with optional inset for impedance matching, see \ref{fig:patch-antenna}. 
@@ -223,7 +227,7 @@ These preliminary calculations led to the conclusion, that a PCB antenna at this
 
 This could be made possible with significant design effort and expertise, or by licensing an existing design, but the overall goal of creating this hardware would need to shift as a result.
 
-\subsubsection{Chip antenna}
+\subsubsection{Chip Antenna}
 As outlined in \ref{table:antenna-solutions}, the chip antenna is another logical step in the search of the right solution. It is a common choice seen in commercially available hardware, especially in cases, where the space is at a premium - as can be seen on the RN4871 \ref{fig:RN4871} Bluetooth module.
 
 There is a large selection of these antennae on the market, mainly targeted at the very common bands, such as $2.4~\mathrm{GHz}$ and $5~\mathrm{GHz}$, but solutions for the $868~\mathrm{MHz}$ frequency range are also not hard to come by \cite{digikey_rf_2024,mouser_europe_868_2024}.
@@ -246,7 +250,7 @@ The search was narrowed by focusing on omnidirectional and linearly polarized an
 \end{center}
 \end{table}
 
-\subsubsection{External antenna}
+\subsubsection{External Antenna}
 It was deemed necessary to rely on an external antenna instead of an integrated on-module antenna. This choice was done primarily because of the ground plane requirements of the integrated solutions, which is a downside of using lower frequencies in general.
 
 Size of the ground-plane has a large affect on the antenna performance and its tuning. Due to the nature of a communications module, which could be used in different applications, these requirements would need to be closely followed by the application, failing that could cause the module to radiate outside of the intended frequency range.
@@ -259,17 +263,17 @@ Another advantage, for the use in soil moisture sensing, is that the antenna can
 During the component selection phase, the requirements set in \ref{section:final-requirements} were continually assessed and successfully met. One major compromise was made in the antenna selection, where the design needed to resort to an externally connected antenna due to the size and application constraints. This choice however should ensure that the potential for problems arising during prototype stages should be limited.
 
 \FloatBarrier
-\section{Sensor architecture}
+\section{Sensor Architecture}
 Given that the primary point of this work is to create a proof-of-concept sensing solution, which utilizes the LoRa module envisioned in \ref{section:module-architecture}, the sensor should be suitable for small-scale testing and prototype work, it should also be simple to manufacture and maximize the potential for success in the first iteration, due to the limited time allocated for the whole project.
 
 A single board construction is suitable, as it is simple, self-contained and can be made through standard PCB manufacturers. It is also commonly seen in hobby grade and some commercial soil moisture sensors.
 
-\subsection{\label{section:expected-cap}Expected capacitance range}
-The FR4 material itself has an non-negligible dielectric constant of around 4.5, which means that the measurement of the PCB should be minimized to avoid it being the majority of the measured capacitance. For this reason the capacitor plates should be placed only on one side of the board with all other layers devoid of copper.
+\subsection{\label{section:expected-cap}Calculating the Sensor's Capacitance}
+The FR4 material, from which the sensor will be built, itself has an non-negligible dielectric constant of around 4.5 \cite{pcbway_stackup_2024}, which means that the measurement of the PCB should be minimized to avoid it being the majority of the measured capacitance. For this reason the capacitor plates should be placed only on one side of the board with all other layers devoid of copper.
 
 To get a \emph{very} rough estimate of the capacitance using equation \ref{equation:capacitance} the dimensions are needed. The sensor is expected to have an active area of about $150~\mathrm{mm}$ by $30~\mathrm{mm}$ divided into 4 zones. Each zone thus has $1125~\mathrm{mm^2}$, assuming an interleaved structure of the one-sided capacitor with 5 tabs for each electrode, the average distance could be $2~\mathrm{mm}$, which translates to some $10\text{--}500~\mathrm{pF}$. %(0.15*0.03/4*4.5*8.85*10^-12)/0.002*10^12
 
-\subsection{\label{section:measuring-method}Measuring method}
+\subsection{\label{section:measuring-method}Measuring Method}
 It was decided to use the simplest method possible - measuring the time constant of an RC circuit. As discussed in Section \ref{section:soil-moisure-sensors-theory}, in order to meaningfully measure soil moisture, it is necessary to employ advanced methods of capacitance measurement and integrate them into a small and power efficient circuit.
 
 Not only that, but it needs to be stable across a very large temperature range, measure at high frequencies (>50 MHz \cite{meter_group_soil_2023}) and be able to do so at multiple depths. Because of these reasons, methods based on capacitor value comparison were rejected and any kind of method that relies on generating a reference sine wave were also dropped.
