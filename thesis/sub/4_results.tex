@@ -460,21 +460,60 @@ Most of these factors remained constant throughout this experiment, since it was
 \section{\label{section:sensor-validation}Soil Moisture Sensor Validation}
 A practical experiment was conducted to validate the functioning of the soil moisture sensor itself.
 
+\begin{figure}
+    \centering
+    \subfloat[Illustrative picture]{\includegraphics[width=.39\textwidth,angle=90]{img/panel.png}} \hfill
+    \subfloat[IV Curve]{\includegraphics[width=.6\textwidth]{fig/panel-iv.png}}
+    \caption{\label{fig:panel}The MP3-37 solar panel manufactured by PowerFilm, which was used for the soil moisture sensor validation.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[Soil moisture sensor stuck in the pot (center) on a window sill faceing south. The lithium battery is connected externally through the raspberry pi pico development board (bottom), acting as a data logger of the voltage and current.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-up.jpg}} \hfil
+    \subfloat[Closeup picture of the sensor and its housing. The LoRa module is clearly visible, along with the conncetions to the solar panel, the battery and the antenna.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-close.jpg}}
+    \caption{\label{fig:sensor-deploy}Soil moisture sensor proof--of--concept deployment scenario used for validating the solar panel performance and the sensor's measuring capabilities.}
+\end{figure}
+
 \subsection{Hypothesis}
-The sensor should detect soil moisture based on the experiments done during sensor validation.
+The sensor should detect soil moisture based on the experiments done during sensor validation. It is also expected that the sensor will be able to charge its battery when enough sunlight is available.
 
 \subsection{Prerequisite}
+The sensor is meant to be made self-sufficient thanks to a solar panel. The main constraint is the power generated and the panel's dimensions. Since the solar panel is charging the battery directly, it needs to generate sufficiently high voltage to do so. The MP3-37 from PowerFilm was picked, because its open circuit voltage is 4.6 V, and according to \ref{fig:panel}, it should produce 50 mA at 4.1 V, which is ideal for this application.
+
+%https://cz.mouser.com/datasheet/2/1009/Electronic_Component_Spec_Sheet_Cla_77DEA84523C82-1658524.pdf
+
+A sensor housing needs to be constructed to support the solar panel in the correct orientation. The housing was designed in Fusion 360 CAD software and 3D printed, visible in Figure \ref{fig:sensor-deploy}. The housing has a support arm for the solar panel, which allows it to swivel.
+
 \subsection{Methodology}
+The sensor was stuck in the existing planter of a citrus tree plant. Sensor readings are gathered using the LoRa interface every 15 seconds. Power logger readings using Raspberry Pi Pico are also gathered every 15 seconds. 
+
+The power logger is measuring the battery voltage and current. Thus any power consumed by the sensor itself during charging is not visible, but is assumed to be constant throughout the experiment, as the reading interval is fixed.
+
+The planter with the sensor is placed behind a glass window facing south. The panel is inclined by the swivel mechanism at about 30 degrees.
+
 \subsection{Results}
 
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/moisture.svg}
     \caption{\label{fig:sensor-log}Filtered readings from the individual sensor zones. Zone 1 (green) is in free air acting as control, zones 2 and 3 below it (brown and purple) are completely submerged in the soil. Zone 4 (magenta) is in the boundary layer of soil and Ceramsite at the bottom of the pot. The sample was watered 7 days before the marked point of watering (sharp increase), after which a decline in the measured capacitance can be observed, corresponding to the sample drying out. The sensor run out of power during the night, these areas are highlighted in grey.}
 \end{figure}
-
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/power.svg}
-    \caption{\label{fig:power-log}Battery voltage and charging power (that is, excluding the power consumed by the sensor and the module itself) provided by the 300 mWp solar panel. The experiment was started with the battery almost empty, it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following day offered full sun throughout.}
+    \caption{\label{fig:power-log}Battery voltage (black) and charging power (yellow), excluding the power consumed by the sensor and the module itself. The power is provided solely by the 150 mWp solar panel. The experiment was started with the battery completely empty. Voltages below 2.8 V are left out.}
 \end{figure}
 
+The sensor was started on external power supply the day prior to the test to gather the initial measurements visible in the Figure \ref{fig:sensor-log} up to 12.5 00:00. After enough readings were gathered, the sensor was connected to its 330 mAh Lithium Polymer battery, which has been discharged completely prior to the experiment. The soil was mostly dry, as can be seen in the referenced Figure.
 
+Figure \ref{fig:power-log} starts at the moment of power-on of the sensor in the morning the following day. The power consumption of the sensor was too high and the charging efficiency too poor for the sensor to maintain stable operation, as it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following two days offered full sun throughout.
+
+At this point a problem was noticed by observing the data, where it was apparent that the sensor stopped charging even though there was full, unobstructed sun hitting the solar panel. This was rectified in the morning the following day (14$^{th}$ of May) by bypassing the charging diode D2 (see Figure \ref{schematic:sensor-1}). This caused a temporary disruption in the logged results, which manifested by the peak visible at roughly noon that day.
+
+After this modification, the battery managed to reach higher voltage and the sensor stayed working longer than any previous day. The rest of the data is cyclical in the same way, thus not shown. This poor battery performance is caused by a combination of many factors:
+\begin{itemize}
+    \item Due to the hardware design mistake involving the crystal oscillator on the LoRa module \ref{fig:tcxo-bodge}, the TCXO cannot be switched off, which causes a constant current draw of 2.5 mA. The MCU has a capability to start the oscillator only when needed, which is implemented in the following revision of the LoRa module.
+    \item The measuring interval is rapid to bring more data into understanding the sensor performance, which is not necessary for final deployment, where a measuring interval of 10 minutes or longer would suffice.
+    \item The MCU is not able to run at low enough clock speed because of limitations in the firmware
+    \item The solar panel is behind a double-glazed window with low solar zenith angle (summer solstice), causing some energy loss in the glass. Because of this, the solar panel may not be receiving enough radiation to reach peak performance, which would be expected given the clear sky.
+    \item The battery is directly charged by the solar panel without any energy harvesting optimizations, like Maximum Power Point Tracking implemented. However this was a conscious decision during the sensor design to make it simple, at the cost of some efficiency.
+    \item Lastly, the solar panel is obstructed by building and window features, which limit the irradiation time.
+\end{itemize}
