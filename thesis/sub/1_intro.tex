@@ -13,7 +13,9 @@ The technical challenges will be the primary focus of this work, and since many 
 \section{Goals}
 Many options exist when it comes to transferring sensor data over long distances. For this work, the LoRa technology was selected for its unique blend of long-range (orders of 1 to 10 km in favorable conditions), albeit relatively slow (0.3 to 50 kbit \cite{semtech_corporation_sx12612_2024}), data transfer, with very low power consumption (5 mA receiving \cite{semtech_corporation_sx12612_2024}), global availability and general fit for the purpose.
 
-Furthermore, an over--the--air (OTA) firmware update capability will be explored, a feature not commonly found in LoRa nodes. In the case of soil moisture sensors, an update can bring support for additional soil types, improve the accuracy or prolong the battery life. It also, crucially, allows this to happen without any operator intervention and transforms a one-shot solution, which once obsolete is replaced completely, into one that is, over time, able to support more sensors and features with minimal downtime \cite{mobility_connected_what_2024,noauthor_android_2024,bucklin_brown_over--air_2024}.
+Furthermore, an over--the--air (OTA) firmware update capability will be explored, a feature not commonly found in LoRa nodes. In the case of soil moisture sensors, an update can bring support for additional soil types, improve the accuracy or prolong the battery life. 
+
+OTA crucially allows for the update to happen without any operator intervention and transforms a one-shot solution, which once obsolete is replaced completely, into one that is, over time, able to support more sensors and features with minimal downtime \cite{mobility_connected_what_2024,noauthor_android_2024,bucklin_brown_over--air_2024}.
 
 A custom hardware solution will need to be developed in order to support OTA updates. Chapter \ref{chapter:architecture} in particular will make a point as to why this is necessary by compiling the hardware requirements and assessing the existing solutions currently available on the market. 
 
@@ -21,6 +23,6 @@ This hardware solution will consist of two pieces - a general purpose LoRa modul
 
 To implement the sensing, its configuration, status reporting and the update capability, a custom protocol will be developed atop the LoRa physical layer. This will make the system self--sufficient, but may limit the deployment options. However, the system could also be made compatible with the majority of commercial LoRaWAN networks in the future, if needed.
 
-Lastly, on the note of autonomy and minimal maintenance, individual nodes should be power--efficient enough to be powered by a small built--in battery augmented by a solar panel, to achieve a ``set and forget'' deployment. 
+On the note of autonomy and minimal maintenance, individual nodes should be power--efficient enough to be powered by a small built--in battery augmented by a solar panel, to achieve a ``set and forget'' deployment. 
 
-The system will be evaluated based on its performance in the field by conducting a range test in actual operating conditions and its sensor's ability to be powered by solar panel will be tested on a prototype unit.
+Lastly, the system will be evaluated based on its performance in the field by conducting a range test in actual operating conditions and its sensor's ability to be powered by solar panel will be tested on a prototype unit.
