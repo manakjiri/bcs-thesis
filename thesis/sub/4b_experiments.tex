@@ -11,14 +11,14 @@ In order to determine the real-world performance, a range test was conducted. Pr
 
 All testing so far was done in home environment with Nodes in close proximity and no major packet loss could be observed. Given the relatively low experience in RF design however, it is expected the module will perform worse than the Nucleo board.
 
-With increasing spreading factor, the symbol time increases and the link budget goes with it, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
+With increasing spreading factor, the symbol time increases and the link budget goes with it \cite{semtech_corporation_sx12612_2024}, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
 
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{fig/semtech-sf-table.png}
     \caption{\label{table:semtech-sf}Range of Spreading Factors (SF).}
 \end{figure}
 
-Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$ \cite{thethingsnetwork_eu863-870_nodate}. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
+Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$ \cite{etsi_short_2018, thethingsnetwork_eu863-870_nodate}. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
 
 \subsection{Hypothesis}
 It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning Nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
@@ -26,7 +26,7 @@ It is expected the proximity to the ground will have high impact on the usable r
 \subsection{\label{section:range-prerequisite}Prerequisite}
 The maximum achievable SF needed to be determined. This was done experimentally, starting with SF5 and incrementing util it was no longer possible to transfer data. This test was conducted using Nucleo acting as the initiator of connection with the LoRa module. Devices were situated on a desk about 1.5 meters apart with their antennae positioned orthogonally in respect to each other to avoid overwhelming the receiver. All other parameters are identical to those used in the latter experiment.
 
-The connection was stable at SF11, but at SF12 the LoRa module stopped responding, thus the experiment was done at SF5 and SF11, which corresponds to a theoretical delta of $15~\mathrm{dB}$.
+The connection was stable at SF11, but at SF12 the LoRa module stopped responding, thus the experiment was done at SF5 and SF11, which corresponds to a theoretical delta of $15~\mathrm{dB}$ \cite{semtech_corporation_sx12612_2024}.
 
 \subsection{Methodology}
 All LoRa modulation and packet parameters were set in firmware (commit \link{https://github.com/manakjiri/lora-module-fw/tree/76acdcd7b31f259c88f1808ed79886dc26295b4e}{76acdcd}) identically for all devices used, a summary is provided in Table \ref{table:range-test-parameters}. 
@@ -207,17 +207,18 @@ The power logger is measuring the battery voltage and current. Thus any power co
 The planter with the sensor is placed behind a glass window facing south. The panel is inclined by the swivel mechanism at about 30 degrees.
 
 \subsection{Results}
-
 \begin{figure}[p]
-    \includesvg[width=\textwidth]{data/deployment/out/moisture.svg}
+    \includesvg[width=\textwidth]{data/deployment/out/moisture-cal.svg}
     \caption{\label{fig:sensor-log}Filtered readings from the individual sensor zones. Zone 1 (green) is in free air acting as control, zones 2 and 3 below it (brown and purple) are completely submerged in the soil. Zone 4 (magenta) is in the boundary layer of soil and Ceramsite at the bottom of the pot. The sample was watered 7 days before the marked point of watering (sharp increase), after which a decline in the measured capacitance can be observed, corresponding to the sample drying out. The sensor run out of power during the night, these areas are highlighted in grey.}
 \end{figure}
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/power.svg}
-    \caption{\label{fig:power-log}Battery voltage (black) and charging power (yellow), excluding the power consumed by the sensor and the module itself. The power is provided solely by the 150 mWp solar panel. The experiment was started with the battery completely empty. Voltages below 2.8 V are left out, the under--voltage protection of the sensor triggers at 2.5 V}
+    \caption{\label{fig:power-log}Battery voltage (black) and charging power (yellow), excluding the power consumed by the sensor and the module itself. The power is provided solely by the 150 mWp solar panel. The experiment was started with the battery completely empty. Voltages below 2.8 V are left out, the under--voltage protection of the sensor always triggered at 2.5 V}
 \end{figure}
 
 The sensor was started on external power supply the day prior to the test to gather the initial measurements visible in the Figure \ref{fig:sensor-log} up to 12.5 00:00. After enough readings were gathered, the sensor was connected to its 330 mAh Lithium Polymer battery, which has been discharged completely prior to the experiment. The soil was mostly dry, as can be seen in the referenced Figure.
+
+
 
 Figure \ref{fig:power-log} starts at the moment of power--on of the sensor in the morning the following day. The power consumption of the sensor was too high and the charging efficiency too poor for the sensor to maintain stable operation, as it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following two days offered full sun throughout.
 
