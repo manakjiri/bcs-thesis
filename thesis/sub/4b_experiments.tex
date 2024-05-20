@@ -177,15 +177,16 @@ A practical experiment was conducted to validate the functioning of the soil moi
 
 \begin{figure}
     \centering
-    \subfloat[Illustrative picture]{\includegraphics[width=.39\textwidth,angle=90]{img/panel.png}} \hfill
-    \subfloat[IV Curve]{\includegraphics[width=.6\textwidth]{fig/panel-iv.png}}
-    \caption{\label{fig:panel}The MP3-37 solar panel manufactured by PowerFilm, which was used for the soil moisture sensor validation.}
+    \subfloat[\label{fig:case}CAD design render of the soil moisture sensor case (bottom left) including the hinge providing the sviwel adjustment of the panel (center) and the panel plate part.]{\includegraphics[width=.44\textwidth]{img/sensor-case.png}} \hfill
+    %\subfloat[Illustrative picture]{\includegraphics[width=.39\textwidth,angle=90]{img/panel.png}} \hfill
+    \subfloat[\label{fig:panel}IV Curve of the MP3-37 solar panel manufactured by PowerFilm, which was used for the soil moisture sensor validation.]{\includegraphics[width=.54\textwidth]{fig/panel-iv.png}}
+    \caption{Soil moisture sensor case (left) and the IV curve of the solar panel (right). Both parts were used during the soil moisture sensor validation.}
 \end{figure}
 
 \begin{figure}
     \centering
-    \subfloat[Soil moisture sensor stuck in the pot (center) on a window sill faceing south. The lithium battery is connected externally through the raspberry pi pico development board (bottom), acting as a data logger of the voltage and current.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-up.jpg}} \hfil
-    \subfloat[Closeup picture of the sensor and its housing. The LoRa module is clearly visible, along with the conncetions to the solar panel, the battery and the antenna.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-close.jpg}}
+    \subfloat[Soil moisture sensor stuck in the pot (center) on a window sill facing south. The lithium battery is connected externally through the RaspberryPi Pico development board (bottom), acting as a data logger of the voltage and current.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-up.jpg}} \hfil
+    \subfloat[Close--up picture of the sensor and its housing. The LoRa module is clearly visible, along with the conncetions to the solar panel, the battery and the antenna.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-close.jpg}}
     \caption{\label{fig:sensor-deploy}Soil moisture sensor proof--of--concept deployment scenario used for validating the solar panel performance and the sensor's measuring capabilities.}
 \end{figure}
 
@@ -197,7 +198,25 @@ The sensor is meant to be made self--sufficient thanks to a solar panel. The mai
 
 %https://cz.mouser.com/datasheet/2/1009/Electronic_Component_Spec_Sheet_Cla_77DEA84523C82-1658524.pdf
 
-A sensor housing needs to be constructed to support the solar panel in the correct orientation. The housing was designed in Fusion 360 CAD software and 3D printed, visible in Figure \ref{fig:sensor-deploy}. The housing has a support arm for the solar panel, which allows it to swivel.
+A sensor housing needed to be constructed to support the solar panel in the correct orientation. The housing was designed in Fusion 360 CAD software and 3D printed, as visible in Figure \ref{fig:sensor-deploy}. The housing has a support arm for the solar panel, which allows it to swivel, which is better viewed in Figure \ref{fig:case}.
+
+Lastly, the sensor's scale needed to be calibrated. This was done by taking 10 measurements in free air (Dry) and fully submerged in water (Wet). The resulting coefficients are included in Table \ref{table:sensor-calibration}. These coefficients are used for calculating the soil moisture saturation using the following equation
+\begin{equation}
+    \theta' = \dfrac{T - T_{Dry}}{T_{Wet} - T_{Dry}}
+\end{equation}
+
+\begin{table}
+\begin{center}
+\caption{\label{table:sensor-calibration}Soil moisture sensor zone calibration coefficients.}
+    \begin{tabular}{|l|l|l|l|} \hline
+    \textbf{Zone} & \textbf{Depth [mm]} & \textbf{Dry value [$\mu$s]} & \textbf{Wet value [$\mu$s]} \\ \hline
+    1 & 20 & 276 & 728 \\ \hline
+    2 & 50 & 277 & 728 \\ \hline
+    3 & 90 & 277 & 581 \\ \hline
+    4 & 120 & 277 & 498 \\ \hline
+    \end{tabular}
+\end{center}
+\end{table}
 
 \subsection{Methodology}
 The sensor was stuck in the existing planter of a citrus tree plant. Sensor readings are gathered using the LoRa interface every 15 seconds. Power logger readings using Raspberry Pi Pico are also gathered every 15 seconds. 
@@ -209,7 +228,7 @@ The planter with the sensor is placed behind a glass window facing south. The pa
 \subsection{Results}
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/moisture-cal.svg}
-    \caption{\label{fig:sensor-log}Filtered readings from the individual sensor zones. Zone 1 (green) is in free air acting as control, zones 2 and 3 below it (brown and purple) are completely submerged in the soil. Zone 4 (magenta) is in the boundary layer of soil and Ceramsite at the bottom of the pot. The sample was watered 7 days before the marked point of watering (sharp increase), after which a decline in the measured capacitance can be observed, corresponding to the sample drying out. The sensor run out of power during the night, these areas are highlighted in grey.}
+    \caption{\label{fig:sensor-log}Filtered readings from the individual sensor zones. Zone 1 (green) is in free air acting as control (as can be seen in Figure \ref{fig:sensor-deploy}), zones 2 and 3 below it (brown and purple) are completely submerged in the soil. Zone 4 (magenta) is in the boundary layer of soil and Ceramsite at the bottom of the pot. The sample was watered 7 days before the marked point of watering (sharp increase), after which a decline in the measured capacitance can be observed, corresponding to the sample drying out. The sensor run out of power during the night, these areas are highlighted in grey.}
 \end{figure}
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/power.svg}
@@ -218,7 +237,7 @@ The planter with the sensor is placed behind a glass window facing south. The pa
 
 The sensor was started on external power supply the day prior to the test to gather the initial measurements visible in the Figure \ref{fig:sensor-log} up to 12.5 00:00. After enough readings were gathered, the sensor was connected to its 330 mAh Lithium Polymer battery, which has been discharged completely prior to the experiment. The soil was mostly dry, as can be seen in the referenced Figure.
 
-
+Watering occurred at 12.05 10:10, at which point the relative moisture saturation started raising into the 60--80 percent range in all but the control zone. The soil moisture was than gradually dropping throughout the following 7 days. Notably the surface zone (zone 2, brown in Figure \ref{fig:sensor-log}) returned to the level of soil moisture saturation before the watering, whereas the root--level zones were drying slower, signaling that there is still enough moisture.
 
 Figure \ref{fig:power-log} starts at the moment of power--on of the sensor in the morning the following day. The power consumption of the sensor was too high and the charging efficiency too poor for the sensor to maintain stable operation, as it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following two days offered full sun throughout.
 
