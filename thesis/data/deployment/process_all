@@ -2,4 +2,6 @@
 
 python process.py power --no-show
 python process.py moisture --no-show
+python process.py moisture --no-show --cal
+python process.py watering --no-show
 

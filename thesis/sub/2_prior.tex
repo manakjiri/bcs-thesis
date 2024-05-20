@@ -83,7 +83,7 @@ In practice, the dielectric constant is also largely dependent on temperature, m
 To summarize, the fact that it can be employed without ongoing operating interventions by technicians and engineers, at the cost of providing only relative measurements and the need for initial calibration, this measuring method is a good compromise given the application requirements. Sections \ref{section:expected-cap}, \ref{section:sensor-circuit} and \ref{section:sensor-validation}, where the particular measuring method is designed and validated expand upon this.
 
 \section{LoRa Wireless Interface}
-LoRa (Long Range) is a low-power wireless communication technology designed specifically for long-range communications with low power consumption. It is one of the leading technologies used in the rapidly expanding field of the Internet of Things (IoT), particularly in applications requiring devices to send small amounts of data over long distances while conserving battery life.
+LoRa (Long Range) is a low-power wireless communication technology and is one of the leading technologies used in the rapidly expanding field of the Internet of Things (IoT), particularly in applications requiring devices to send small amounts of data over long distances while conserving battery life.
 
 Its modulation technique is known as LoRa modulation, which is derived from chirp spread spectrum (CSS) modulation \cite{semtech_corporation_sx12612_2024}. It operates in the sub-gigahertz radio frequency bands, and it is typically used in a star--of--stars network topology in conjunction with LoRaWAN (Long Range Wide Area Network), which defines the network's communication protocol and system architecture.
 
@@ -102,4 +102,6 @@ The NUCLEO-WL55JC could be considered for this use-case \cite{stmicroelectronics
     \item LoRaWAN Private Networks are used by smart cities and businesses that roll out their own LoRaWAN Networks.
 \end{itemize}
 
+There are many providers, allowing customers to connect and transfer data through their network. The model is similar to that of cellular networks, where each device receives a Unique Identifier (ID) and needs to conform to data limits. Global network operators include Orange, Meshify, Chirp Stack and The Things Network (TTN) \cite{the_things_network_things_nodate}. Amazon Sidewalk is only available in the US \cite{amazon_inc_amazoncom_nodate}. Czech CRA offers plans for customers starting at 200 CZK per month for 10 devices with a limit of 10,000 messages total \cite{pixman_sro_objednavate_nodate}.
 
+This project choses to host a private network, since the network coverage is mostly limited to urban areas, brings many restrictions \cite{the_things_network_eu863-870_nodate,the_things_network_message_nodate} and an ongoing cost associated.

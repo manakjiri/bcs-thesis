@@ -1,7 +1,7 @@
 %!TEX ROOT=main.tex
 
 \section{Analysis of the System}
-As discussed in Chapter \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof--of--concept application. With that being said, one can easily discern separate sub--tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}) a practice commonly seen in the industry. While this design does not specifically follow the IEEE 1451 \cite{mark_ieee_nodate}, the common pattern is present nevertheless.
+As discussed in Chapter \ref{chapter:introduction}, the main goal of this work is the soil moisture sensor hardware with the accompanying firmware and a proof--of--concept application. With that being said, one can easily discern separate sub--tasks within this broader goal - mainly the fact, that the communication aspect can be separated from the sensor itself (see Figure \ref{fig:device-split}), a practice commonly seen in the industry. While this design does not specifically follow the IEEE 1451 \cite{mark_ieee_nodate}, the common pattern is present nevertheless.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{fig/ieee-1451.png}
@@ -43,7 +43,7 @@ In order to find the optimal boundary between the sensor implementation part and
 \subsubsection{Generic usecase of the LoRa module - Indoor environment sensors}
 Let us consider this basic, typical, use--case for such a communication module. This application can implement the following sensors: thermometer, hygrometer (relative humidity sensor), human presence detector, air quality sensor (CO$^2$e, smoke, ...) and a light sensor.
 
-We can omit some of the listed sensors in the actual application, but the generic LoRa module should be able to support the full configuration without any kind of co--processor. Main limiting factor will probably be the number of communication peripherals a general purpose input output (GPIO) pins.
+We can omit some of the listed sensors in the actual application, but the generic LoRa module should be able to support the full configuration without any kind of co--processor. Main limiting factor will probably be the number of communication peripherals and general purpose input output (GPIO) pins.
 
 Thermometer is usually an integral part of any hygrometer measuring relative humidity \cite{webster_humidity_1998}, that is also suitable for this application. These sensors are frequently found in fully integrated solutions with a digital interface of some sort, usually I2C \cite{bosch_sensortec_gmbh_bst-bme280-ds002pdf_2024}. The same is true for any modern light sensor, which will also be able to measure intensities of different wavelengths of light \cite{stmicroelectronics_ambient_2024}, \cite{texas_instruments_inc_light_2024}. Thus more than half of the sensors listed only require a single I2C port to control them comfortably.
 

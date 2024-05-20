@@ -18,7 +18,7 @@ With increasing spreading factor, the symbol time increases and the link budget 
     \caption{\label{table:semtech-sf}Range of Spreading Factors (SF).}
 \end{figure}
 
-Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$ \cite{etsi_short_2018, thethingsnetwork_eu863-870_nodate}. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
+Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$ \cite{etsi_short_2018,the_things_network_eu863-870_nodate}. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
 
 \subsection{Hypothesis}
 It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning Nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
@@ -252,3 +252,60 @@ After this modification, the battery managed to reach higher voltage and the sen
     \item The battery is directly charged by the solar panel without any energy harvesting optimizations, like Maximum Power Point Tracking implemented. However this was a conscious decision during the sensor design to make it simple, at the cost of some efficiency.
     \item Lastly, the solar panel is obstructed by building and window features, which limit the irradiation time.
 \end{itemize}
+
+%diank, diank, dianky, bez dianek, diankam, dianky, Dianky!, diankách, diankama
+\section{Proof--of--concept application}
+For demonstration purposes, simple proof-of-concept backend application was created and tested. This application uses multiple different inputs, main input being the sensor measured soil moisture saturation. Other inputs include weather forecast for the next 6 hours and the current time of day, as plants tend to prefer being watered during the day. For the weather forecast, if there was probability of precipitation in the next 6 hours, which was higher than 25 \%, the watering was postponed.
+Considering the probability is enough, as the main focus is not to over--water the plants, if the downpour was not sufficient, the application would request watering the next day.
+
+\begin{figure}[H]
+    \includesvg[width=\textwidth]{data/deployment/out/watering.svg}
+    \caption{\label{fig:watering}Output from the demo application showing the measured soil moisture saturation (black) and the watering request depicted as red, when watering is requested, or green once the request has been fulfilled.}
+\end{figure}
+
+The whole decision process is documented by the code below. This function is responsible for computing the watering request. The configuration is stored in a json file. The weather information is fetched from \link{https://openweathermap.org/api/one-call-api}{OpenWeather API} and processed before this function. The decision process could be further ameliorated, as hinted by the comments in the code.
+\begin{lstlisting}
+fn figure_out_watering(
+        config: &Config, moisture: [u16; 4], pop: f64
+    ) -> WateringResult {
+    /* 1. Apply the calibration constants to the raw readings
+    from each zone of the soil moisture sensor */
+    let moisture = moisture
+        .iter()
+        .zip(config.sensor_cal_low.iter()
+        .zip(config.sensor_cal_high.iter()))
+        .map(|(m, (low, high))| 
+            ((*m).clamp(*low, *high) - *low) / (*high - *low))
+        .collect::<Vec<f64>>();
+    /* 2. Average all zones
+    Note: this could be the main point of improvement,
+    but to implement this correctly, the program would
+    need to know a lot more context about the plant,
+    the soil type and the needed schedule */
+    let moisture = moisture.iter()
+        .fold(0.0, |acc, m| acc + m) / moisture.len() as f64;
+    /* 3. Apply the rules regarding day length, moisture
+    and probability od precipitation */
+    let hours = Local::now().hour();
+    WateringResult {
+        watering: moisture < (config.moisture_threshold / 100.0)
+            && pop < (config.precipitation_threshold / 100.0)
+            && hours >= config.day_start_hour 
+            && hours < config.day_end_hour,
+        moisture,
+    }
+}
+\end{lstlisting}
+JSON configuration file example for the backend application. The application itself outputs its findings in CSV file, which could be read by other system providing the watering automation. The CSV file also provides a history, which could be provided to the user.
+\begin{lstlisting}
+{
+    "latitude": 50.0755,
+    "longitude": 14.4378,
+    "sensor_cal_low": [276, 277, 277, 277],
+    "sensor_cal_high": [728, 728, 581, 498],
+    "moisture_threshold": 20,
+    "precipitation_threshold": 50,
+    "day_start_hour": 6,
+    "day_end_hour": 18
+}
+\end{lstlisting}

@@ -27,7 +27,7 @@ def average(data: pd.Series, window: int):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', type=str, help='Command to execute', choices=['moisture', 'power'])
+    parser.add_argument('command', type=str, help='Command to execute', choices=['moisture', 'power', 'watering'])
     parser.add_argument('--no-show', action='store_true', help='Do not show the plot')
     parser.add_argument('--cal', action='store_true', help='Use the calibration coefficients to calculate relative values in moisture plot')
     args = parser.parse_args()
@@ -134,6 +134,28 @@ def main():
         ax2.set_ylabel('Battery voltage [V]')
         ax2.grid(zorder=0)
         ax2.xaxis.set_major_formatter(DATE_FORMATTER)
+
+        fig.autofmt_xdate()
+        plt.tight_layout()
+        plt.savefig(OUT_BASE / f'{name}.svg')
+        if not args.no_show:
+            plt.show()
+
+    elif args.command == 'watering':
+        data = pd.read_csv('watering_log.csv')
+        data['time'] = pd.to_datetime(data['time'], format=TIME_FORMAT)
+        data.set_index('time', inplace=True)
+        fig, ax = plt.subplots(figsize=(9, 5))
+
+        data['moisture'].plot(ax=ax, legend=False, color='black')
+        for r1, r2 in zip(data.index[:-1], data.index[1:]):
+            ax.axvspan(r1, r2, facecolor='red' if data.loc[r1]['water'] else 'green', alpha=0.2)
+        
+        ax.set_ylim(0, 100)
+        ax.set_ylabel('Average relative soil moisture saturation [%]')
+        ax.set_xlabel('Time')
+        ax.grid()
+        #ax.xaxis.set_major_formatter(DATE_FORMATTER)
 
         fig.autofmt_xdate()
         plt.tight_layout()
