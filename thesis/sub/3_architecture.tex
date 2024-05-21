@@ -280,4 +280,9 @@ Not only that, but it needs to be stable across a very large temperature range, 
 
 The proposed solution is to use the GPIO of the MCU to control a simple charge--discharge circuit muxed into the active zones of the sensor, combined with a comparator to trigger the stop of a time measurement.
 
+\begin{figure}[H]
+    \includegraphics[width=.7\textwidth]{fig/principle-cap-measure.png}
+    \caption{\label{fig:principle-cap-measure}The proposed capacitance measuring solution. This circuit is able to estimate the capacitance of $C_X$ by measuring its time constant, given a known $R_{CHG}$ and the comparator $V-$ voltage, set by resistors $R_1$ and $R_2$. The $R_{DIS}$ is used for discharging the capacitor prior to measurement.}
+\end{figure}
+
 %\subsection{Battery and charging}

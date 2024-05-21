@@ -17,6 +17,31 @@ There are many commercially available solutions for soil moisture sensing. Offer
 
 The Baseline BL-5311 is constructed from an FR4 material and a plastic box housing the electronics. It is designed to be buried 10's of centimeters below the surface near the root zone. The sensor measures volumetric water content (measured volume is $\approx 0.08~\mathrm{L}$ for the Compact variant and $\approx 0.21~\mathrm{L}$ for the Original) using Time Domain Transmissometry (TDT), thus the sensor is galvanically isolated from the soil. The sensor communicates using a two-wire interface, by which it also receives power and is able to measure 5\% to 100\% soil saturation with water, while also measuring the temperature of the soil.
 
+\section{LoRa Wireless Interface}
+LoRa (Long Range) is a low-power wireless communication technology and is one of the leading technologies used in the rapidly expanding field of the Internet of Things (IoT), particularly in applications requiring devices to send small amounts of data over long distances while conserving battery life.
+
+Its modulation technique is known as LoRa modulation, which is derived from chirp spread spectrum (CSS) modulation \cite{semtech_corporation_sx12612_2024}. It operates in the sub-gigahertz radio frequency bands, and it is typically used in a star--of--stars network topology in conjunction with LoRaWAN (Long Range Wide Area Network), which defines the network's communication protocol and system architecture.
+
+LoRa is particularly noted for its excellent penetration in dense urban environments and indoor connectivity, compared to other technologies like Wi--Fi and cellular networks \cite{stmicroelectronics_lora_2024,semtech_corporation_sx12612_2024,seeedstudio_wio-e5-wireless_2024}. This capability, combined with its low power requirements and long range, provides a distinct advantage in scenarios where alternative networking technologies might fail or be too costly.
+
+\subsection{Modules Implementing LoRa}
+Communications modules are a way to integrate the desired communications interface into an application. These modules usually offer a layer of abstraction above the interface they implement, if not also being used as the main processing unit.
+
+The NUCLEO-WL55JC could be considered for this use-case \cite{stmicroelectronics_nucleo-wl55jc_2024}, but it is perhaps too versatile to be practical. Mainly it includes many options for connecting additional devices, increasing its footprint and additionally integrates features, which are only necessary during development, potentially increasing power consumption.
+
+\subsection{LoRa Network Coverage}
+\emph{The LoRaWAN® specification is a Low Power, Wide Area (LPWA) networking protocol designed to wirelessly connect battery operated ``things'' to the internet in regional, national or global networks, and targets key Internet of Things (IoT) requirements such as bi-directional communication, end-to-end security, mobility and localization services.} - What is LoRaWAN | LoRa Alliance. According to the LoRa Alliance, there are three network definitions.
+\begin{itemize}
+    \item Network Operator is any LoRaWAN network aimed at openly monetizing connectivity or end to end services to third parties.
+    \item LoRaWAN Open Communities are developer communities.
+    \item LoRaWAN Private Networks are used by smart cities and businesses that roll out their own LoRaWAN Networks.
+\end{itemize}
+
+There are many providers, allowing customers to connect and transfer data through their network. The model is similar to that of cellular networks, where each device receives a Unique Identifier (ID) and needs to conform to data limits. Global network operators include Orange, Meshify, Chirp Stack and The Things Network (TTN) \cite{the_things_network_things_nodate}. Amazon Sidewalk is only available in the US \cite{amazon_inc_amazoncom_nodate}. Czech CRA offers plans for customers starting at 200 CZK per month for 10 devices with a limit of 10,000 messages total \cite{pixman_sro_objednavate_nodate}.
+
+This project choses to host a private network, since the network coverage is mostly limited to urban areas, brings many restrictions \cite{the_things_network_eu863-870_nodate,the_things_network_message_nodate} and an ongoing cost associated.
+
+\newpage
 \section{Soil Water Content}
 Soil is made up of a solid phase of minerals and organic matter, and the pores in-between the solids, which hold gasses and water \cite{paul_soil_2007}. The total amount of moisture is the sum of the moisture contained inside the solids (in intra-aggregate pore space) and the space around the solids (inter-aggregate pore space) \cite{myjove_corporation_determination_2024}. This work will not distinguish between the two for simplicity.
 
@@ -81,27 +106,3 @@ where $\epsilon_0 = 8.85 \cdot 10^{-12} \frac{F}{m}$ permittivity of the vacuum,
 In practice, the dielectric constant is also largely dependent on temperature, measuring frequency and saturation with dissolved ions \cite{meter_group_soil_2023,podest_applications_nodate}. This makes precise absolute measurements almost impossible without prior calibration against know reference for particular soil type.
 
 To summarize, the fact that it can be employed without ongoing operating interventions by technicians and engineers, at the cost of providing only relative measurements and the need for initial calibration, this measuring method is a good compromise given the application requirements. Sections \ref{section:expected-cap}, \ref{section:sensor-circuit} and \ref{section:sensor-validation}, where the particular measuring method is designed and validated expand upon this.
-
-\section{LoRa Wireless Interface}
-LoRa (Long Range) is a low-power wireless communication technology and is one of the leading technologies used in the rapidly expanding field of the Internet of Things (IoT), particularly in applications requiring devices to send small amounts of data over long distances while conserving battery life.
-
-Its modulation technique is known as LoRa modulation, which is derived from chirp spread spectrum (CSS) modulation \cite{semtech_corporation_sx12612_2024}. It operates in the sub-gigahertz radio frequency bands, and it is typically used in a star--of--stars network topology in conjunction with LoRaWAN (Long Range Wide Area Network), which defines the network's communication protocol and system architecture.
-
-LoRa is particularly noted for its excellent penetration in dense urban environments and indoor connectivity, compared to other technologies like Wi--Fi and cellular networks \cite{stmicroelectronics_lora_2024,semtech_corporation_sx12612_2024,seeedstudio_wio-e5-wireless_2024}. This capability, combined with its low power requirements and long range, provides a distinct advantage in scenarios where alternative networking technologies might fail or be too costly.
-
-\subsection{Modules Implementing LoRa}
-Communications modules are a way to integrate the desired communications interface into an application. These modules usually offer a layer of abstraction above the interface they implement, if not also being used as the main processing unit.
-
-The NUCLEO-WL55JC could be considered for this use-case \cite{stmicroelectronics_nucleo-wl55jc_2024}, but it is perhaps too versatile to be practical. Mainly it includes many options for connecting additional devices, increasing its footprint and additionally integrates features, which are only necessary during development, potentially increasing power consumption.
-
-\subsection{LoRa Network Coverage}
-\emph{The LoRaWAN® specification is a Low Power, Wide Area (LPWA) networking protocol designed to wirelessly connect battery operated ``things'' to the internet in regional, national or global networks, and targets key Internet of Things (IoT) requirements such as bi-directional communication, end-to-end security, mobility and localization services.} - What is LoRaWAN | LoRa Alliance. According to the LoRa Alliance, there are three network definitions.
-\begin{itemize}
-    \item Network Operator is any LoRaWAN network aimed at openly monetizing connectivity or end to end services to third parties.
-    \item LoRaWAN Open Communities are developer communities.
-    \item LoRaWAN Private Networks are used by smart cities and businesses that roll out their own LoRaWAN Networks.
-\end{itemize}
-
-There are many providers, allowing customers to connect and transfer data through their network. The model is similar to that of cellular networks, where each device receives a Unique Identifier (ID) and needs to conform to data limits. Global network operators include Orange, Meshify, Chirp Stack and The Things Network (TTN) \cite{the_things_network_things_nodate}. Amazon Sidewalk is only available in the US \cite{amazon_inc_amazoncom_nodate}. Czech CRA offers plans for customers starting at 200 CZK per month for 10 devices with a limit of 10,000 messages total \cite{pixman_sro_objednavate_nodate}.
-
-This project choses to host a private network, since the network coverage is mostly limited to urban areas, brings many restrictions \cite{the_things_network_eu863-870_nodate,the_things_network_message_nodate} and an ongoing cost associated.
