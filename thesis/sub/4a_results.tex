@@ -1,21 +1,21 @@
 %!TEX ROOT=main.tex
 
 \section{LoRa Module Design}
-As discussed in section \ref{section:module-architecture}, where the LoRa module was architected and its main parts were selected, the schematic and board layout were created. These outputs are included in image form as Appendix \ref{chapter:module01-files}, along with more details, and available at \link{https://github.com/manakjiri/lora-module-hw/releases/tag/v0.1}{github.com/manakjiri/lora-module-hw}.
+As discussed in section \ref{section:module-architecture}, where the LoRa module was architected, and its main parts were selected, the schematic and board layout was created. These outputs are included in image form as Appendix \ref{chapter:module01-files}, along with more details, and available at \link{https://github.com/manakjiri/lora-module-hw/releases/tag/v0.1}{github.com/manakjiri/lora-module-hw}.
 
 The Open source KiCad Electronic Design Automation (EDA) software was used throughout the project to create these designs.
 
 \subsection{\label{section:module-schematic}Schematic}
-While the \ref{section:module-architecture} focused on the fundamental parts of the design, many details were left up to the later development stages, once the overall system implementation is more clear. This section will focus and expand on these parts of the design.
+While the \ref{section:module-architecture} focused on the fundamental parts of the design, many details were left up to the later development stages once the overall system implementation was clear. This section will focus and expand on these parts of the design.
 
-Of note is the selection of the main clock source for the MCU \ref{section:mcu}. In this case the only two options are to use a Crystal oscillator (XO) or an Temperature Compensated XO (TCXO). Application note AN5646 (STMicroelectronics \cite{stmicroelectronics_how_nodate-1}) summarizes the main differences as
+Of note is the selection of the main clock source for the MCU \ref{section:mcu}. In this case, the only two options are to use a Crystal oscillator (XO) or a Temperature Compensated XO (TCXO). Application note AN5646 (STMicroelectronics \cite{stmicroelectronics_how_nodate-1}) summarizes the main differences as
 \begin{itemize}
     \item An XO is more efficient on power consumption, startup time, and BOM cost.
     \item A TCXO is more efficient on frequency accuracy and frequency variation over temperature changes. It also
     removes layout constraints.
 \end{itemize}
 
-This aspect was not considered carefully enough during the parts selection, the recommended NX2016SA series crystal oscillator was selected for the power savings and reduced cost. However, the selected programming framework, Embassy, and the library lora--rs in particular (expanded upon in Appendix \ref{chapter:rust}), only correctly supported the use of an TCXO, at the time of the prototype bring--up. This led to an ad hoc modification, documented in Figure \ref{fig:tcxo-bodge}, of the module and the addition of the Abracon ATX--11--F series TCXO to fix this issue.
+This aspect was not considered carefully enough during the parts selection, the recommended NX2016SA series crystal oscillator was selected for the power savings and reduced cost. However, the selected programming framework, Embassy, and the library \code{lora-rs} in particular (expanded upon in Appendix \ref{chapter:rust}), only correctly supported the use of a TCXO, at the time of the prototype bring--up. This led to an ad hoc modification, documented in Figure \ref{fig:tcxo-bodge}, of the module and the addition of the Abracon ATX--11--F series TCXO to fix this issue.
 
 \begin{figure}
     \centering
@@ -24,12 +24,12 @@ This aspect was not considered carefully enough during the parts selection, the 
     \caption{\label{fig:tcxo-bodge}The ad hoc TCXO modification on the LoRa module.}
 \end{figure}
 
-All other aspects of the MCU integration were executed according to the application notes and the datasheet  \cite{stmicroelectronics_stm32wle5xx_nodate,stmicroelectronics_how_nodate-1}, while closely following the implementations of the reference design and the nucleo development kit \cite{stmicroelectronics_stdes-wl5u4ilh_2024,stmicroelectronics_nucleo-wl55jc_2024}. This includes the selection of decoupling capacitors, the SMPS circuitry and the reset handling.
+All other aspects of the MCU integration were executed according to the application notes and the datasheet  \cite{stmicroelectronics_stm32wle5xx_nodate,stmicroelectronics_how_nodate-1}, while closely following the implementations of the reference design and the nucleo development kit \cite{stmicroelectronics_stdes-wl5u4ilh_2024,stmicroelectronics_nucleo-wl55jc_2024}. This includes the selection of decoupling capacitors, the SMPS circuitry, and the reset handling.
 
-Another consideration was the implementation of the switchable power rail VDD\_SW. This rail taps off the main power rail of the rest of the module, any disruption could cause a glitch or trigger the BOR protection circuitry. It is thus necessary to limit the inrush current caused by this rail's switch--on and subsequent charging of any local capacitances. An RC circuit was designed to slow--down the gate voltage rise--time to about 10 ms.
+Another consideration was the implementation of the switchable power rail VDD\_SW. This rail taps off the main power rail of the rest of the module; any disruption could cause a glitch or trigger the BOR protection circuitry. It is thus necessary to limit the inrush current caused by this rail's switch--on and subsequent charging of any local capacitances. An RC circuit was designed to slow--down the gate voltage rise--time to about 10 ms.
 
 \subsection{Printed Circuit Board Layout}
-A 4 layer board stackup was proposed in Section \ref{section:mcu}, which indeed ended up being used in this design. Purpose of each layer is described in table \ref{table:board-layers} and clearly observable in the final renders \ref{board:v0.1}.
+A 4-layer board stackup was proposed in Section \ref{section:mcu}, which indeed ended up being used in this design. The purpose of each layer is described in table \ref{table:board-layers} and clearly observable in the final renders \ref{board:v0.1}.
 
 \begin{table}[H]
 \begin{center}
@@ -65,7 +65,7 @@ These parameters are summarized in the following Table \ref{table:board-limits} 
 \end{center}
 \end{table}
 
-Being only 4 layers, the traces needed to be routed in densely and well thought--out manner, attempting to minimize the number of relatively large vias required. For this reason, the module's external connection signal assignments were decided only near the end of the design stage conforming mostly to the existing pin locations on the MCU itself. The final pad assignments are included in Table \ref{table:module-pin-legend}.
+Being only 4 layers, the traces needed to be routed in a densely and well thought-out manner, attempting to minimize the number of relatively large vias required. For this reason, the module's external connection signal assignments were decided only near the end of the design stage, conforming mostly to the existing pin locations on the MCU itself. The final pad assignments are included in Table \ref{table:module-pin-legend}.
 
 \begin{figure}
     \includesvg[width=.75\textwidth]{img/module-v0.1.drawio.svg}
@@ -73,7 +73,7 @@ Being only 4 layers, the traces needed to be routed in densely and well thought-
 \end{figure}
 
 \subsection{Finalized LoRa Module Specification}
-Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module with overlay highlighting its functional parts, its technical specifications are captured by Table \ref{table:module-specification}.
+Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module with overlay highlighting its functional parts; its technical specifications are captured by Table \ref{table:module-specification}.
 
 \begin{table}[p]
 \begin{center}
@@ -97,7 +97,7 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
 \begin{center}
 \caption{\label{table:module-pin-legend}Module pin legend including feature summary.}
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|} \hline
-    \textbf{IO} & \textbf{Pin} & \textbf{TIM\footnote{Refer to each column following ``Pin'' (excluding ``Other'') as [Column header][Column-row contents], such as ``SPI1\_MOSI'' and so on. Some features were omitted for clarity, for complete list refer to the MCU manufacturer's documentation}} & \textbf{ADC} & \textbf{I2C} & \textbf{SPI} & \textbf{UART} & \textbf{Other}\\ \hline
+    \textbf{IO} & \textbf{Pin} & \textbf{TIM\footnote{Refer to each column following ``Pin'' (excluding ``Other'') as [Column header][Column-row contents], such as ``SPI1\_MOSI'' and so on. Some features were omitted for clarity, for the complete list refer to the MCU manufacturer's documentation}} & \textbf{ADC} & \textbf{I2C} & \textbf{SPI} & \textbf{UART} & \textbf{Other}\\ \hline
     1  & PA7  & 17\_1, 1\_1N    &     & 3\_SCL & 1\_MOSI &             & CMP2\_OUT          \\ \hline
     2  & PA6  & 16\_1          &     &       & 1\_MISO &             &                    \\ \hline
     3  & PA4  & L1,2\_OUT      &     &       &        &             & RTC\_OUT2           \\ \hline
@@ -121,7 +121,7 @@ Figure \ref{fig:module-v0.1} shows the manufactured and fully assembled module w
 \subsection{Radio Performance}
 The output RF characteristics were validated using a spectrum analyzer connected directly to the RF output of the module through an U.FL pigtail.
 
-The module was setup in ``continuous wave'' mode \cite{semtech_corporation_sx12612_2024} at 869.525 MHz with power of 15 dBm, which produced the spectrogram visible in Figure \ref{fig:rf-mask-wave}. Here we can observe, that the peak power was measured at 12.60 dBm and the frequency is off by 150 kHz.
+The module was set up in ``continuous wave'' mode \cite{semtech_corporation_sx12612_2024} at 869.525 MHz with a power of 15 dBm, which produced the spectrogram visible in Figure \ref{fig:rf-mask-wave}. Here, we can observe that the peak power was measured at 12.60 dBm, and the frequency is off by 150 kHz.
 
 \begin{figure}
     \includegraphics[width=.9\textwidth]{fig/rf-mask-wave.png}
@@ -130,7 +130,7 @@ The module was setup in ``continuous wave'' mode \cite{semtech_corporation_sx126
 
 Next two measurements in Figure \ref{fig:rf-power}, are captures of the module transmitting 8 bytes of data at SF5, bandwidth 250 kHz and coding rate 4:5, the rest of the parameters is identical as in Table \ref{table:range-test-parameters}. 
 
-These measurements show that the output power stays stable at 13 dBm once modulating and that there are smooth transitions and power ramp up, suggesting good power supply and power management design. The mask visible in the spectrum is uniform, without any unexpected artifacts.
+These measurements show that the output power stays stable at 13 dBm once modulating and that there are smooth transitions and power ramp-up, suggesting good power supply and power management design. The mask visible in the spectrum is uniform, without any unexpected artifacts.
 
 \begin{figure}[p]
     \centering
@@ -154,12 +154,12 @@ The idle power draw could be optimized to reach 10--100s of $\mu$A with the TCXO
 \section{Soil Moisture Sensor Design}
 \begin{figure}[H]
     \includesvg[width=\textwidth]{boards/sensor/soil-sensor-F_Cu.svg}
-    \caption{\label{fig:sensor-pcb}Printed Circuit Board design of the top layer of the soil moisture sensor board, where the 4 capacitive sensing zones are distinctly visible. These capacitors form, what is later referred to, as the ``active area'' of the sensor. More is available in Appendix \ref{chapter:sensor-files}.}
+    \caption{\label{fig:sensor-pcb}Printed Circuit Board design of the top layer of the soil moisture sensor board, where the 4 capacitive sensing zones are distinctly visible. These capacitors form what is later referred to as the ``active area'' of the sensor. More is available in Appendix \ref{chapter:sensor-files}.}
 \end{figure}
 To summarize, the soil moisture sensor board contains
 \begin{itemize}
     \item the capacitance measuring circuit (as described in Section \ref{section:measuring-method}) with two ranges,
-    \item a dual single pole quadruple throw (Dual SP4T) mux chip for switching between the 4 sensing zones contained in the active area of the sensor,
+    \item a dual single-pole quadruple throw (Dual SP4T) mux chip for switching between the 4 sensing zones contained in the active area of the sensor,
     \item 8 channel TVS diode array to clamp the voltage on the capacitor electrodes and means of isolating the sensor elements from the measuring circuits,
     \item a 2.8 V linear low-dropout (LDO) regulator,
     \item footprint for the LoRa module,
@@ -170,11 +170,11 @@ To summarize, the soil moisture sensor board contains
 \subsection{\label{section:sensor-circuit}Capacitance Measuring Circuit}
 Of note is the performance of the capacitance measuring circuit, which was validated using an oscilloscope connected to the test-points on the sensor board, see Figure \ref{fig:cap-measure}.
 \begin{figure}[H]
-    \includegraphics[width=.9\textwidth]{fig/sensor-measure-circuit.png}
-    \caption{\label{fig:sensor-measure-circuit}The capacitance measuring circuit functions by charging the unknown capacitor $C_X$ through a known resistor $R_{CHG}$ and measuring the time it takes to reach a certain voltage derived from a voltage reference. The muxing (U2) and protection circuitry (D1) is also included. Resistors R7--15 are there to facilitate a complete isolation of the sensor from the measuring circuit, for measuring the capacitor elements externally, if the need be, without damaging the board. The full schematic is available in Appendix \ref{chapter:sensor-files}.}
+    \includegraphics[width=\textwidth]{fig/sensor-measure-circuit.png}
+    \caption{\label{fig:sensor-measure-circuit}The capacitance measuring circuit functions by charging the unknown capacitors $C_X$ (4) through a known resistor $R_{CHG}$ (1) and measuring the time it takes to reach a certain voltage derived from a voltage reference (2), as proposed by Figure \ref{fig:principle-cap-measure}. The muxing (3) and protection circuitry (D1) are also included. Resistors R7--15 are there to facilitate a complete isolation of the sensor from the measuring circuit for measuring the capacitor elements externally, if the need be, without damaging the board. The full schematic is available in Appendix \ref{chapter:sensor-files}.}
 \end{figure}
 
-The capacitance can be calculated from readings obtained in Figure \ref{fig:cap-measure}. Given the charging voltage $U = 3.3~\mathrm{V}$ (it may not seem so from the Figure, due to the charging resistor being disconnected as soon as the threshold voltage is reached). The capacitance RC time constant is defined as
+The capacitance can be calculated from readings obtained in Figure \ref{fig:cap-measure}. Given the charging voltage $U = 3.3~\mathrm{V}$ (it may not seem so from the Figure due to the charging resistor being disconnected as soon as the threshold voltage is reached). The capacitance RC time constant is defined as
 \begin{equation} %(7.6*10^-6)/(47*10^3)
     \tau = RC ~~~\rightarrow~~~ C = \dfrac{\tau}{R} = \dfrac{7.6 \cdot 10^{-6}}{47 \cdot 10^3} = 161~\mathrm{pF}.
 \end{equation}
@@ -185,11 +185,11 @@ This result goes in line with the estimate given in Section \ref{section:expecte
     \caption{\label{fig:cap-measure}Sensor capacitor (in air) voltage rise time measurement when charged through a 47k$\Omega$ resistor, which was later replaced by a different value to increase the measuring time.}
 \end{figure}
 
-The original 47 k$\Omega$ and 4.7 M$\Omega$ resistors were replaced by 100 k$\Omega$ and 1 M$\Omega$ resistors to improve the measuring performance. These resistors were designed with this possibility in mind and a larger footprint was used to make this process easier. the 4.7 M$\Omega$ resistor was not able to charge the circuit up to the detecting threshold of the comparator, because the rest of the components incurred parasitic resistance to ground of about 15 M$\Omega$, forming a voltage divider.
+The original 47 k$\Omega$ and 4.7 M$\Omega$ resistors were replaced by 100 k$\Omega$ and 1 M$\Omega$ resistors to improve the measuring performance. These resistors were designed with this possibility in mind, and a larger footprint was used to make this process easier. the 4.7 M$\Omega$ resistor was not able to charge the circuit up to the detecting threshold of the comparator because the rest of the components incurred parasitic resistance to ground of about 15 M$\Omega$, forming a voltage divider.
 
 This setup provides repeatable and stable measurements in free air and when the capacitor is completely submerged in water. It is sensitive enough to reliably detect close proximity (1 cm) or touch of a human hand.
 
-The following code is responsible for each sample conversion, refer to the comments for principle explanation.
+The following code is responsible for each sample conversion; refer to the comments for principle explanation.
 \newpage
 \begin{lstlisting}
 pub async fn sample_current_channel(
@@ -263,24 +263,24 @@ pub async fn sample_current_channel(
 \section{\label{section:ota-implementation}Over--the--air Update Implementation}
 It is the responsibility of the update process to securely and reliably transfer the binary image of the firmware from the host computer through the Gateway to the designated Node (sensor) of the network. 
 
-This task is complicated by the limited resources available on embedded devices, as discussed in Section \ref{section:ota-update-support}, and the slow and sometimes unreliable nature of the wireless connection in general. Following sections describe the protocol solution to this aspect of the OTA update process.
+This task is complicated by the limited resources available on embedded devices, as discussed in Section \ref{section:ota-update-support}, and the slow and sometimes unreliable nature of the wireless connection in general. The following sections describe the protocol solution to this aspect of the OTA update process.
 
 The performance testing was done along with the range test described in the following Section \ref{section:range-test}.
 
 \subsection{Data Fragmentation}
-The binary needs to be fragmented in order to be transmitted piece by piece. To guarantee the assembly of these fragments on the Node, an acknowledge mechanism must be present along with a way to detect errors in the transferred data. While the LoRa physical layer provides forward error correction and also up to a 16 bit CRC checksum, the error rate is from experience still too high to be practical. To tackle this, a custom 32 bit CRC was used to protect each fragment together with a SHA256 hash of the whole assembled binary, which is calculated as the last step in the update process.
+The binary needs to be fragmented in order to be transmitted piece by piece. To guarantee the assembly of these fragments on the Node, an acknowledge mechanism must be present along with a way to detect errors in the transferred data. While the LoRa physical layer provides forward error correction and also up to a 16-bit CRC checksum, the error rate is, from experience, still too high to be practical. To tackle this, a custom 32-bit CRC was used to protect each fragment together with a SHA256 hash of the whole assembled binary, which is calculated as the last step in the update process.
 
 \begin{figure}[p]
     \includesvg[width=0.9\textwidth]{fig/ota-algo.drawio.svg}
     \caption{\label{fig:ota-algo}Simplified flowchart depicting the over--the--air update communication process between the Gateway and the Node.}
 \end{figure}
 
-Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity, but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \link{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \code{enum OtaPacket}. Packets are serialized and deserialized using the \link{https://docs.rs/postcard/latest/postcard/}{postcard} Rust package.
+Figure \ref{fig:ota-algo} provides a basic overview of the OTA update process. The communication with the host is left out for brevity but mostly mirrors the operations that happen on the Gateway. Names in the cells correspond to packet types defined in the \link{https://github.com/manakjiri/lora-module-fw/blob/main/module-runtime/src/ota/common.rs}{module-runtime/src/ota/common.rs} file as \code{enum OtaPacket}. Packets are serialized and deserialized using the \link{https://docs.rs/postcard/latest/postcard/}{\code{postcard}} Rust package. LoRa driver is provided by the \link{https://github.com/lora-rs/lora-rs}{\code{lora-rs}} package.
 
 \subsection{Acknowledge Mechanism}
-The Automatic Repeat Request (ARQ) mechanism is inspired by Selective Repeat ARQ. The receiver is able to accept frames that are out of order and selectively requests missing or corrupted blocks. In contrast to standard ARQ, here the acknowledge (ACK) packet contains up to 32 indexes of blocks that were successfully received, instead of just one.
+The Automatic Repeat Request (ARQ) mechanism is inspired by Selective Repeat ARQ. The receiver is able to accept frames that are out of order and selectively requests missing or corrupted blocks. In contrast to standard ARQ, here the acknowledge (ACK) packet contains up to 32 indexes of blocks that were successfully received instead of just one.
 
-Likewise, the transmitter does not expect to receive ACK packets consistently and continues to transmit in order for up to 16 unACKed frames. The receiver is thus able to relax the rate of ACK packets to reduce the air time usage. Since the transmitter is not attempting to use the maximum available channel capacity, it transmits about one packet per second, it does not need the immediate response to measure latency.
+Likewise, the transmitter does not expect to receive ACK packets consistently and continues to transmit in order for up to 16 unACKed frames. The receiver is thus able to relax the rate of ACK packets to reduce the air time usage. Since the transmitter is not attempting to use the maximum available channel capacity, it transmits about one packet per second; it does not need the immediate response to measure latency.
 
 \subsection{Bootloader}
-Once the data was transferred to the target Node to be updated, the Node needs to perform the update by swapping the old firmware image with the new one, as described in Section \ref{section:ota-update-support}. The Embassy Bootloader was used for this purpose, as it is easy to integrate, features small memory footprint of just 8 KBytes, along with a rollback feature \cite{embassy_project_documentation_bootloader_2024}. The rollback is initiated after device reset if the application failed to signal to the bootloader, that it started up successfully by writing a special value in the state section of the FLASH.
+Once the data was transferred to the target Node to be updated, the Node needs to perform the update by swapping the old firmware image with the new one, as described in Section \ref{section:ota-update-support}. The Embassy Bootloader was used for this purpose, as it is easy to integrate and features a small memory footprint of just 8 KBytes, along with a rollback feature \cite{embassy_project_documentation_bootloader_2024}. The rollback is initiated after the device reset if the application fails to signal to the bootloader that it starts up successfully by writing a special value in the state section of the FLASH.

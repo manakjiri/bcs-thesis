@@ -1,6 +1,6 @@
 %!TEX ROOT=main.tex
 
-There are many commercially available solutions for soil moisture sensing. Offers range from generic hobby-grade to professional research-grade sensors of different form-factors and utilizing various methods of measurement. Following is a list of offerings approximately sorted by price and capabilities
+There are many commercially available solutions for soil moisture sensing. Offers range from generic hobby-grade to professional research-grade sensors of different form factors and utilize various methods of measurement. Following is a list of offerings approximately sorted by price and capabilities
 \begin{itemize}
     \item TEROS 54 and TEROS 10 from METER Group \cite{meter_group_teros_2024, meter_group_teros_nodate}
     \item BL-5311 biSensor by Baseline \cite{baseline_soil_2021}
@@ -15,44 +15,43 @@ There are many commercially available solutions for soil moisture sensing. Offer
     \caption{\label{fig:soil-sensors}Examples of commercially available soil moisture sensors \cite{meter_group_teros_nodate, baseline_soil_2021, czechproject_spol_sro_pudni_2024}.}
 \end{figure}
 
-The Baseline BL-5311 is constructed from an FR4 material and a plastic box housing the electronics. It is designed to be buried 10's of centimeters below the surface near the root zone. The sensor measures volumetric water content (measured volume is $\approx 0.08~\mathrm{L}$ for the Compact variant and $\approx 0.21~\mathrm{L}$ for the Original) using Time Domain Transmissometry (TDT), thus the sensor is galvanically isolated from the soil. The sensor communicates using a two-wire interface, by which it also receives power and is able to measure 5\% to 100\% soil saturation with water, while also measuring the temperature of the soil.
+The Baseline BL-5311 is constructed from an FR4 material and a plastic box housing the electronics. It is designed to be buried 10's centimeters below the surface near the root zone. The sensor measures volumetric water content (measured volume is $\approx 0.08~\mathrm{L}$ for the Compact variant and $\approx 0.21~\mathrm{L}$ for the Original) using Time Domain Transmissometry (TDT); thus the sensor is galvanically isolated from the soil. The sensor communicates using a two-wire interface, by which it also receives power and is able to measure 5\% to 100\% soil saturation with water while also measuring the temperature of the soil.
 
 \section{LoRa Wireless Interface}
 LoRa (Long Range) is a low-power wireless communication technology and is one of the leading technologies used in the rapidly expanding field of the Internet of Things (IoT), particularly in applications requiring devices to send small amounts of data over long distances while conserving battery life.
 
 Its modulation technique is known as LoRa modulation, which is derived from chirp spread spectrum (CSS) modulation \cite{semtech_corporation_sx12612_2024}. It operates in the sub-gigahertz radio frequency bands, and it is typically used in a star--of--stars network topology in conjunction with LoRaWAN (Long Range Wide Area Network), which defines the network's communication protocol and system architecture.
 
-LoRa is particularly noted for its excellent penetration in dense urban environments and indoor connectivity, compared to other technologies like Wi--Fi and cellular networks \cite{stmicroelectronics_lora_2024,semtech_corporation_sx12612_2024,seeedstudio_wio-e5-wireless_2024}. This capability, combined with its low power requirements and long range, provides a distinct advantage in scenarios where alternative networking technologies might fail or be too costly.
+LoRa is particularly noted for its excellent penetration in dense urban environments and indoor connectivity, compared to other technologies like Wi--Fi and cellular networks \cite{stmicroelectronics_lora_2024,semtech_corporation_sx12612_2024,seeedstudio_wio-e5-wireless_2024}. This capability, combined with its low power requirements and long-range, provides a distinct advantage in scenarios where alternative networking technologies might fail or be too costly.
 
 \subsection{Modules Implementing LoRa}
 Communications modules are a way to integrate the desired communications interface into an application. These modules usually offer a layer of abstraction above the interface they implement, if not also being used as the main processing unit.
 
-The NUCLEO-WL55JC could be considered for this use-case \cite{stmicroelectronics_nucleo-wl55jc_2024}, but it is perhaps too versatile to be practical. Mainly it includes many options for connecting additional devices, increasing its footprint and additionally integrates features, which are only necessary during development, potentially increasing power consumption.
+The NUCLEO-WL55JC could be considered for this use-case \cite{stmicroelectronics_nucleo-wl55jc_2024}, but it is perhaps too versatile to be practical. Mainly, it includes many options for connecting additional devices, increasing its footprint, and additionally integrating features, which are only necessary during development, potentially increasing power consumption.
 
 \subsection{LoRa Network Coverage}
 \emph{The LoRaWAN® specification is a Low Power, Wide Area (LPWA) networking protocol designed to wirelessly connect battery operated ``things'' to the internet in regional, national or global networks, and targets key Internet of Things (IoT) requirements such as bi-directional communication, end-to-end security, mobility and localization services.} - What is LoRaWAN | LoRa Alliance. According to the LoRa Alliance, there are three network definitions.
 \begin{itemize}
-    \item Network Operator is any LoRaWAN network aimed at openly monetizing connectivity or end to end services to third parties.
+    \item Network Operator is any LoRaWAN network aimed at openly monetizing connectivity or end-to-end services to third parties.
     \item LoRaWAN Open Communities are developer communities.
     \item LoRaWAN Private Networks are used by smart cities and businesses that roll out their own LoRaWAN Networks.
 \end{itemize}
 
-There are many providers, allowing customers to connect and transfer data through their network. The model is similar to that of cellular networks, where each device receives a Unique Identifier (ID) and needs to conform to data limits. Global network operators include Orange, Meshify, Chirp Stack and The Things Network (TTN) \cite{the_things_network_things_nodate}. Amazon Sidewalk is only available in the US \cite{amazon_inc_amazoncom_nodate}. Czech CRA offers plans for customers starting at 200 CZK per month for 10 devices with a limit of 10,000 messages total \cite{pixman_sro_objednavate_nodate}.
+There are many providers that allow customers to connect and transfer data through their network. The model is similar to that of cellular networks, where each device receives a Unique Identifier (ID) and needs to conform to data limits. Global network operators include Orange, Meshify, Chirp Stack, and The Things Network (TTN) \cite{the_things_network_things_nodate}. Amazon Sidewalk is only available in the US \cite{amazon_inc_amazoncom_nodate}. Czech CRA offers plans for customers starting at 200 CZK per month for 10 devices with a limit of 10,000 messages total \cite{pixman_sro_objednavate_nodate}.
 
-This project choses to host a private network, since the network coverage is mostly limited to urban areas, brings many restrictions \cite{the_things_network_eu863-870_nodate,the_things_network_message_nodate} and an ongoing cost associated.
+This project chooses to host a private network since the network coverage is mostly limited to urban areas, brings many restrictions \cite{the_things_network_eu863-870_nodate,the_things_network_message_nodate} and an ongoing cost associated.
 
-\newpage
 \section{Soil Water Content}
 Soil is made up of a solid phase of minerals and organic matter, and the pores in-between the solids, which hold gasses and water \cite{paul_soil_2007}. The total amount of moisture is the sum of the moisture contained inside the solids (in intra-aggregate pore space) and the space around the solids (inter-aggregate pore space) \cite{myjove_corporation_determination_2024}. This work will not distinguish between the two for simplicity.
 
 \subsection{Definition}
-Soil water or moisture content is a ratio, which ranges from 0, meaning completely dry, to the value of material porosity at saturation \cite{webster_humidity_1998}. It expresses the quantity of water contained in the soil. We can measure it by mass (gravimetric method) or by volume, as depicted in Figure \ref{fig:soil-phase-diagram}.
+Soil water or moisture content is a ratio that ranges from 0, meaning completely dry, to the value of material porosity at saturation \cite{webster_humidity_1998}. It expresses the quantity of water contained in the soil. We can measure it by mass (gravimetric method) or by volume, as depicted in Figure~\ref{fig:soil-phase-diagram}.
 
 Volumetric content (VWC) can be expressed mathematically as
 \begin{equation}
     \label{equation:volumetric-content} \theta = \dfrac{V_w}{V_s + V_w + V_a}
 \end{equation}
-where $V_w$ is the volume of water and $V_s + V_w + V_a$ is the total volume of the soil sample, including the contained air.
+where $V_w$ is the volume of water, and $V_s + V_w + V_a$ is the total volume of the soil sample, including the contained air.
 
 Likewise, gravimetric water content (GWC) is defined as
 \begin{equation}
@@ -69,21 +68,20 @@ where $m_w$ is the mass of the water and $m_s$ is mass of all solids in the samp
 \subsubsection{Drying the Soil}
 Drying the soil sample in a drying oven is a direct method of measurement and is used as the reference method \cite{webster_humidity_1998}. By weighing the sample and measuring its volume, then doing that again after drying, it is possible to very accurately measure both the volumetric and the gravimetric water content simultaneously.
 
-The procedure involves gathering a known sample quantity, ranging from 30 grams to 5 kg, depending on the fines of the particles, heating it and drying it at 65 to 110 degrees Celsius until the weight stops decreasing \cite{department_of_sustainable_natural_resources_soil_2024,myjove_corporation_determination_2024, paul_soil_2007}.
+The procedure involves gathering a known sample quantity, ranging from 30 grams to 5 kg, depending on the fines of the particles, heating it, and drying it at 65 to 110 degrees Celsius until the weight stops decreasing \cite{department_of_sustainable_natural_resources_soil_2024,myjove_corporation_determination_2024, paul_soil_2007}.
 
 Since direct methods of measurement of soil moisture content are impractical for field use, we will focus on indirect methods from now onwards.
 
 \subsubsection{Geophysical Methods}
-Geophysical methods exploit other properties of water contained in the soil to approximate the VWC, such as its conductivity, dielectric constant or interaction with neutrons. These methods are thus indirect and subject to inaccuracy if wrong assumptions are used \cite{webster_humidity_1998}. However, if applied correctly, these methods allow continuous water content monitoring without human intervention.
+Geophysical methods exploit other properties of water contained in the soil to approximate the VWC, such as its conductivity, dielectric constant, or interaction with neutrons. These methods are thus indirect and subject to inaccuracy if wrong assumptions are used \cite{webster_humidity_1998}. However, if applied correctly, these methods allow continuous water content monitoring without human intervention.
 
 \subsubsection{Satellite Remote Sensing Method}
-Thanks to recent and ongoing large-scale deployments of Synthetic Aperture Radar satellites, it is possible that this method will become much more widespread for global--scale soil moisture content estimation. It also relies on the large contrast in dielectric properties of wet and dry soil and generally exhibits too low resolution (>3 km \cite{podest_applications_nodate,eos_data_analytics_remote_2022}) for most applications outside of large farming fields.
-
 \begin{figure}
     \subfloat[SMAP Artist's Concept of the satellite]{\includegraphics[width=.35\textwidth]{img/satellite.png}}\hfil
     \subfloat[Global root zone soil moisture]{\includegraphics[width=.6\textwidth]{img/roots-global-map.png}}
     \caption{\label{fig:satellite}Examples of commercially available soil moisture sensors \cite{meter_group_teros_nodate, baseline_soil_2021, czechproject_spol_sro_pudni_2024}.}
 \end{figure}
+Thanks to recent and ongoing large-scale deployments of Synthetic Aperture Radar satellites, it is possible that this method will become much more widespread for global--scale soil moisture content estimation. It also relies on the large contrast in dielectric properties of wet and dry soil and generally exhibits too low resolution (>3 km \cite{podest_applications_nodate,eos_data_analytics_remote_2022}) for most applications outside of large farming fields.
 
 \section{\label{section:soil-moisure-sensors-theory}Capacitive Soil Moisture Sensors}
 Capacitive soil moisture sensing is an indirect, geophysical method of measurement, which makes it suitable for this application, as discussed earlier.
@@ -103,6 +101,6 @@ As the volumetric water content in the soil increases, the relative dielectric p
 \end{equation}
 where $\epsilon_0 = 8.85 \cdot 10^{-12} \frac{F}{m}$ permittivity of the vacuum, the surface area $S$ and distance between the electrodes $d$ are constant, the capacitance is proportional to the relative permittivity $\epsilon_r$.
 
-In practice, the dielectric constant is also largely dependent on temperature, measuring frequency and saturation with dissolved ions \cite{meter_group_soil_2023,podest_applications_nodate}. This makes precise absolute measurements almost impossible without prior calibration against know reference for particular soil type.
+In practice, the dielectric constant is also largely dependent on temperature, measuring frequency, and saturation with dissolved ions \cite{meter_group_soil_2023,podest_applications_nodate}. This makes precise absolute measurements almost impossible without prior calibration against known references for particular soil types.
 
-To summarize, the fact that it can be employed without ongoing operating interventions by technicians and engineers, at the cost of providing only relative measurements and the need for initial calibration, this measuring method is a good compromise given the application requirements. Sections \ref{section:expected-cap}, \ref{section:sensor-circuit} and \ref{section:sensor-validation}, where the particular measuring method is designed and validated expand upon this.
+To summarize, the fact that it can be employed without ongoing operating interventions by technicians and engineers, at the cost of providing only relative measurements and the need for initial calibration, this measuring method is a good compromise given the application requirements. Sections \ref{section:expected-cap}, \ref{section:sensor-circuit}, and \ref{section:sensor-validation}, where the particular measuring method is designed and validated, expand upon this.

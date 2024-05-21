@@ -3,28 +3,28 @@
 \section{\label{section:range-test}LoRa Module Range and Link Speed Test}
 In order to determine the real-world performance, a range test was conducted. Primary points of interest are
 \begin{itemize}
-    \item maximum practically usable range of the solution and connection quality deterioration as the distance and occlusion increases,
+    \item maximum practically usable range of the solution and connection quality deterioration as the distance and occlusion increase,
     \item performance of the designed module compared with the Nucleo development board as reference,
     \item the effect of proximity of the antenna to the ground and
     \item the effect of the spreading factor (SF) modulation parameter.
 \end{itemize}
 
-All testing so far was done in home environment with Nodes in close proximity and no major packet loss could be observed. Given the relatively low experience in RF design however, it is expected the module will perform worse than the Nucleo board.
+All testing so far was done in a home environment with Nodes in close proximity, and no major packet loss could be observed. Given the relatively low experience in RF design, however, it is expected the module will perform worse than the Nucleo board.
 
-With increasing spreading factor, the symbol time increases and the link budget goes with it \cite{semtech_corporation_sx12612_2024}, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
+With an increasing spreading factor, the symbol time increases, and the link budget goes with it \cite{semtech_corporation_sx12612_2024}, as can be seen in Table \ref{table:semtech-sf}. But longer symbol time relies on more stable and precise frequency reference. 
 
 \begin{figure}[H]
     \includegraphics[width=\textwidth]{fig/semtech-sf-table.png}
     \caption{\label{table:semtech-sf}Range of Spreading Factors (SF).}
 \end{figure}
 
-Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$ \cite{etsi_short_2018,the_things_network_eu863-870_nodate}. This is the reason for selecting SF as the variable, while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
+Bandwidth variation exhibits similar traits, but to stay within the legal limits of the EU868 band, it is necessary to stay within $125\text{--}500~\mathrm{kHz}$ \cite{etsi_short_2018,the_things_network_eu863-870_nodate}. This is the reason for selecting SF as the variable while keeping the Bandwidth and the coding rate (CR) constant. CR also has a very predictable effect on the connection quality.
 
 \subsection{Hypothesis}
-It is expected the proximity to the ground will have high impact on the usable range of the sensor, meaning Nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield longer range. We are not expecting to surpass distance of $1~\mathrm{km}$.
+It is expected the proximity to the ground will have a high impact on the usable range of the sensor, meaning Nodes mounted with their antenna closer to the ground should perform worse. Higher SF should yield a longer range. We are not expecting to surpass the distance of $1~\mathrm{km}$.
 
 \subsection{\label{section:range-prerequisite}Prerequisite}
-The maximum achievable SF needed to be determined. This was done experimentally, starting with SF5 and incrementing util it was no longer possible to transfer data. This test was conducted using Nucleo acting as the initiator of connection with the LoRa module. Devices were situated on a desk about 1.5 meters apart with their antennae positioned orthogonally in respect to each other to avoid overwhelming the receiver. All other parameters are identical to those used in the latter experiment.
+The maximum achievable SF needed to be determined. This was done experimentally, starting with SF5 and incrementing util it was no longer possible to transfer data. This test was conducted using Nucleo acting as the initiator of connection with the LoRa module. Devices were situated on a desk about 1.5 meters apart, with their antennae positioned orthogonally in respect to each other to avoid overwhelming the receiver. All other parameters are identical to those used in the latter experiment.
 
 The connection was stable at SF11, but at SF12 the LoRa module stopped responding, thus the experiment was done at SF5 and SF11, which corresponds to a theoretical delta of $15~\mathrm{dB}$ \cite{semtech_corporation_sx12612_2024}.
 
@@ -50,7 +50,7 @@ All LoRa modulation and packet parameters were set in firmware (commit \link{htt
 \end{center}
 \end{table}
 
-LoRa modules used the MOLEX 105262--0003 antenna and Nucleo boards used their stock antenna, all were close to vertical orientation. A pole with two LoRa modules and one Nucleo (see Figure \ref{fig:range-nodes}) was constructed to act as the stationary set of Nodes to test against. Another Nucleo board was attached to a car (see Figure \ref{fig:range-gateway}) to act as the Gateway, see Table \ref{table:range-test-devices} for more details.
+LoRa modules used the MOLEX 105262--0003 antenna and Nucleo boards used their stock antenna, all were close to vertical orientation. A pole with two LoRa modules and one Nucleo (see Figure \ref{fig:range-nodes}) was constructed to act as the stationary set of Nodes to test against. Another Nucleo board was attached to a car (see Figure \ref{fig:range-gateway}) to act as the Gateway; see Table \ref{table:range-test-devices} for more details.
 
 \begin{figure}[p]
     \centering
@@ -83,19 +83,19 @@ LoRa modules used the MOLEX 105262--0003 antenna and Nucleo boards used their st
 
 A location was picked to represent the final use--case, a field with sections of direct line--of--sight (LOS) and sections obstructed by hills. This place is situated near Průhonice municipality in the Czech Republic. The pole with Nodes attached was installed at \href{https://en.mapy.cz/letecka?q=50.0012006N%2C%2014.5308962E&x=14.5381677&y=50.0011824&z=16}{50.0012006N, 14.5308961E}\footnote{https://en.mapy.cz/letecka?q=50.0012006N\%2C\%2014.5308962E\&x=14.5381677\&y=50.0011824\&z=16} (WGS84).
 
-A set of measurements was taken through the Gateway at different locations progressing further from the stationary pole with the Nodes attached. These measurements consisted of downloading a random binary 1 KB file to each of the Nodes consecutively. This file was fragmented on the fly by the OTA update protocol to 16 blocks of 64 bytes each.
+A set of measurements was taken through the Gateway at different locations, progressing further from the stationary pole with the Nodes attached. These measurements consisted of downloading a random binary 1 KB file to each of the Nodes consecutively. This file was fragmented on the fly by the OTA update protocol to 16 blocks of 64 bytes each.
 
-This means that effectively 16 different measurements of the signal quality were taken at each location for each of the three Nodes. Measurements were recorded by the system in a CSV file containing the time since download started, the amount of packets sent and the last block that was acknowledged - thus a success rate can be calculated. In case the download failed to initiate, nothing gets recorded and that is interpreted as 0\% success rate.
+This means that effectively 16 different measurements of the signal quality were taken at each location for each of the three Nodes. Measurements were recorded by the system in a CSV file containing the time since the download started, the number of packets sent, and the last block that was acknowledged - thus, a success rate can be calculated. In case the download fails to initiate, nothing gets recorded, and that is interpreted as 0\% success rate.
 
 \subsection{Results}
-As this is an experiment, where direct line--of--sight cannot be relied upon to interpret the results, it was deemed necessary to somehow capture the environment, the terrain, and present it along with the obtained data.
+As this is an experiment where direct line--of--sight cannot be relied upon to interpret the results, it was deemed necessary to somehow capture the environment and the terrain and present it along with the obtained data.
 
 Altitude data was obtained from the \link{https://api.mapy.cz/v1/elevation}{Seznam.cz elevation API} in 5 m resolution of interpolated coordinates of lines connecting the Nodes and Gateway locations. This location data is also available in raw form as part of the Appendix \ref{chapter:more-range-test}.
 
 \subsubsection{\label{section:edsl-definition}Elevation Deviation from the Straight Line}
-Following graphs describe the terrain in terms of Elevation Deviation from the Straight Line (EDSL) connecting the Nodes location (spot 0) with the furthest point at which the last measurement was taken. Units of EDSL proportionally translate to meters, since the effect is similar to subtracting the offset signal in data.
+The following graphs describe the terrain in terms of Elevation Deviation from the Straight Line (EDSL) connecting the Node's location (spot 0) with the furthest point at which the last measurement was taken. Units of EDSL proportionally translate to meters since the effect is similar to subtracting the offset signal in data.
 
-The same data without the EDSL interpretation is included as Appendix \ref{chapter:more-range-test} for completeness. It also demonstrates the need for such data manipulation, because the features of the terrain are a lot less apparent in the original data.
+The same data without the EDSL interpretation is included in Appendix \ref{chapter:more-range-test} for completeness. It also demonstrates the need for such data manipulation because the features of the terrain are a lot less apparent in the original data.
 
 \begin{figure}[p]
     \includegraphics[width=.9\textwidth]{img/range-test-map.png}
@@ -103,13 +103,13 @@ The same data without the EDSL interpretation is included as Appendix \ref{chapt
 \end{figure}
 
 \subsubsection{Effect of the Spreading Factor}
-Lower SF decreases the packet air time at the expanse of lower range reached. SF5 averaged $0.125~\mathrm{s}$, while SF11 averaged $1.125~\mathrm{s}$ round-trip time (excluding packet-loss) with these payloads.
+Lower SF decreases the packet air time at the expanse of the lower range reached. SF5 averaged $0.125~\mathrm{s}$, while SF11 averaged $1.125~\mathrm{s}$ round-trip time (excluding packet-loss) with these payloads.
 
-Using SF5, it was possible to maintain stable connection with Nodes (3 and 4) positioned higher above the ground level even when occluded by the terrain. Connection with Node 2 was lost as soon as any occlusion was introduced. It can be expected that this setup would be feasible in very flat environments, but could be susceptible to dropouts with slight changes, such as growing crops.
+Using SF5, it was possible to maintain a stable connection with Nodes (3 and 4) positioned higher above the ground level even when occluded by the terrain. Connection with Node 2 was lost as soon as any occlusion was introduced. It can be expected that this setup would be feasible in very flat environments but could be susceptible to dropouts with slight changes, such as growing crops.
 
-The SF11 configuration exceeded expectations in terms of distance reached, a stable connection was maintained with all Nodes without difference in packet loss, which is perhaps most surprising, since some degradation was expected at least for the Node 2 position closest to the ground level. 
+The SF11 configuration exceeded expectations in terms of distance reached, and a stable connection was maintained with all Nodes without difference in packet loss, which is perhaps most surprising since some degradation was expected, at least for the Node 2 position closest to the ground level. 
 
-While the range was higher than with SF5, the connection quality is somewhat worse in the stable regions (less than 500 m distance, direct line-of-sight) for SF11. This suggests that a stability limit was indeed reached, as alloted to in the Prerequisite Section \ref{section:range-prerequisite}.
+While the range was higher than with SF5, the connection quality is somewhat worse in the stable regions (less than 500 m distance, direct line-of-sight) for SF11. This suggests that a stability limit was indeed reached, as outlined in the Prerequisite Section \ref{section:range-prerequisite}.
 
 \begin{figure}[p]
     \centering
@@ -147,7 +147,7 @@ While the range was higher than with SF5, the connection quality is somewhat wor
         \vspace{1em}
     \end{minipage}
     \includesvg[width=\textwidth]{data/range/out/relief-sf11-far1-lines.svg}
-    \caption{\label{fig:range-relief-far1}Table of the success rates and graph of the first long range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
+    \caption{\label{fig:range-relief-far1}Table of the success rates and graph of the first long-range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
 \end{figure}
 
 \begin{figure}[p]
@@ -158,11 +158,11 @@ While the range was higher than with SF5, the connection quality is somewhat wor
         \vspace{1em}
     \end{minipage}
     \includesvg[width=\textwidth]{data/range/out/relief-sf11-far2-lines.svg}
-    \caption{\label{fig:range-relief-far2}Table of the success rates and graph of the second long range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
+    \caption{\label{fig:range-relief-far2}Table of the success rates and graph of the second long-range test location, distance from the pole with Nodes, and the relief in the path of the signal described as Elevation Deviation from the Straight Line \ref{section:edsl-definition}, which compensates the downward slope of the terrain and brings attention to the features of the terrain. Black crosses signify the position of the antennae of each device for each spot number. Dashed lines highlight the direct line-of-sight for the antennae.}
 \end{figure}
 
 \subsubsection{Maximum Distance}
-Finding the limit at FS11 proved to be more difficult than anticipated. The surrounding environment either contained too favorable, or absolutely unfavorable conditions at further distances. Two additional data points displayed in Figures \ref{fig:range-relief-far1} and \ref{fig:range-relief-far2} were gathered at locations outside of the planed path.
+Finding the limit at FS11 proved to be more difficult than anticipated. The surrounding environment either contained too favorable or absolutely unfavorable conditions at further distances. Two additional data points displayed in Figures \ref{fig:range-relief-far1} and \ref{fig:range-relief-far2} were gathered at locations outside of the planned path.
 
 The first Figure \ref{fig:range-relief-far1} shows the only flawless connection with the Nucleo Node 4, which must have been facilitated thanks to a signal reflection from some other feature in the environment. While the connection with Node 3 was initiated and it acknowledged 2 packets, the connection later timed out after the Node failed to respond in 30 more attempts.
 
@@ -170,14 +170,15 @@ The second location, captured by Figure \ref{fig:range-relief-far2}, exhibited f
 
 The nature of LoRa is that it performs well within its large link budget, but once that is exhausted, the performance drops off rapidly. The attenuation of the medium through which the electromagnetic wave travels changes with temperature and saturation with humidity and particulate, the position of the antennae may change slightly due to wind and the onboard oscillators can drift with temperature and power supply.
 
-Most of these factors remained constant throughout this experiment, since it was done within a 1.5 hour window, but must be considered for long-term deployments.
+Most of these factors remained constant throughout this experiment since it was done within a 1.5-hour window, but they must be considered for long-term deployments.
 
+\newpage
 \section{\label{section:sensor-validation}Soil Moisture Sensor Validation}
 A practical experiment was conducted to validate the functioning of the soil moisture sensor itself.
 
 \begin{figure}
     \centering
-    \subfloat[\label{fig:case}CAD design render of the soil moisture sensor case (bottom left) including the hinge providing the sviwel adjustment of the panel (center) and the panel plate part.]{\includegraphics[width=.44\textwidth]{img/sensor-case.png}} \hfill
+    \subfloat[\label{fig:case}CAD design render of the soil moisture sensor case (bottom left) including the hinge providing the swivel adjustment of the panel (center) and the panel plate part.]{\includegraphics[width=.44\textwidth]{img/sensor-case.png}} \hfill
     %\subfloat[Illustrative picture]{\includegraphics[width=.39\textwidth,angle=90]{img/panel.png}} \hfill
     \subfloat[\label{fig:panel}IV Curve of the MP3-37 solar panel manufactured by PowerFilm, which was used for the soil moisture sensor validation.]{\includegraphics[width=.54\textwidth]{fig/panel-iv.png}}
     \caption{Soil moisture sensor case (left) and the IV curve of the solar panel (right). Both parts were used during the soil moisture sensor validation.}
@@ -186,7 +187,7 @@ A practical experiment was conducted to validate the functioning of the soil moi
 \begin{figure}
     \centering
     \subfloat[Soil moisture sensor stuck in the pot (center) on a window sill facing south. The lithium battery is connected externally through the RaspberryPi Pico development board (bottom), acting as a data logger of the voltage and current.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-up.jpg}} \hfil
-    \subfloat[Close--up picture of the sensor and its housing. The LoRa module is clearly visible, along with the conncetions to the solar panel, the battery and the antenna.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-close.jpg}}
+    \subfloat[Close--up picture of the sensor and its housing. The LoRa module is clearly visible, along with the connections to the solar panel, the battery, and the antenna.]{\includegraphics[width=.45\textwidth]{img/sensor-deploy-close.jpg}}
     \caption{\label{fig:sensor-deploy}Soil moisture sensor proof--of--concept deployment scenario used for validating the solar panel performance and the sensor's measuring capabilities.}
 \end{figure}
 
@@ -194,7 +195,7 @@ A practical experiment was conducted to validate the functioning of the soil moi
 The sensor should detect soil moisture based on the experiments done during sensor validation. It is also expected that the sensor will be able to charge its battery when enough sunlight is available.
 
 \subsection{Prerequisite}
-The sensor is meant to be made self--sufficient thanks to a solar panel. The main constraint is the power generated and the panel's dimensions. Since the solar panel is charging the battery directly, it needs to generate sufficiently high voltage to do so. The MP3--37 from PowerFilm was picked, because its open circuit voltage is 4.6 V, and according to \ref{fig:panel}, it should produce 50 mA at 4.1 V, which is ideal for this application.
+The sensor is meant to be made self--sufficient thanks to a solar panel. The main constraint is the power generated and the panel's dimensions. Since the solar panel is charging the battery directly, it needs to generate sufficiently high voltage to do so. The MP3--37 from PowerFilm was picked because its open circuit voltage is 4.6 V, and according to \ref{fig:panel}, it should produce 50 mA at 4.1 V, which is ideal for this application.
 
 %https://cz.mouser.com/datasheet/2/1009/Electronic_Component_Spec_Sheet_Cla_77DEA84523C82-1658524.pdf
 
@@ -221,7 +222,7 @@ Lastly, the sensor's scale needed to be calibrated. This was done by taking 10 m
 \subsection{Methodology}
 The sensor was stuck in the existing planter of a citrus tree plant. Sensor readings are gathered using the LoRa interface every 15 seconds. Power logger readings using Raspberry Pi Pico are also gathered every 15 seconds. 
 
-The power logger is measuring the battery voltage and current. Thus any power consumed by the sensor itself during charging is not visible, but is assumed to be constant throughout the experiment, as the reading interval is fixed.
+The power logger is measuring the battery voltage and current. Thus, any power consumed by the sensor itself during charging is not visible but is assumed to be constant throughout the experiment, as the reading interval is fixed.
 
 The planter with the sensor is placed behind a glass window facing south. The panel is inclined by the swivel mechanism at about 30 degrees.
 
@@ -232,38 +233,42 @@ The planter with the sensor is placed behind a glass window facing south. The pa
 \end{figure}
 \begin{figure}[p]
     \includesvg[width=\textwidth]{data/deployment/out/power.svg}
-    \caption{\label{fig:power-log}Battery voltage (black) and charging power (yellow), excluding the power consumed by the sensor and the module itself. The power is provided solely by the 150 mWp solar panel. The experiment was started with the battery completely empty. Voltages below 2.8 V are left out, the under--voltage protection of the sensor always triggered at 2.5 V}
+    \caption{\label{fig:power-log}Battery voltage (black) and charging power (yellow), excluding the power consumed by the sensor and the module itself. The power is provided solely by the 150 mWp solar panel. The experiment was started with the battery completely empty. Voltages below 2.8 V are left out; the under--voltage protection of the sensor is always triggered at 2.5 V}
 \end{figure}
 
-The sensor was started on external power supply the day prior to the test to gather the initial measurements visible in the Figure \ref{fig:sensor-log} up to 12.5 00:00. After enough readings were gathered, the sensor was connected to its 330 mAh Lithium Polymer battery, which has been discharged completely prior to the experiment. The soil was mostly dry, as can be seen in the referenced Figure.
+The sensor was started on an external power supply the day prior to the test to gather the initial measurements visible in Figure \ref{fig:sensor-log} up to 12.5 00:00. After enough readings were gathered, the sensor was connected to its 330 mAh Lithium Polymer battery, which has been discharged completely prior to the experiment. The soil was mostly dry, as can be seen in the referenced Figure.
 
-Watering occurred at 12.05 10:10, at which point the relative moisture saturation started raising into the 60--80 percent range in all but the control zone. The soil moisture was than gradually dropping throughout the following 7 days. Notably the surface zone (zone 2, brown in Figure \ref{fig:sensor-log}) returned to the level of soil moisture saturation before the watering, whereas the root--level zones were drying slower, signaling that there is still enough moisture.
+Watering occurred at 12.05 10:10, at which point the relative moisture saturation started rising into the 60--80 percent range in all but the control zone. The soil moisture was than gradually dropping throughout the following 7 days. Notably, the surface zone (zone 2, brown in Figure \ref{fig:sensor-log}) returned to the level of soil moisture saturation before the watering, whereas the root-level zones were drying slower, signaling that there is still enough moisture.
 
-Figure \ref{fig:power-log} starts at the moment of power--on of the sensor in the morning the following day. The power consumption of the sensor was too high and the charging efficiency too poor for the sensor to maintain stable operation, as it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. Same event repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May, following two days offered full sun throughout.
+Figure \ref{fig:power-log} starts at the moment of power--on of the sensor in the morning the following day. The power consumption of the sensor was too high and the charging efficiency too poor for the sensor to maintain stable operation, as it discharged after midnight the following day at 2.5 V, at which point the sensor's battery protection circuitry disconnected it. The same event is repeated at the same voltage all following days and is thus left out. It was overcast with occasional full sun the day of 12$^{th}$ of May; following two days offered full sun throughout.
 
-At this point a problem was noticed by observing the data, where it was apparent that the sensor stopped charging even though there was full, unobstructed sun hitting the solar panel. This was rectified in the morning the following day (14$^{th}$ of May) by bypassing the charging diode D2 (see Figure \ref{schematic:sensor-1}). This caused a temporary disruption in the logged results, which manifested by the peak visible at roughly noon that day.
+At this point, a problem was noticed by observing the data, where it was apparent that the sensor stopped charging even though there was full, unobstructed sun hitting the solar panel. This was rectified in the morning the following day (14$^{th}$ of May) by bypassing the charging diode D2 (see Figure \ref{schematic:sensor-1}). This caused a temporary disruption in the logged results, which manifested by the peak visible at roughly noon that day.
 
 After this modification, the battery managed to reach higher voltage and the sensor stayed working longer than any previous day. The rest of the data is cyclical in the same way, thus not shown. This poor battery performance is caused by a combination of many factors:
+\newpage
 \begin{itemize}
-    \item Due to the hardware design mistake involving the crystal oscillator on the LoRa module \ref{fig:tcxo-bodge}, the TCXO cannot be switched off, which causes a constant current draw of 2.5 mA. The MCU has a capability to start the oscillator only when needed, which is implemented in the following revision of the LoRa module.
+    \item Due to the hardware design mistake involving the crystal oscillator on the LoRa module \ref{fig:tcxo-bodge}, the TCXO cannot be switched off, which causes a constant current draw of 2.5 mA. The MCU has the capability to start the oscillator only when needed, which is implemented in the following revision of the LoRa module.
     \item The measuring interval is rapid to bring more data into understanding the sensor performance, which is not necessary for final deployment, where a measuring interval of 10 minutes or longer would suffice.
-    \item The MCU is not able to run at low enough clock speed because of limitations in the firmware
-    \item The solar panel is behind a double-glazed window with low solar zenith angle (summer solstice), causing some energy loss in the glass. Because of this, the solar panel may not be receiving enough radiation to reach peak performance, which would be expected given the clear sky.
-    \item The battery is directly charged by the solar panel without any energy harvesting optimizations, like Maximum Power Point Tracking implemented. However this was a conscious decision during the sensor design to make it simple, at the cost of some efficiency.
+    \item The MCU is not able to run at a low enough clock speed because of limitations in the firmware
+    \item The solar panel is behind a double-glazed window with a low solar zenith angle (summer solstice), causing some energy loss in the glass. Because of this, the solar panel may not be receiving enough radiation to reach peak performance, which would be expected given the clear sky.
+    \item The battery is directly charged by the solar panel without any energy harvesting optimizations as Maximum Power Point Tracking implemented. However, this was a conscious decision during the sensor design to make it simple at the cost of some efficiency.
     \item Lastly, the solar panel is obstructed by building and window features, which limit the irradiation time.
 \end{itemize}
 
-%diank, diank, dianky, bez dianek, diankam, dianky, Dianky!, diankách, diankama
-\section{Proof--of--concept application}
-For demonstration purposes, simple proof-of-concept backend application was created and tested. This application uses multiple different inputs, main input being the sensor measured soil moisture saturation. Other inputs include weather forecast for the next 6 hours and the current time of day, as plants tend to prefer being watered during the day. For the weather forecast, if there was probability of precipitation in the next 6 hours, which was higher than 25 \%, the watering was postponed.
-Considering the probability is enough, as the main focus is not to over--water the plants, if the downpour was not sufficient, the application would request watering the next day.
+Many of these factors are solved by the next iteration, see \ref{section:module-v0.2}, and with improvements in the firmware of the module. It is even possible to update this firmware remotely, thanks to the OTA update capability.
 
+\newpage
+\section{Proof--of--concept application}
 \begin{figure}[H]
     \includesvg[width=\textwidth]{data/deployment/out/watering.svg}
-    \caption{\label{fig:watering}Output from the demo application showing the measured soil moisture saturation (black) and the watering request depicted as red, when watering is requested, or green once the request has been fulfilled.}
+    \caption{\label{fig:watering}Output from the demo application showing the measured soil moisture saturation (black) and the watering request depicted as red when watering is requested or green once the request has been fulfilled.}
 \end{figure}
 
-The whole decision process is documented by the code below. This function is responsible for computing the watering request. The configuration is stored in a json file. The weather information is fetched from \link{https://openweathermap.org/api/one-call-api}{OpenWeather API} and processed before this function. The decision process could be further ameliorated, as hinted by the comments in the code.
+For demonstration purposes, a simple proof-of-concept backend application was created and tested. This application uses multiple different inputs, the main input being the sensor-measured soil moisture saturation. Other inputs include the weather forecast for the next 6 hours and the current time of day, as plants tend to prefer being watered during the day. For the weather forecast, if there was a probability of precipitation in the next 6 hours, which was higher than 25 \%, the watering was postponed.
+Considering the probability is enough, as the main focus is not to over--water the plants, if the downpour was not sufficient, the application would request watering the next day.
+
+The whole decision process is documented in the code below. This function is responsible for computing the watering request. The configuration is stored in a json file. The weather information is fetched from \link{https://openweathermap.org/api/one-call-api}{OpenWeather API} and processed before this function. The decision process could be further ameliorated, as hinted by the comments in the code.
+\newpage
 \begin{lstlisting}
 fn figure_out_watering(
         config: &Config, moisture: [u16; 4], pop: f64
@@ -296,7 +301,7 @@ fn figure_out_watering(
     }
 }
 \end{lstlisting}
-JSON configuration file example for the backend application. The application itself outputs its findings in CSV file, which could be read by other system providing the watering automation. The CSV file also provides a history, which could be provided to the user.
+JSON configuration file example for the backend application. The application itself outputs its findings in a CSV file, which could be read by other systems providing the watering automation. The CSV file also provides a history, which could be provided to the user.
 \begin{lstlisting}
 {
     "latitude": 50.0755,

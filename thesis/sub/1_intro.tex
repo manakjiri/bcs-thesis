@@ -2,9 +2,9 @@
 
 With the upward trend in global temperatures, the world is witnessing an increased scarcity of water resources. This environmental shift poses a significant challenge to traditional farming practices, which are heavily reliant on predictable weather patterns and stable water supply. 
 
-``\emph{Over 60\% of European soils are unhealthy and scientific evidence shows that soils are further degrading due to unsustainable management of the land, sealing, contamination and overexploitation, combined with the impact from climate change and extreme weather events. [...] The loss of these essential soil ecosystem services costs the EU at least 50 billion euro per year.}'', Soil health - European Commission \cite{european_commission_soil_2024}.
+``\emph{Over 60\% of European soils are unhealthy, and scientific evidence shows that soils are further degrading due to unsustainable management of the land, sealing, contamination, and overexploitation, combined with the impact of climate change and extreme weather events. [...] The loss of these essential soil ecosystem services costs the EU at least 50 billion euros per year.}'', Soil health - European Commission \cite{european_commission_soil_2024}.
 
-In the face of these challenges, the adoption of smart agriculture technologies, emerges as a vital strategy. These technologies offer the potential to transform agricultural practices by optimizing water usage, improving crop yields, and ensuring sustainable farming operations.
+In the face of these challenges, the adoption of smart agriculture technologies emerges as a vital strategy. These technologies offer the potential to transform agricultural practices by optimizing water usage, improving crop yields, and ensuring sustainable farming operations.
 
 This project aims to develop a sensor network that is not only reliable and easy to maintain but also versatile enough to be applied across various contexts - from small--scale home gardens to medium--sized agricultural fields and regional deployments. 
 
@@ -17,12 +17,12 @@ Furthermore, an over--the--air (OTA) firmware update capability will be explored
 
 OTA crucially allows for the update to happen without any operator intervention and transforms a one-shot solution, which once obsolete is replaced completely, into one that is, over time, able to support more sensors and features with minimal downtime \cite{mobility_connected_what_2024,noauthor_android_2024,bucklin_brown_over--air_2024}.
 
-A custom hardware solution will need to be developed in order to support OTA updates. Chapter \ref{chapter:architecture} in particular will make a point as to why this is necessary by compiling the hardware requirements and assessing the existing solutions currently available on the market. 
+A custom hardware solution will need to be developed in order to support OTA updates. Chapter \ref{chapter:architecture}, in particular, will make a point as to why this is necessary by compiling the hardware requirements and assessing the existing solutions currently available on the market. 
 
-This hardware solution will consist of two pieces - a general purpose LoRa module (the ``LoRa module'' from now on) capable of OTA updates and a soil moisture sensor, which integrates the LoRa module into the specialized application.
+This hardware solution will consist of two pieces - a general-purpose LoRa module (the ``LoRa module'' from now on) capable of OTA updates and a soil moisture sensor, which integrates the LoRa module into the specialized application.
 
-To implement the sensing, its configuration, status reporting and the update capability, a custom protocol will be developed atop the LoRa physical layer. This will make the system self--sufficient, but may limit the deployment options. However, the system could also be made compatible with the majority of commercial LoRaWAN networks in the future, if needed.
+To implement the sensing, its configuration, status reporting, and the update capability, a custom protocol will be developed atop the LoRa physical layer. This will make the system self--sufficient, but may limit the deployment options. However, the system could also be made compatible with the majority of commercial LoRaWAN networks in the future if needed.
 
 On the note of autonomy and minimal maintenance, individual nodes should be power--efficient enough to be powered by a small built--in battery augmented by a solar panel, to achieve a ``set and forget'' deployment. 
 
-Lastly, the system will be evaluated based on its performance in the field by conducting a range test in actual operating conditions and its sensor's ability to be powered by solar panel will be tested on a prototype unit.
+Lastly, the system will be evaluated based on its performance in the field by conducting a range test in actual operating conditions, and its sensor's ability to be powered by solar panel will be tested on a prototype unit.
