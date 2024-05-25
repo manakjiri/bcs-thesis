@@ -38,7 +38,7 @@ async def server():
     loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
 
     ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_cert_chain("cert.pem", "cert.pem")
+    ssl_context.load_cert_chain("fullchain.pem", "privkey.pem")
 
     handler = Handler()
     async with websockets.serve(handler.handle, "0.0.0.0", 8765, ssl=ssl_context):
