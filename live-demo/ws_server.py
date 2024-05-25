@@ -37,7 +37,7 @@ async def server():
     loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
 
     handler = Handler()
-    async with websockets.serve(handler.handle, "localhost", 8765):
+    async with websockets.serve(handler.handle, "0.0.0.0", 8765):
         await stop
 
 asyncio.run(server())
