@@ -3,6 +3,7 @@
 import asyncio
 import signal
 import websockets
+import ssl
 
 class Handler:
     def __init__(self) -> None:
@@ -36,8 +37,11 @@ async def server():
     loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
     loop.add_signal_handler(signal.SIGINT, stop.set_result, None)
 
+    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ssl_context.load_cert_chain("cert.pem", "cert.pem")
+
     handler = Handler()
-    async with websockets.serve(handler.handle, "0.0.0.0", 8765):
+    async with websockets.serve(handler.handle, "0.0.0.0", 8765, ssl=ssl_context):
         await stop
 
 asyncio.run(server())
