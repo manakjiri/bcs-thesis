@@ -7,9 +7,7 @@ Primární motivací této bakalářské práce byl můj osobní projekt, ve kte
 
 Poté už stačilo pouze najít použití takového modulu, které by dobře demonstrovala jeho schopnosti, což nás přivádí k tématu této bakalářské práce. Ta se skládá ze tří dílčích částí. První je modul samotný, tedy jeho specifikace, návrh a oživení, druhý je problematika měření vlhkosti půdy a návrh řešení a třetí je spojení těchto dílčí částí v minimum-viable-product, který je možné dlouhodobě udržovat a dále vylepšovat.
 
-Nyní se pojďme podívat jak se tyto cíle podařilo naplnit. Začal jsem kompilací požadavků na základě typických aplikací, včetně právě aplikace senzoru vlhkosti půdy. Na základě toho vznikl seznam požadavků, zde mám jeho zkrácenou verzi, která je uvedena v bakalářské práci. V zásadě jde pouze o upřesnění toho, o čem jsem hovořil v motivaci a budu se k těmto požadavkům vracet v průběhu prezentace.
-
-Na základě těchto požadavků jsem začal tvořit schema v KiCADu. Zde můžeme vidět top level stránku, kde uprostřed máme blok abstrahující stm32wle. Tento mikroprocesor integruje STM32L4 a Semtech LoRa rádio v jednom pouzdře, což pomáhá naplnit cíl minimálních rozměrů modulu a jeho spotřeby. Dále jsou tam bloky paměti a bezdrátového front-endu s připojením U.FL.
+Nyní se pojďme podívat jak se tyto cíle podařilo naplnit. Začal jsem kompilací požadavků na základě typických aplikací, včetně právě aplikace senzoru vlhkosti půdy. Na základě těchto požadavků jsem začal tvořit schema v KiCADu. Zde můžeme vidět top level stránku, kde uprostřed máme blok abstrahující stm32wle. Tento mikroprocesor integruje STM32L4 a Semtech LoRa rádio v jednom pouzdře, což pomáhá naplnit cíl minimálních rozměrů modulu a jeho spotřeby. Dále jsou tam bloky paměti a bezdrátového front-endu s připojením U.FL.
 
 Při návrhu jsem vycházel hlavně z referenčního návrhu od firmy ST, který nejlépe odpovídal mým požadavkům a ze schemat Nuclea, na kterém jsem i testoval firmware v době, kdy jsem ještě neměl svůj hardware.
 
@@ -17,12 +15,16 @@ Všechny požadavky kladené na modul se mi podařilo naplnit - kromě zabudovan
 
 (tady by se dalo navázat s performance testováním a grafy kdyby zbyl čas)
 
-Tímto bych rád shrnul část o LoRa modulu. Říkal jsem v úvodu, že se mi nepodařilo najít vhodný LoRa modul. Nejblíže se dostal Seeedstudio E5. Abych shrnul rozdíly, E5 je navrhnut na vysoké produkční várky, ten můj spíše na menší. Jediný rozdíl mezi nimi je absence FLASH a konektoru RF u W5. Pokud počítáte s návrhem jednoho produktu s LoRa připojením, přidat tyto dva komponenty není problém. Pokud ale chcete navrhovat desítky takových aplikací, začne být tento detail podstatný a podle mě už dává smysl navrhnout vlastní řešení.
+Tímto bych rád shrnul část o LoRa modulu. Říkal jsem v úvodu, že se mi nepodařilo najít vhodný existující LoRa modul. Nejblíže se dostal Seeedstudio E5. Jediný rozdíl mezi nimi je absence FLASH a konektoru pro připojení antény. Pokud počítáte s návrhem jednoho produktu s LoRa připojením, přidat tyto dva komponenty není problém. Pokud ale chcete navrhovat desítky takových aplikací, začne být tento detail podstatný a podle mě už dává smysl navrhnout vlastní řešení. Abych to shrnul, wio modul řeší implementaci LoRy, ale ten můj modul je spíše kompletní jednotná platforma pro široké spektrum aplikací.
 
-Tento přístup nás přenese od specifické aplikace k systému na vyšší úrovni abstrakce. Na modul se potom můžeme dívat jako na hlavní řídicí člen, který obsahuje zmíněná rozhraní.
+Tento přístup nás přenese od specifické aplikace k systému na vyšší úrovni abstrakce. Na modul se potom můžeme dívat jako na hlavní řídicí člen, který obsahuje zmíněná rozhraní. To je reflektováno i ve firmware, kde jsem se rozhodl vyčlenit společnou funkcionalitu do knihovny module-runtime. Ta obsahuje všechny drivery pro LoRa rozhraní, paměť, režii aktualizací a podobně. Aplikace poté řeší čistě svoji úlohu a využívají abstrakcí této knihovny. Zde bych rád zmínil, že jsem firmware psal v jazyce Rust a používám knihovnu Embassy, která poskytuje async-await podporu bez operačního systému.
 
-Několikrát jsem již zmínil aktualizace firmware, takže bych tomuto tématu věnoval tento slide. Logika příjmu nového obrazu firmware je zabudována v každé aplikaci skrze právě zmíněný runtime. Obraz se pro přenos musí fragmentovat na bloky, každý blok má svoje pořadové číslo a úlohou systému je přijmout a složit celý obraz na druhé straně, proto je potřeba dostatečná kapacita paměti. Způsob přenosu je inspirován selective repeat s tím, že místo jednotlivých ACK paketů jsou odesílány příjemcem status pakety, které mohou obsahovat až 32 naposledy přijatých pořadových čísel, jako potvrzení jejich přijetí. To dovoluje snížit frekvenci odesílání těchto potvrzovacích paketů.
+Několikrát jsem již zmínil aktualizace firmware, takže bych tomuto tématu věnoval tento slide. Logika příjmu nového firmware je zabudována v každé aplikaci skrze právě zmíněný runtime. Firmware se pro přenos musí fragmentovat na bloky, každý blok má svoje pořadové číslo a úlohou systému je přijmout a složit celý obraz na druhé straně, proto je potřeba dostatečná kapacita paměti. Způsob přenosu je inspirován selective repeat s tím, že místo jednotlivých ACK paketů jsou odesílány příjemcem status pakety, které mohou obsahovat až 32 naposledy přijatých pořadových čísel, jako potvrzení jejich přijetí. To dovoluje snížit frekvenci odesílání těchto potvrzovacích paketů.
 
-Nyní k senzoru samotnému. 
+Nyní k senzoru samotnému. Je konstruován na základě plošného spoje a 3d vytištěného obalu, součástky jsou lakovány. Aktivní měřící část, která se zasune do zeminy obsahuje 4 měřící zóny. Dielektrická konstanta půdy se mění v závislosti na obsahu vody, takže je možné ji takto odhadnout.
+
+Měřící obvod je založen na měření časové konstanty RC obvody tvořeného nabíjecím rezistorem R_CHG a kapacitoru C_X. Na senzoru je poté přepínač mezi 4 zónami a dva různé nabíjecí rezistory, tedy dva měřící rozsahy.
+
+Zde můžeme vidět možné nasazení tohoto senzoru, ale teď už na samotnou ukázku.
 
 

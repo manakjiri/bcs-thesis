@@ -20,9 +20,16 @@
 \addtobeamertemplate{footline}{
     ~~~~\small{\url{manakjiri.cz/thesis}}
 }{}
+\newcommand{\backupbegin}{
+   \newcounter{framenumberappendix}
+   \setcounter{framenumberappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \addtocounter{framenumberappendix}{-\value{framenumber}}
+   \addtocounter{framenumber}{\value{framenumberappendix}} 
+}
 
 \begin{document}
-
 
 \begin{frame}
 \titlepage
@@ -72,25 +79,6 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
 \begin{center}
     Implement and Test the MVP
 \end{center}
-\end{frame}
-
-
-\begin{frame}{LoRa Module}
-\begin{itemize}
-    \item 2.8--3.3 V nominal voltage range,
-    \item low power design - support for switchable power rails,
-    \item target the EU868,
-    \item wide temperature range
-    \item minimize the amount of specialized hardware,
-    \item support for OTA updates,
-    \item integrated RF,
-    \item host communication interface,
-    \item minimal footprint,
-    \item low cost.
-\end{itemize}
-\begin{flushright}
-    Page 15, Section 3.2.3
-\end{flushright}
 \end{frame}
 
 
@@ -239,7 +227,41 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{frame}
 
 
+\begin{frame}{Live Demo}
+\begin{figure}
+    \centering
+    \includegraphics[width=.5\linewidth]{img/qr.png}
+\end{figure}
+\begin{center}
+    (or visit the link)
+\end{center}
+\end{frame}
 
 
+\begin{frame}{Thank You}
+\end{frame}
+
+\appendix
+\backupbegin
+
+\begin{frame}{LoRa Module}
+\begin{itemize}
+    \item 2.8--3.3 V nominal voltage range,
+    \item low power design - support for switchable power rails,
+    \item target the EU868,
+    \item wide temperature range
+    \item minimize the amount of specialized hardware,
+    \item support for OTA updates,
+    \item integrated RF,
+    \item host communication interface,
+    \item minimal footprint,
+    \item low cost.
+\end{itemize}
+\begin{flushright}
+    Page 15, Section 3.2.3
+\end{flushright}
+\end{frame}
+
+\backupend
 
 \end{document}
