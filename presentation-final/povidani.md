@@ -1,22 +1,19 @@
 
 Vážená komise, dnes bych vám rád představil výsledky mé bakalářské práce.
 
-V rámci této práce jsem navrhl a vyrobil senzor vlhkosti půdy, který využívá bezdrátové rozhraní LoRa. Dovolte mi Vás hned na úvod vtáhnout do děje. Tento QR kód vas převede na webovou stránku, kde uvidíte živě data měřená senzorem před vámi. Případně využijte odkazu ze záhlaví.
+V rámci této práce jsem navrhl a vyrobil senzor vlhkosti půdy, který využívá bezdrátové rozhraní LoRa. Dovolte mi Vás hned na úvod vtáhnout do děje. Pokud si naskenujete tento QR kód, nebo vyhledáte odkaz, který bude po celou dobu prezentace v záhlaví, dostanete se na stránku, kde uvidíte živě data z tohoto senzoru před vámi.
 
-Primární motivací této bakalářské práce byl můj osobní projekt, ve kterém jsem potřeboval komunikační LoRa modul se specifickými požadavky. Z komerčně dostupných součástek žádná tyto požadavky nesplňovala. Konkrétně potřebuji platformu, která bude ideálně postavena na STM32, bude mít velmi nízkou spotřebu, lze kole ní lehce stavět a bude mít dostatek prostředků pro složitější aplikace.
+Primární motivací této bakalářské práce byl můj osobní projekt, ve kterém jsem potřeboval komunikační LoRa modul se specifickými požadavky. Z komerčně dostupných součástek žádná tyto požadavky nesplňovala. Konkrétně potřebuji platformu, kolem které se jednoduše staví aplikace, má pro ně dostatečné prostředky, má velmi nízkou spotřebu a je ideálně postavena na STM32.
 
-Poté už stačilo pouze najít použití takového modulu, které by dobře demonstrovala jeho schopnosti, což nás přivádí k tématu této bakalářské práce. Práce se zabývá třemi dílčími pod-úkoly 
-- specifikace, návrh, výroba a ověření funkčnosti modulu LoRa, který podporuje tzv over the air aktualizace,
-- problematika snímaní vlhkosti půdy, návrh a výroba senzoru vlhkosti půdy a
-- spojení těchto dvou zařízení v minimum viable product a demonstrace jeho funkčnosti
+Poté už stačilo pouze najít použití takového modulu, které by dobře demonstrovala jeho schopnosti, což nás přivádí k tématu této bakalářské práce. Ta se skládá ze tří dílčích částí. První je modul samotný, tedy jeho specifikace, návrh a oživení, druhý je problematika měření vlhkosti půdy a návrh řešení a třetí je spojení těchto dílčí částí v minimum-viable-product, který je možné dlouhodobě udržovat a dále vylepšovat.
 
-Nyní se pojďme podívat jak se tyto cíle podařilo naplnit. Začal jsem kompilací požadavků na základě typických aplikací, včetně právě aplikace senzoru vlhkosti půdy. Na základě toho vznikl seznam požadavků na modul, který najdete v práci na straně 15, sekce 3.2.3. V zásadě jde pouze o upřesnění toho, o čem jsem hovořil v motivaci.
+Nyní se pojďme podívat jak se tyto cíle podařilo naplnit. Začal jsem kompilací požadavků na základě typických aplikací, včetně právě aplikace senzoru vlhkosti půdy. Na základě toho vznikl seznam požadavků, zde mám jeho zkrácenou verzi, která je uvedena v bakalářské práci. V zásadě jde pouze o upřesnění toho, o čem jsem hovořil v motivaci a budu se k těmto požadavkům vracet v průběhu prezentace.
 
-Na základě těchto požadavků jsem začal kreslit schema v KiCADu. Zde můžeme vidět top level stránku, kde uprostřed máme blok abstrahující stm32, blok s RF obvody a blok paměti.
+Na základě těchto požadavků jsem začal tvořit schema v KiCADu. Zde můžeme vidět top level stránku, kde uprostřed máme blok abstrahující stm32wle. Tento mikroprocesor integruje STM32L4 a Semtech LoRa rádio v jednom pouzdře, což pomáhá naplnit cíl minimálních rozměrů modulu a jeho spotřeby. Dále jsou tam bloky paměti a bezdrátového front-endu s připojením U.FL.
 
-Při návrhu jsem vycházel hlavně z referenčního návrhu, který nejlépe odpovídal mým požadavkům a ze schemat Nuclea, na kterém jsem i testoval firmware v době, kdy jsem ještě neměl svůj hardware.
+Při návrhu jsem vycházel hlavně z referenčního návrhu od firmy ST, který nejlépe odpovídal mým požadavkům a ze schemat Nuclea, na kterém jsem i testoval firmware v době, kdy jsem ještě neměl svůj hardware.
 
-Všechny požadavky kladené na modul se mi podařilo naplnit - kromě zabudované antény, protože nebylo možné zaručit funkčnost pro všechny případy nasazení modulu. Tudíž jsem se rozhodl osadit běžný UF.L konektor. Změřený vysílací výkon modulu činí 13dBm na konektoru při nastavených 15. Modul má zabudovanou 1 MB FLASH paměť, do které se odkládá firmware při aktualizaci, je postavený na 4 vrstvém PCB a i přesto se povedlo dosáhnout rozměrů 20*22 mm bez použití drahých výrobních procesů. Deska byla vyráběna u PCBWay v číně a vyšla na 500 kč v množství 5 ks, odhaduji výrobní cenu 220 kč v množstvích 100ks.
+Všechny požadavky kladené na modul se mi podařilo naplnit - kromě zabudované antény, protože nebylo možné zaručit funkčnost pro všechny případy nasazení modulu. Tudíž jsem se rozhodl osadit běžný U.FL konektor. Změřený vysílací výkon modulu činí 13dBm na konektoru při nastavených 15. Modul má zabudovanou 1 MB FLASH paměť, do které se odkládá firmware při aktualizaci, je postavený na 4 vrstvém PCB a i přesto se povedlo dosáhnout rozměrů 20*22 mm bez použití drahých výrobních procesů. Deska byla vyráběna u PCBWay v číně a vyšla na 500 kč v množství 5 ks, odhaduji výrobní cenu 220 kč v množstvích 100ks.
 
 (tady by se dalo navázat s performance testováním a grafy kdyby zbyl čas)
 
@@ -24,10 +21,8 @@ Tímto bych rád shrnul část o LoRa modulu. Říkal jsem v úvodu, že se mi n
 
 Tento přístup nás přenese od specifické aplikace k systému na vyšší úrovni abstrakce. Na modul se potom můžeme dívat jako na hlavní řídicí člen, který obsahuje zmíněná rozhraní.
 
-...
+Několikrát jsem již zmínil aktualizace firmware, takže bych tomuto tématu věnoval tento slide. Logika příjmu nového obrazu firmware je zabudována v každé aplikaci skrze právě zmíněný runtime. Obraz se pro přenos musí fragmentovat na bloky, každý blok má svoje pořadové číslo a úlohou systému je přijmout a složit celý obraz na druhé straně, proto je potřeba dostatečná kapacita paměti. Způsob přenosu je inspirován selective repeat s tím, že místo jednotlivých ACK paketů jsou odesílány příjemcem status pakety, které mohou obsahovat až 32 naposledy přijatých pořadových čísel, jako potvrzení jejich přijetí. To dovoluje snížit frekvenci odesílání těchto potvrzovacích paketů.
 
-Takto pak může vypadat nasazený senzor v akci, ale to předbíhám, jelikož prvně na něj musíme nějak dostat firmware.
-
-Říct něco o OTA, je to inspirované selective repeat... Podstatný je tento status paket, který odesílá Node. Ten místo jednoho indexu bloku může obsahovat až 32 indexů, což umožňuje snížit frekvenci odesílání těchto paketů.
+Nyní k senzoru samotnému. 
 
 
