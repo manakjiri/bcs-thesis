@@ -18,7 +18,7 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}[page number]{}
 \addtobeamertemplate{footline}{
-    ~~~~\small{manakjiri.cz/thesis}
+    ~~~~\small{\url{manakjiri.cz/thesis}}
 }{}
 
 \begin{document}
@@ -88,6 +88,9 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
     \item minimal footprint,
     \item low cost.
 \end{itemize}
+\begin{flushright}
+    Page 15, Section 3.2.3
+\end{flushright}
 \end{frame}
 
 
@@ -155,7 +158,7 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
     \end{figure}
     Seeed Studio Wio-E5
 \end{column}
-\hfill
+\hfil
 \begin{column}{.1\textwidth}
     \centering
     \Large
@@ -164,7 +167,7 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
     ?
     $$<$$
 \end{column}
-\hfill
+\hfil
 \begin{column}{.4\textwidth}
     \centering
     \begin{figure}
@@ -175,4 +178,68 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
 \end{columns}
 \end{frame}
 
-\end{document} 
+
+\begin{frame}{Firmware}
+\begin{figure}
+    \centering
+    \includesvg[width=\linewidth]{img/firmware.drawio.svg}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Over The Air Update}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/ota.png}
+\end{figure}
+\begin{flushright}
+    Page 36, Figure 4.9
+\end{flushright}
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor}
+\begin{itemize}
+    \item PCB construction
+    \item 4 capacitive zones (15 cm total depth)
+    \item Solar powered
+\end{itemize}
+\begin{figure}
+    \centering
+    \includesvg[width=\linewidth]{../thesis/boards/sensor/soil-sensor-F_Cu.svg}
+\end{figure}
+$$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text{\hspace{19em}}}_{\text{Sensor active area}}\text{\hspace{2.5em}}$$
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{../thesis/fig/principle-cap-measure.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor}
+\begin{columns}[T]
+\begin{column}{.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-up.jpg}
+    \end{figure}
+\end{column}
+\hfil
+\begin{column}{.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-close.jpg}
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+
+\end{document}

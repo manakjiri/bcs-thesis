@@ -1,8 +1,12 @@
 
-Primární motivací této bakalářské práce byl můj osobní projekt, ve kterém jsem potřeboval komunikační LoRa modul se specifickými požadavky. Z komerčně dostupných součástek žádná tyto požadavky nesplňovala. Konkrétně potřebuji platformu, která bude ideálně postavena na STM32, bude mít velmi nízkou spotřebu, bude se jednoduše integrovat a bude mít dostatek prostředků pro složitější aplikace.
+Vážená komise, dnes bych vám rád představil výsledky mé bakalářské práce.
 
-Poté už stačilo pouze najít aplikaci takového modulu, která by dobře demonstrovala jeho schopnosti, což nás přivádí k tématu této bakalářské práce. Práce se zabývá třemi dílčími pod-úkoly 
-- specifikace, návrh, výroba a ověření funkčnosti modulu LoRa,
+V rámci této práce jsem navrhl a vyrobil senzor vlhkosti půdy, který využívá bezdrátové rozhraní LoRa. Dovolte mi Vás hned na úvod vtáhnout do děje. Tento QR kód vas převede na webovou stránku, kde uvidíte živě data měřená senzorem před vámi. Případně využijte odkazu ze záhlaví.
+
+Primární motivací této bakalářské práce byl můj osobní projekt, ve kterém jsem potřeboval komunikační LoRa modul se specifickými požadavky. Z komerčně dostupných součástek žádná tyto požadavky nesplňovala. Konkrétně potřebuji platformu, která bude ideálně postavena na STM32, bude mít velmi nízkou spotřebu, lze kole ní lehce stavět a bude mít dostatek prostředků pro složitější aplikace.
+
+Poté už stačilo pouze najít použití takového modulu, které by dobře demonstrovala jeho schopnosti, což nás přivádí k tématu této bakalářské práce. Práce se zabývá třemi dílčími pod-úkoly 
+- specifikace, návrh, výroba a ověření funkčnosti modulu LoRa, který podporuje tzv over the air aktualizace,
 - problematika snímaní vlhkosti půdy, návrh a výroba senzoru vlhkosti půdy a
 - spojení těchto dvou zařízení v minimum viable product a demonstrace jeho funkčnosti
 
@@ -16,4 +20,14 @@ Všechny požadavky kladené na modul se mi podařilo naplnit - kromě zabudovan
 
 (tady by se dalo navázat s performance testováním a grafy kdyby zbyl čas)
 
-Tímto bych rád shrnul část o LoRa modulu. Říkal jsem v úvodu, že se mi nepodařilo najít vhodný LoRa modul. Nejblíže se dostal Seeedstudio W5. Abych shrnul rozdíly, W5 je navrhnut na vysoké produkční várky, ten můj spíše na menší. Jediný rozdíl mezi nimi je absence FLASH a konektoru RF u W5. Pokud počítáte s návrhem jednoho produktu s LoRa připojením, přidat tyto dva komponenty není problém. Pokud ale chcete navrhovat desítky takových aplikací, začne být tento detail podstatný.
+Tímto bych rád shrnul část o LoRa modulu. Říkal jsem v úvodu, že se mi nepodařilo najít vhodný LoRa modul. Nejblíže se dostal Seeedstudio E5. Abych shrnul rozdíly, E5 je navrhnut na vysoké produkční várky, ten můj spíše na menší. Jediný rozdíl mezi nimi je absence FLASH a konektoru RF u W5. Pokud počítáte s návrhem jednoho produktu s LoRa připojením, přidat tyto dva komponenty není problém. Pokud ale chcete navrhovat desítky takových aplikací, začne být tento detail podstatný a podle mě už dává smysl navrhnout vlastní řešení.
+
+Tento přístup nás přenese od specifické aplikace k systému na vyšší úrovni abstrakce. Na modul se potom můžeme dívat jako na hlavní řídicí člen, který obsahuje zmíněná rozhraní.
+
+...
+
+Takto pak může vypadat nasazený senzor v akci, ale to předbíhám, jelikož prvně na něj musíme nějak dostat firmware.
+
+Říct něco o OTA, je to inspirované selective repeat... Podstatný je tento status paket, který odesílá Node. Ten místo jednoho indexu bloku může obsahovat až 32 indexů, což umožňuje snížit frekvenci odesílání těchto paketů.
+
+
