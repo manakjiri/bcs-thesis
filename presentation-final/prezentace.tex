@@ -80,7 +80,7 @@ Custom soil moisture sensor network
 \begin{itemize}
     \item PCB construction
     \item 4 capacitive zones (15 cm total depth)
-    \item Solar powered
+    \item 330 mAh lithium cell, 150 mWp solar panel
 \end{itemize}
 \begin{figure}
     \centering
@@ -97,6 +97,24 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{figure}
 \end{frame}
 
+\begin{frame}{Soil Moisture Sensor}
+\begin{columns}[T]
+\begin{column}{.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/img/sensor-case.png}
+    \end{figure}
+\end{column}
+\hfil
+\begin{column}{.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-close.jpg}
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
 
 \begin{frame}{LoRa Module}
 \begin{figure}
@@ -107,9 +125,9 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \begin{columns}[T]
 \begin{column}{.5\textwidth}
     \begin{itemize}
-        \item STM32WLE5CC
-        \item 868 MHz, 13 dBm
-        \item 20.32 $\times$ 22.48 mm
+        \item \textbf{STM32WLE5CC}
+        \item 868 MHz, 15 dBm
+        \item \textbf{20.32}$\mathbf{\times}$\textbf{22.48 mm}
     \end{itemize}
 \end{column}
 \hfill
@@ -121,6 +139,16 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
     \end{itemize}
 \end{column}
 \end{columns}
+\end{frame}
+
+
+\begin{frame}{LoRa Module}
+\begin{figure}
+    \includesvg[width=\linewidth]{../thesis/data/range/out/success-sf11.svg}
+\end{figure}
+\begin{figure}
+    \includesvg[width=\linewidth]{../thesis/data/range/out/relief-sf11.svg}
+\end{figure}
 \end{frame}
 
 
