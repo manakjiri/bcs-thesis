@@ -35,6 +35,94 @@
 \titlepage
 \end{frame}
 
+\begin{frame}
+\begin{columns}[T]
+\begin{column}{.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{img/module-v0.1.jpg}
+    \end{figure}
+\end{column}
+\hfil
+\begin{column}{.5\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-close.jpg}
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Goals}
+Custom soil moisture sensor network
+\begin{itemize}
+    \item Able to cover large--enough area
+    \item Zero--maintenance, no external dependency
+    \item Potentially expandable with more sensor types
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Cover large--enough area with no external dependency}
+\begin{itemize}
+    \item LoRa
+    \item Custom protocol
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Zero--maintenance and expandable}
+\begin{itemize}
+    \item Solar power
+    \item OTA updates
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Soil Moisture Sensor}
+\begin{itemize}
+    \item PCB construction
+    \item 4 capacitive zones (15 cm total depth)
+    \item Solar powered
+\end{itemize}
+\begin{figure}
+    \centering
+    \includesvg[width=\linewidth]{../thesis/boards/sensor/soil-sensor-F_Cu.svg}
+\end{figure}
+$$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text{\hspace{19em}}}_{\text{Sensor active area}}\text{\hspace{2.5em}}$$
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{../thesis/fig/principle-cap-measure.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{LoRa Module}
+\begin{figure}
+    \centering
+    \small
+    \includesvg[width=.8\linewidth]{img/module-v0.1.drawio.svg}
+\end{figure}
+\begin{columns}[T]
+\begin{column}{.5\textwidth}
+    \begin{itemize}
+        \item STM32WLE5CC
+        \item 868 MHz, 13 dBm
+        \item 20.32 $\times$ 22.48 mm
+    \end{itemize}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+    \begin{itemize}
+        \item 1 MB FLASH
+        \item 2.3--3.5 V
+        \item 16 IO pins
+    \end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
 
 \begin{frame}{Live Demo}
 \begin{figure}
@@ -46,39 +134,20 @@
 \end{center}
 \end{frame}
 
+\appendix
+\backupbegin
+
+
+
+\begin{frame}
+\end{frame}
+
 
 \begin{frame}{Motivation}
 \begin{figure}
     \centering
     \includegraphics[width=.65\linewidth]{img/module-v0.1.jpg}
 \end{figure}
-\end{frame}
-
-
-\begin{frame}{Goals}
-\begin{columns}[T]
-\begin{column}{.5\textwidth}
-    Generic LoRa Module
-    \begin{itemize}
-        \item Design the PCBA
-        \item Implement OTA update
-        \item Validate wireless performance
-    \end{itemize}
-\end{column}
-\hfill
-\begin{column}{.5\textwidth}
-    Soil Moisture Sensor
-    \begin{itemize}
-        \item Find suitable form--factor
-        \item Design measurement circuit
-        \item Design power management
-    \end{itemize}
-\end{column}
-\end{columns}
-$$\underbrace{\text{\hspace{20em}}}_{}$$
-\begin{center}
-    Implement and Test the MVP
-\end{center}
 \end{frame}
 
 
@@ -111,30 +180,6 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
 \end{frame}
 
 
-\begin{frame}{LoRa Module}
-\begin{figure}
-    \centering
-    \small
-    \includesvg[width=.8\linewidth]{img/module-v0.1.drawio.svg}
-\end{figure}
-\begin{columns}[T]
-\begin{column}{.5\textwidth}
-    \begin{itemize}
-        \item STM32WLE5CC
-        \item 868 MHz, 13 dBm
-        \item 20.32 $\times$ 22.48 mm
-    \end{itemize}
-\end{column}
-\hfill
-\begin{column}{.5\textwidth}
-    \begin{itemize}
-        \item 1 MB FLASH
-        \item 2.3--3.5 V
-        \item 16 IO pins
-    \end{itemize}
-\end{column}
-\end{columns}
-\end{frame}
 
 
 \begin{frame}{Existing solution?}
@@ -187,28 +232,6 @@ $$\underbrace{\text{\hspace{20em}}}_{}$$
 
 
 \begin{frame}{Soil Moisture Sensor}
-\begin{itemize}
-    \item PCB construction
-    \item 4 capacitive zones (15 cm total depth)
-    \item Solar powered
-\end{itemize}
-\begin{figure}
-    \centering
-    \includesvg[width=\linewidth]{../thesis/boards/sensor/soil-sensor-F_Cu.svg}
-\end{figure}
-$$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text{\hspace{19em}}}_{\text{Sensor active area}}\text{\hspace{2.5em}}$$
-\end{frame}
-
-
-\begin{frame}{Soil Moisture Sensor}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{../thesis/fig/principle-cap-measure.png}
-\end{figure}
-\end{frame}
-
-
-\begin{frame}{Soil Moisture Sensor}
 \begin{columns}[T]
 \begin{column}{.5\textwidth}
     \begin{figure}
@@ -225,24 +248,6 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{column}
 \end{columns}
 \end{frame}
-
-
-\begin{frame}{Live Demo}
-\begin{figure}
-    \centering
-    \includegraphics[width=.5\linewidth]{img/qr.png}
-\end{figure}
-\begin{center}
-    (or visit the link)
-\end{center}
-\end{frame}
-
-
-\begin{frame}{Thank You}
-\end{frame}
-
-\appendix
-\backupbegin
 
 \begin{frame}{LoRa Module}
 \begin{itemize}
