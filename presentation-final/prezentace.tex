@@ -35,8 +35,9 @@
 \titlepage
 \end{frame}
 
+
 \begin{frame}
-\begin{columns}[T]
+\begin{columns}
 \begin{column}{.5\textwidth}
     \begin{figure}
         \centering
@@ -47,18 +48,19 @@
 \begin{column}{.5\textwidth}
     \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-close.jpg}
+        \includegraphics[width=\linewidth]{img/sensor-deploy-up.jpg}
     \end{figure}
 \end{column}
 \end{columns}
 \end{frame}
+
 
 \begin{frame}{Goals}
 Custom soil moisture sensor network
 \begin{itemize}
     \item Able to cover large--enough area
     \item Zero--maintenance, no external dependency
-    \item Potentially expandable with more sensor types
+    \item Potentially extensible with more sensor types
 \end{itemize}
 \end{frame}
 
@@ -69,12 +71,14 @@ Custom soil moisture sensor network
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Zero--maintenance and expandable}
+
+\begin{frame}{Zero--maintenance and extensible}
 \begin{itemize}
     \item Solar power
     \item OTA updates
 \end{itemize}
 \end{frame}
+
 
 \begin{frame}{Soil Moisture Sensor}
 \begin{itemize}
@@ -91,11 +95,25 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 
 
 \begin{frame}{Soil Moisture Sensor}
+\centering
+\begin{columns}
+\begin{column}{.25\textwidth}
+    \begin{flushright}
+    Dielectric constant of~materials found in~soil
+    \end{flushright}
+\end{column}
+\hfil
+\begin{column}{.75\textwidth}
+    \begin{figure}
+        \includegraphics[width=\linewidth]{../thesis/fig/dielectric-constant.jpg}
+    \end{figure}
+\end{column}
+\end{columns}
 \begin{figure}
-    \centering
     \includegraphics[width=\linewidth]{../thesis/fig/principle-cap-measure.png}
 \end{figure}
 \end{frame}
+
 
 \begin{frame}{Soil Moisture Sensor}
 \begin{columns}[T]
@@ -142,12 +160,60 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{frame}
 
 
-\begin{frame}{LoRa Module}
+\begin{frame}{LoRa Module Range Test}
+\begin{columns}[T]
+\begin{column}{.3\textwidth}
+    \centering
+    \begin{figure}
+        \includegraphics[height=7.5cm]{img/lora-pole.jpg}
+    \end{figure}
+\end{column}
+\hfil
+\begin{column}{.3\textwidth}
+    \centering
+    \begin{figure}
+        \includegraphics[height=7cm]{../thesis/img/range-pole-bottom.jpg}
+    \end{figure}
+    \vspace{-1em}
+    Node 2
+\end{column}
+\hfil
+\begin{column}{.3\textwidth}
+    \centering
+    \begin{figure}
+        \includegraphics[height=7cm]{../thesis/img/range-pole-top.jpg}
+    \end{figure}
+    \vspace{-1em}
+    Node 3
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{LoRa Module Range Test - SF11}
 \begin{figure}
     \includesvg[width=\linewidth]{../thesis/data/range/out/success-sf11.svg}
 \end{figure}
 \begin{figure}
     \includesvg[width=\linewidth]{../thesis/data/range/out/relief-sf11.svg}
+\end{figure}
+\Tiny{\textbf{Node 2 - 20 cm, Node 3 - 80 cm, Node 4 (Nucleo) - 50 cm}, 1.125 s round-trip, 300 bps, Page 41, Section 4.4.4}
+\end{frame}
+
+\begin{frame}{LoRa Module Range Test - SF5}
+\begin{figure}
+    \includesvg[width=\linewidth]{../thesis/data/range/out/success-sf5.svg}
+\end{figure}
+\begin{figure}
+    \includesvg[width=\linewidth]{../thesis/data/range/out/relief-sf5.svg}
+\end{figure}
+\Tiny{\textbf{Node 2 - 20 cm, Node 3 - 80 cm, Node 4 (Nucleo) - 50 cm}, 0.125 s round-trip, 3 kbps, Page 41, Section 4.4.4}
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor Validation}
+\begin{figure}
+    \includesvg[width=\linewidth]{../thesis/data/deployment/out/moisture-cal.svg}
 \end{figure}
 \end{frame}
 
@@ -162,21 +228,21 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{center}
 \end{frame}
 
+
+\begin{frame}{Conclusion}
+This thesis brought
+\begin{itemize}
+    \item \textbf{STM32 LoRa Module - a platform for connected sensors}
+    \item \textbf{Soil moisture sensor - an application of the module}
+    \item Backend service which processes the sensor data
+    \item \url{module-runtime} Rust package - HAL, OTA, async
+\end{itemize}
+\vspace{1em}
+All publicly available at \url{https://github.com/manakjiri}
+\end{frame}
+
 \appendix
 \backupbegin
-
-
-
-\begin{frame}
-\end{frame}
-
-
-\begin{frame}{Motivation}
-\begin{figure}
-    \centering
-    \includegraphics[width=.65\linewidth]{img/module-v0.1.jpg}
-\end{figure}
-\end{frame}
 
 
 \begin{frame}{LoRa Module}
@@ -206,8 +272,6 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{column}
 \end{columns}
 \end{frame}
-
-
 
 
 \begin{frame}{Existing solution?}
@@ -240,6 +304,12 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{frame}
 
 
+\begin{frame}{Solar Power}
+\begin{figure}
+    \includesvg[width=\linewidth]{../thesis/data/deployment/out/power.svg}
+\end{figure}
+\end{frame}
+
 \begin{frame}{Firmware}
 \begin{figure}
     \centering
@@ -258,24 +328,6 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \end{flushright}
 \end{frame}
 
-
-\begin{frame}{Soil Moisture Sensor}
-\begin{columns}[T]
-\begin{column}{.5\textwidth}
-    \begin{figure}
-        \centering
-        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-up.jpg}
-    \end{figure}
-\end{column}
-\hfil
-\begin{column}{.5\textwidth}
-    \begin{figure}
-        \centering
-        \includegraphics[width=\linewidth]{../thesis/img/sensor-deploy-close.jpg}
-    \end{figure}
-\end{column}
-\end{columns}
-\end{frame}
 
 \begin{frame}{LoRa Module}
 \begin{itemize}
