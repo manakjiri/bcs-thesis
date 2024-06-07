@@ -1,10 +1,11 @@
-\documentclass{beamer}
+% arara: bibtex
+
+\documentclass[hyphens]{beamer}
 
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-\usepackage{url}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{svg}
@@ -30,15 +31,19 @@
 }
 
 \begin{document}
+\setlength{\leftmargini}{0.5cm}
+\setlength{\leftmarginii}{0.5cm}
 
 \begin{frame}
 \titlepage
 \end{frame}
 
 
-\begin{frame}
-\begin{columns}
+\begin{frame}{Goals}
+\begin{columns}[T]
 \begin{column}{.5\textwidth}
+    1. Create a universal platform:\\
+    LoRa Module and Firmware
     \begin{figure}
         \centering
         \includegraphics[width=\linewidth]{img/module-v0.1.jpg}
@@ -46,9 +51,11 @@
 \end{column}
 \hfil
 \begin{column}{.5\textwidth}
+    2. Demonstrate its capabilities:\\
+    Wireless soil moisture sensor
     \begin{figure}
         \centering
-        \includegraphics[width=\linewidth]{img/sensor-deploy-up.jpg}
+        \includegraphics[width=.9\linewidth]{img/sensor-deploy-up.jpg}
     \end{figure}
 \end{column}
 \end{columns}
@@ -56,27 +63,109 @@
 
 
 \begin{frame}{Goals}
-Custom soil moisture sensor network
+1. Low--power LoRa Module
 \begin{itemize}
-    \item Able to cover large--enough area
-    \item Zero--maintenance, no external dependency
+    \item A platform for rapid application development
+\end{itemize}
+\vspace{1em}
+2. Custom soil moisture sensor network
+\begin{itemize}
+    \item Able to cover large--enough area (kilometers)
+    \item Zero--maintenance
+    \item No external dependency on commercial networks
     \item Potentially extensible with more sensor types
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Cover large--enough area with no external dependency}
-\begin{itemize}
-    \item LoRa
-    \item Custom protocol
-\end{itemize}
+\begin{columns}[T]
+\begin{column}{.31\textwidth}
+    \begin{itemize}
+        \item LoRa
+        \begin{itemize}
+            \item Long range (kilometers)
+            \item Low power (5~mA receive)
+        \end{itemize}
+        \item Custom protocol
+        \begin{itemize}
+            \item Low duty--cycle
+            \item Not reliant on LoRaWAN
+            \item Efficient
+        \end{itemize}
+    \end{itemize}
+\end{column}
+\hfil
+\begin{column}{.69\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{img/lora-signal.jpg}
+        \caption*{LoRa signal - Frequency/Time, \cite{noauthor_what_nodate}}
+    \end{figure}
+\end{column}
+\end{columns}
 \end{frame}
 
 
 \begin{frame}{Zero--maintenance and extensible}
+\begin{columns}[T]
+\begin{column}{.4\textwidth}
+    \begin{itemize}
+        \item Solar power
+        \begin{itemize}
+            \item No infrastructure required
+            \item Self--sufficient
+        \end{itemize}
+        \item Over--the--Air updates
+        \begin{itemize}
+            \item New features and~improvements
+            \item Long--term support
+        \end{itemize}
+    \end{itemize}
+\end{column}
+\hfil
+\begin{column}{.6\textwidth}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{img/ota-popular.png}
+        \caption*{Conventional $\times$ OTA update, \cite{mobility_connected_what_2024}}
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor}
+Absolute soil water content measurement is impractical
 \begin{itemize}
-    \item Solar power
-    \item OTA updates
+    \item High power draw
+    \item Bulky
+    \item Expensive
 \end{itemize}
+\vspace{1em}
+Properly calibrated relative measurement is sufficient for monitoring purposes\\
+\vspace{1em}
+$\to$ Capacitive soil moisture sensor
+\end{frame}
+
+
+\begin{frame}{Soil Moisture Sensor}
+\centering
+\begin{columns}
+\begin{column}{.25\textwidth}
+    $$C = \dfrac{\epsilon_r \epsilon_0 S}{d}~~\mathrm{[F]}$$
+    $$\tau = RC~~\mathrm{[s]}$$
+\end{column}
+\hfil
+\begin{column}{.75\textwidth}
+    \begin{figure}
+        \includegraphics[width=\linewidth]{../thesis/fig/dielectric-constant.jpg}
+        \caption*{Dielectric constant $\epsilon_r$ of~materials found in~soil, \cite{meter_group_soil_2023}}
+    \end{figure}
+\end{column}
+\end{columns}
+\begin{figure}
+    \includegraphics[width=.9\linewidth]{../thesis/fig/principle-cap-measure.png}
+\end{figure}
 \end{frame}
 
 
@@ -91,27 +180,6 @@ Custom soil moisture sensor network
     \includesvg[width=\linewidth]{../thesis/boards/sensor/soil-sensor-F_Cu.svg}
 \end{figure}
 $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text{\hspace{19em}}}_{\text{Sensor active area}}\text{\hspace{2.5em}}$$
-\end{frame}
-
-
-\begin{frame}{Soil Moisture Sensor}
-\centering
-\begin{columns}
-\begin{column}{.25\textwidth}
-    \begin{flushright}
-    Dielectric constant of~materials found in~soil
-    \end{flushright}
-\end{column}
-\hfil
-\begin{column}{.75\textwidth}
-    \begin{figure}
-        \includegraphics[width=\linewidth]{../thesis/fig/dielectric-constant.jpg}
-    \end{figure}
-\end{column}
-\end{columns}
-\begin{figure}
-    \includegraphics[width=\linewidth]{../thesis/fig/principle-cap-measure.png}
-\end{figure}
 \end{frame}
 
 
@@ -232,18 +300,28 @@ $$\underbrace{\text{\hspace{5em}}}_{\text{Sensor electronics}}~\underbrace{\text
 \begin{frame}{Conclusion}
 This thesis brought
 \begin{itemize}
-    \item \textbf{STM32 LoRa Module - a platform for connected sensors}
+    \item \textbf{STM32 LoRa Module - a low--power platform for connected sensors}
+    \begin{itemize}
+        \item \url{module-runtime} Rust package - HAL, protocol, async executor; enabling rapid application development with emphasis on reliability
+        \item Optimized for low duty--cycle operation
+        \item Over--the--Air update capability with rollback
+    \end{itemize}
     \item \textbf{Soil moisture sensor - an application of the module}
-    \item Backend service which processes the sensor data
-    \item \url{module-runtime} Rust package - HAL, OTA, async
+    \item Backend service combining soil moisture sensor data with weather forecast to optimize watering schedule
 \end{itemize}
 \vspace{1em}
 All publicly available at \url{https://github.com/manakjiri}
 \end{frame}
 
+
+\begin{frame}[allowframebreaks]
+    \frametitle{References}
+    \bibliographystyle{IEEEtran}
+    \bibliography{sources.bib}
+\end{frame}
+
 \appendix
 \backupbegin
-
 
 \begin{frame}{LoRa Module}
 \begin{figure}
